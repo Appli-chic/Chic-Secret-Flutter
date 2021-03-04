@@ -1,0 +1,46 @@
+import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class DesktopModal extends StatefulWidget {
+  final String title;
+  final Widget body;
+  final List<Widget> actions;
+
+  DesktopModal({
+    required this.title,
+    required this.body,
+    required this.actions,
+  });
+
+  @override
+  _DesktopModalState createState() => _DesktopModalState();
+}
+
+class _DesktopModalState extends State<DesktopModal> {
+  @override
+  Widget build(BuildContext context) {
+    var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+
+    return AlertDialog(
+      title: Text(
+        widget.title,
+        style: TextStyle(
+          color: themeProvider.textColor,
+        ),
+      ),
+      backgroundColor: themeProvider.backgroundColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+      ),
+      content: Container(
+        width: 500,
+        height: 500,
+        child: widget.body,
+      ),
+      actions: widget.actions,
+    );
+  }
+}
+
+
