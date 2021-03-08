@@ -7,6 +7,8 @@ import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:chic_secret/utils/constant.dart';
+import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -189,7 +191,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
       var vault = Vault(
         id: Uuid().v4(),
         name: _nameController.text,
-        signature: "",
+        signature: Security.encrypt(_passwordController.text, signature),
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );

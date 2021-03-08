@@ -29,6 +29,9 @@ class VaultItem extends StatelessWidget {
   Widget _buildMobileItem(ThemeProvider themeProvider) {
     return Card(
       color: themeProvider.secondBackgroundColor,
+      shape: BeveledRectangleBorder(
+        borderRadius: BorderRadius.circular(4.0),
+      ),
       child: ListTile(
         horizontalTitleGap: 0,
         leading: Icon(
