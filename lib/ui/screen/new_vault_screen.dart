@@ -18,6 +18,10 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
   final _passwordController = TextEditingController();
   final _verifyPasswordController = TextEditingController();
 
+  var _nameFocusNode = FocusNode();
+  var _passwordFocusNode = FocusNode();
+  var _verifyPasswordFocusNode = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
@@ -58,7 +62,13 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     return Scaffold(
       backgroundColor: themeProvider.backgroundColor,
       appBar: _displaysAppbar(themeProvider),
-      body: _displaysBody(themeProvider),
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: _displaysBody(themeProvider),
+      ),
     );
   }
 
@@ -88,19 +98,32 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
         children: [
           ChicTextField(
             controller: _nameController,
+            focus: _nameFocusNode,
+            autoFocus: true,
+            textCapitalization: TextCapitalization.sentences,
             hint: AppTranslations.of(context).text("name"),
+            onSubmitted: (String text) {
+              _passwordFocusNode.requestFocus();
+            },
           ),
           SizedBox(height: 16.0),
           ChicTextField(
             controller: _passwordController,
+            focus: _passwordFocusNode,
             hint: AppTranslations.of(context).text("password"),
             isPassword: true,
+            onSubmitted: (String text) {
+              _verifyPasswordFocusNode.requestFocus();
+            },
           ),
           SizedBox(height: 16.0),
           ChicTextField(
             controller: _verifyPasswordController,
+            focus: _verifyPasswordFocusNode,
+            textInputAction: TextInputAction.done,
             hint: AppTranslations.of(context).text("verify_password"),
             isPassword: true,
+            onSubmitted: (String text) {},
           ),
           SizedBox(height: 16.0),
           Text(
@@ -114,5 +137,17 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _passwordController.dispose();
+    _verifyPasswordController.dispose();
+
+    _nameFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    _verifyPasswordFocusNode.dispose();
+    super.dispose();
   }
 }

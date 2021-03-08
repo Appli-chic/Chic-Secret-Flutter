@@ -8,12 +8,22 @@ class ChicTextField extends StatefulWidget {
   final String hint;
   final bool isPassword;
   final Widget? suffix;
+  final FocusNode focus;
+  final bool autoFocus;
+  final Function(String)? onSubmitted;
+  final TextInputAction textInputAction;
+  final TextCapitalization textCapitalization;
 
   ChicTextField({
     required this.controller,
     required this.hint,
     this.isPassword = false,
     this.suffix,
+    required this.focus,
+    this.autoFocus = false,
+    this.onSubmitted,
+    this.textInputAction = TextInputAction.next,
+    this.textCapitalization = TextCapitalization.none,
   });
 
   @override
@@ -38,7 +48,15 @@ class _ChicTextFieldState extends State<ChicTextField> {
 
     return TextField(
       controller: widget.controller,
+      focusNode: widget.focus,
+      autofocus: widget.autoFocus,
       obscureText: _isHidden,
+      textCapitalization: widget.textCapitalization,
+      textInputAction: widget.textInputAction,
+      onSubmitted: widget.onSubmitted,
+      onTap: () {
+        widget.focus.requestFocus();
+      },
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderSide: BorderSide(color: themeProvider.placeholder),
@@ -66,27 +84,18 @@ class _ChicTextFieldState extends State<ChicTextField> {
 
   Widget? _displaysSuffixIcon(ThemeProvider themeProvider) {
     if (widget.isPassword) {
-      if (_isHidden) {
-        return ChicIconButton(
-          icon: Icons.visibility,
+      return Container(
+        margin: EdgeInsets.only(right: 8),
+        child: ChicIconButton(
+          icon: _isHidden ? Icons.visibility : Icons.visibility_off,
           color: themeProvider.placeholder,
           onPressed: () {
             setState(() {
               _isHidden = !_isHidden;
             });
           },
-        );
-      } else {
-        return ChicIconButton(
-          icon: Icons.visibility_off,
-          color: themeProvider.placeholder,
-          onPressed: () {
-            setState(() {
-              _isHidden = !_isHidden;
-            });
-          },
-        );
-      }
+        ),
+      );
     }
 
     if (widget.suffix != null) {
