@@ -6,5 +6,8 @@
   "name": "Nom",
   "password": "Mot de passe",
   "verify_password": "Vérification du mot de passe",
-  "explanation_master_password": "Ce mot de passe est très important, il sera utilisé pour encrypter les données de ce coffre. S'il vous plaît, gardez ce mot de passe à l'esprit. Si vous le perdez, il sera impossible pour nous de vous donner accès à vos mots de passe contenu dans ce coffre."
+  "explanation_master_password": "Ce mot de passe est très important, il sera utilisé pour encrypter les données de ce coffre. S'il vous plaît, gardez ce mot de passe à l'esprit. Si vous le perdez, il sera impossible pour nous de vous donner accès à vos mots de passe contenu dans ce coffre.",
+  "error_name_empty": "Le nom ne doit pas être vide",
+  "error_small_password": "Le mot de passe doit faire au moins 6 caractères",
+  "error_different_password": "Les mots de passe doivent être identiques"
 }

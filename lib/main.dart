@@ -1,5 +1,6 @@
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/screen/landing_screen.dart';
+import 'package:chic_secret/utils/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,7 +8,10 @@ import 'package:provider/provider.dart';
 
 import 'localization/app_translations_delegate.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initDatabase();
+
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));

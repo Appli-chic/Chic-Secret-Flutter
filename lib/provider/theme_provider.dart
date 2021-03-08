@@ -37,7 +37,7 @@ class ThemeProvider with ChangeNotifier {
   /// Load the [_theme] stored in the secured storage
   _loadTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? _themeString = prefs.getInt(KEY_THEME);
+    int? _themeString = prefs.getInt(keyTheme);
 
     if (_themeString != null) {
       // Load the theme if it exists
@@ -53,7 +53,7 @@ class ThemeProvider with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _theme = _themeList.where((theme) => theme.id == id).toList()[0];
 
-    await prefs.setInt(KEY_THEME, id);
+    await prefs.setInt(keyTheme, id);
 
     notifyListeners();
   }

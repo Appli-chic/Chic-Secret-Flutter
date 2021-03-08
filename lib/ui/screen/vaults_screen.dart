@@ -1,14 +1,18 @@
 import 'dart:io';
 
 import 'package:chic_secret/localization/app_translations.dart';
+import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/vault_service.dart';
+import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
-import 'file:///C:/Users/Lazyos/Desktop/Programmation/flutter/chic_secret/lib/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/vault_item.dart';
 import 'package:chic_secret/ui/screen/new_vault_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+Vault? selectedVault;
 
 class VaultsScreen extends StatefulWidget {
   @override
@@ -16,6 +20,19 @@ class VaultsScreen extends StatefulWidget {
 }
 
 class _VaultsScreenState extends State<VaultsScreen> {
+  List<Vault> _vaults = [];
+
+  @override
+  void initState() {
+    _loadVaults();
+    super.initState();
+  }
+
+  _loadVaults() async {
+    _vaults = await VaultService.getAll();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
@@ -37,13 +54,21 @@ class _VaultsScreenState extends State<VaultsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: ListView(
-              children: [
-                VaultItem(isSelected: true),
-                VaultItem(isSelected: false),
-                VaultItem(isSelected: false),
-                VaultItem(isSelected: false),
-              ],
+            child: ListView.builder(
+              itemCount: _vaults.length,
+              itemBuilder: (context, index) {
+                bool isSelected = selectedVault != null &&
+                    selectedVault!.id == _vaults[index].id;
+
+                return VaultItem(
+                  isSelected: isSelected,
+                  vault: _vaults[index],
+                  onTap: (vault) {
+                    selectedVault = vault;
+                    setState(() {});
+                  },
+                );
+              },
             ),
           ),
           Container(
@@ -67,7 +92,16 @@ class _VaultsScreenState extends State<VaultsScreen> {
   }
 
   Widget _displaysMobileBody(ThemeProvider themeProvider) {
-    return Container();
+    return ListView.builder(
+      itemCount: _vaults.length,
+      itemBuilder: (context, index) {
+        return VaultItem(
+          isSelected: false,
+          vault: _vaults[index],
+          onTap: (vault) {},
+        );
+      },
+    );
   }
 
   Widget? _displaysFloatingActionButton(ThemeProvider themeProvider) {
@@ -105,5 +139,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
 
   _onAddVaultClicked() async {
     await ChicNavigator.push(context, NewVaultScreen(), isModal: true);
+    _loadVaults();
   }
 }
