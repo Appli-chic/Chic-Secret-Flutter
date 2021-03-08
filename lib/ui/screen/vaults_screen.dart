@@ -54,21 +54,13 @@ class _VaultsScreenState extends State<VaultsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: ListView.builder(
-              itemCount: _vaults.length,
-              itemBuilder: (context, index) {
-                bool isSelected = selectedVault != null &&
-                    selectedVault!.id == _vaults[index].id;
-
-                return VaultItem(
-                  isSelected: isSelected,
-                  vault: _vaults[index],
-                  onTap: (vault) {
-                    selectedVault = vault;
-                    setState(() {});
-                  },
-                );
-              },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _displayVaults(themeProvider),
+                _displayCategories(themeProvider),
+                _displayTags(themeProvider),
+              ],
             ),
           ),
           Container(
@@ -88,6 +80,91 @@ class _VaultsScreenState extends State<VaultsScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _displayVaults(ThemeProvider themeProvider) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: 8, bottom: 8),
+          child: Text(
+            AppTranslations.of(context).text("vaults"),
+            style: TextStyle(
+              color: themeProvider.secondTextColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: _vaults.length,
+          itemBuilder: (context, index) {
+            bool isSelected =
+                selectedVault != null && selectedVault!.id == _vaults[index].id;
+
+            return VaultItem(
+              isSelected: isSelected,
+              vault: _vaults[index],
+              onTap: (vault) {
+                selectedVault = vault;
+                setState(() {});
+              },
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _displayCategories(ThemeProvider themeProvider) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: 8, bottom: 8, top: 16),
+          child: Text(
+            AppTranslations.of(context).text("categories"),
+            style: TextStyle(
+              color: themeProvider.secondTextColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: 0,
+          itemBuilder: (context, index) {
+            return Container();
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _displayTags(ThemeProvider themeProvider) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: 8, bottom: 8, top: 16),
+          child: Text(
+            AppTranslations.of(context).text("tags"),
+            style: TextStyle(
+              color: themeProvider.secondTextColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: 0,
+          itemBuilder: (context, index) {
+            return Container();
+          },
+        ),
+      ],
     );
   }
 

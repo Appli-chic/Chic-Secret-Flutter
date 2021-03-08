@@ -9,5 +9,7 @@
   "explanation_master_password": "This password is very important, it will be used to encrypt all the passwords you will store in this vault. Please be sure to keep in mind this password. If you lose it, it will be impossible for us to retrieve your passwords in this vault.",
   "error_name_empty": "The name must not be empty",
   "error_small_password": "The password must be at least 6 characters",
-  "error_different_password": "The passwords must be identical"
+  "error_different_password": "The passwords must be identical",
+  "categories": "Categories",
+  "tags": "Tags"
 }
