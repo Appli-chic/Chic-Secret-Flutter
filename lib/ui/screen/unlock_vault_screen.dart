@@ -126,6 +126,9 @@ class _UnlockVaultScreenState extends State<UnlockVaultScreen> {
 
                 return true;
               },
+              onSubmitted: (String text) {
+                _unlockVault();
+              },
             ),
             _isPasswordIncorrect && _passwordController.text.isNotEmpty
                 ? Container(

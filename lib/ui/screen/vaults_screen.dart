@@ -8,6 +8,7 @@ import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/vault_item.dart';
 import 'package:chic_secret/ui/screen/main_mobile_screen.dart';
+import 'package:chic_secret/ui/screen/new_category_screen.dart';
 import 'package:chic_secret/ui/screen/new_vault_screen.dart';
 import 'package:chic_secret/ui/screen/unlock_vault_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
@@ -149,6 +150,21 @@ class _VaultsScreenState extends State<VaultsScreen> {
             return Container();
           },
         ),
+        Container(
+          margin: EdgeInsets.only(left: 16, bottom: 8),
+          child: ChicTextIconButton(
+            onPressed: _onAddCategoryClicked,
+            icon: Icon(
+              Icons.add,
+              color: themeProvider.textColor,
+              size: 20,
+            ),
+            label: Text(
+              AppTranslations.of(context).text("new_category"),
+              style: TextStyle(color: themeProvider.textColor),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -235,6 +251,13 @@ class _VaultsScreenState extends State<VaultsScreen> {
     if (data != null) {
       _loadVaults();
     }
+  }
+
+  _onAddCategoryClicked() async {
+    var data =
+        await ChicNavigator.push(context, NewCategoryScreen(), isModal: true);
+
+    if (data != null) {}
   }
 
   Future<bool> _isVaultUnlocking(Vault vault) async {

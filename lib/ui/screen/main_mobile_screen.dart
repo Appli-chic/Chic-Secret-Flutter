@@ -1,6 +1,7 @@
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/clipper/half_circle_clipper.dart';
+import 'package:chic_secret/ui/screen/category_screen.dart';
 import 'package:chic_secret/ui/screen/passwords_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,7 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
         physics: NeverScrollableScrollPhysics(),
         children: [
           PasswordsScreen(),
-          Container(),
+          CategoriesScreen(),
           Container(),
           Container(),
           Container(),

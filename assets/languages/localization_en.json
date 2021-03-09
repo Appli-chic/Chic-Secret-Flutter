@@ -18,5 +18,7 @@
   "unlock": "Unlock",
   "unlock_vault": "Unlock Vault",
   "security": "Security",
-  "settings": "Settings"
+  "settings": "Settings",
+  "new_category": "New Category",
+  "colors": "Colors"
 }

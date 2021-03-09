@@ -18,5 +18,7 @@
   "unlock": "Déverrouiller",
   "unlock_vault": "Déverrouiller le coffre",
   "security": "Sécurité",
-  "settings": "Options"
+  "settings": "Options",
+  "new_category": "Nouvelle Catégorie",
+  "colors": "Couleurs"
 }
