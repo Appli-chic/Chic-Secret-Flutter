@@ -18,7 +18,11 @@ class _LandingScreenState extends State<LandingScreen> {
     } else {
       return await Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => VaultsScreen()),
+        MaterialPageRoute(
+          builder: (context) => VaultsScreen(
+            onVaultChange: () {},
+          ),
+        ),
       );
     }
   }

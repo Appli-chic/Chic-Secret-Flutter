@@ -8,6 +8,7 @@ import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/vault_item.dart';
 import 'package:chic_secret/ui/screen/new_vault_screen.dart';
+import 'package:chic_secret/ui/screen/unlock_vault_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,12 @@ import 'package:provider/provider.dart';
 Vault? selectedVault;
 
 class VaultsScreen extends StatefulWidget {
+  final Function() onVaultChange;
+
+  VaultsScreen({
+    required this.onVaultChange,
+  });
+
   @override
   _VaultsScreenState createState() => _VaultsScreenState();
 }
@@ -107,9 +114,11 @@ class _VaultsScreenState extends State<VaultsScreen> {
             return VaultItem(
               isSelected: isSelected,
               vault: _vaults[index],
-              onTap: (vault) {
-                selectedVault = vault;
-                setState(() {});
+              onTap: (vault) async {
+                if (await _isVaultUnlocking(vault)) {
+                  selectedVault = vault;
+                  setState(() {});
+                }
               },
             );
           },
@@ -175,7 +184,9 @@ class _VaultsScreenState extends State<VaultsScreen> {
         return VaultItem(
           isSelected: false,
           vault: _vaults[index],
-          onTap: (vault) {},
+          onTap: (vault) async {
+            if (await _isVaultUnlocking(vault)) {}
+          },
         );
       },
     );
@@ -215,7 +226,25 @@ class _VaultsScreenState extends State<VaultsScreen> {
   }
 
   _onAddVaultClicked() async {
-    await ChicNavigator.push(context, NewVaultScreen(), isModal: true);
-    _loadVaults();
+    var data =
+        await ChicNavigator.push(context, NewVaultScreen(), isModal: true);
+
+    if (data != null) {
+      _loadVaults();
+    }
+  }
+
+  Future<bool> _isVaultUnlocking(Vault vault) async {
+    var isUnlocked = await ChicNavigator.push(
+      context,
+      UnlockVaultScreen(vault: vault),
+      isModal: true,
+    );
+
+    if (isUnlocked != null && isUnlocked) {
+      return true;
+    }
+
+    return false;
   }
 }

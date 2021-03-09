@@ -33,6 +33,9 @@ class VaultItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(4.0),
       ),
       child: ListTile(
+        onTap: () {
+          onTap(vault);
+        },
         horizontalTitleGap: 0,
         leading: Icon(
           Icons.lock,

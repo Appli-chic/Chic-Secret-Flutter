@@ -6,11 +6,13 @@ class DesktopModal extends StatefulWidget {
   final String title;
   final Widget body;
   final List<Widget> actions;
+  final double height;
 
   DesktopModal({
     required this.title,
     required this.body,
     required this.actions,
+    this.height = 500,
   });
 
   @override
@@ -35,7 +37,7 @@ class _DesktopModalState extends State<DesktopModal> {
       ),
       content: Container(
         width: 500,
-        height: 500,
+        height: widget.height,
         child: widget.body,
       ),
       actions: widget.actions,

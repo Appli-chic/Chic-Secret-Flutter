@@ -10,6 +10,10 @@
   "error_name_empty": "The name must not be empty",
   "error_small_password": "The password must be at least 6 characters",
   "error_different_password": "The passwords must be identical",
+  "error_empty_password": "The password must not be empty",
+  "password_incorrect": "The password doesn't match",
   "categories": "Categories",
-  "tags": "Tags"
+  "tags": "Tags",
+  "unlock": "Unlock",
+  "unlock_vault": "Unlock Vault"
 }

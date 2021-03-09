@@ -13,7 +13,7 @@ class SplitView extends StatefulWidget {
   SplitView({
     required this.view1,
     required this.view2,
-    this.gripSize = 2.0,
+    this.gripSize = 1.0,
     this.initialWeight = 0.2,
     this.gripColor = Colors.black12,
     this.positionLimit = 150.0,
@@ -81,8 +81,8 @@ class _SplitViewState extends State<SplitView> {
         ),
         Positioned(
           top: 0,
-          left: left - halfGripSize - 5,
-          right: right - halfGripSize - 5,
+          left: left - halfGripSize - 6,
+          right: right - halfGripSize - 6,
           bottom: 0,
           child: MouseRegion(
             cursor: SystemMouseCursors.resizeColumn,
@@ -90,7 +90,7 @@ class _SplitViewState extends State<SplitView> {
               behavior: HitTestBehavior.translucent,
               onVerticalDragUpdate: (detail) {
                 final RenderBox container =
-                context.findRenderObject() as RenderBox;
+                    context.findRenderObject() as RenderBox;
                 final pos = container.globalToLocal(detail.globalPosition);
                 if (pos.dx > widget.positionLimit &&
                     pos.dx < (container.size.width - widget.positionLimit)) {
@@ -98,8 +98,10 @@ class _SplitViewState extends State<SplitView> {
                 }
               },
               child: Center(
-                child:
-                Container(color: widget.gripColor, width: widget.gripSize),
+                child: Container(
+                  color: widget.gripColor,
+                  width: widget.gripSize,
+                ),
               ),
             ),
           ),

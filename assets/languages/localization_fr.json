@@ -10,6 +10,10 @@
   "error_name_empty": "Le nom ne doit pas être vide",
   "error_small_password": "Le mot de passe doit faire au moins 6 caractères",
   "error_different_password": "Les mots de passe doivent être identiques",
+  "error_empty_password": "Le mot de passe ne doit pas être vide",
+  "password_incorrect": "Mauvais mot de passe",
   "categories": "Catégories",
-  "tags": "Tags"
+  "tags": "Tags",
+  "unlock": "Déverrouiller",
+  "unlock_vault": "Déverrouiller le coffre"
 }
