@@ -31,7 +31,7 @@ class _DesktopModalState extends State<DesktopModal> {
           color: themeProvider.textColor,
         ),
       ),
-      backgroundColor: themeProvider.backgroundColor,
+      backgroundColor: themeProvider.secondBackgroundColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(16)),
       ),

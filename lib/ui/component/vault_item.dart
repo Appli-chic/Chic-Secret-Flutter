@@ -28,6 +28,7 @@ class VaultItem extends StatelessWidget {
 
   Widget _buildMobileItem(ThemeProvider themeProvider) {
     return Card(
+      margin: EdgeInsets.only(left: 16, right: 16, top: 8),
       color: themeProvider.secondBackgroundColor,
       shape: BeveledRectangleBorder(
         borderRadius: BorderRadius.circular(4.0),

@@ -11,7 +11,9 @@ class MainDesktopScreen extends StatefulWidget {
 }
 
 class _MainDesktopScreenState extends State<MainDesktopScreen> {
-  _reloadPasswordScreen() {}
+  _reloadPasswordScreen() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {

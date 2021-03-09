@@ -7,6 +7,7 @@ import 'package:chic_secret/service/vault_service.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/vault_item.dart';
+import 'package:chic_secret/ui/screen/main_mobile_screen.dart';
 import 'package:chic_secret/ui/screen/new_vault_screen.dart';
 import 'package:chic_secret/ui/screen/unlock_vault_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
@@ -117,7 +118,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
               onTap: (vault) async {
                 if (await _isVaultUnlocking(vault)) {
                   selectedVault = vault;
-                  setState(() {});
+                  widget.onVaultChange();
                 }
               },
             );
@@ -185,7 +186,9 @@ class _VaultsScreenState extends State<VaultsScreen> {
           isSelected: false,
           vault: _vaults[index],
           onTap: (vault) async {
-            if (await _isVaultUnlocking(vault)) {}
+            if (await _isVaultUnlocking(vault)) {
+              await ChicNavigator.push(context, MainMobileScreen());
+            }
           },
         );
       },
