@@ -5,6 +5,7 @@ import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
+import 'package:chic_secret/ui/component/icon_selector.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,8 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   final _nameController = TextEditingController();
   var _nameFocusNode = FocusNode();
   var _desktopNameFocusNode = FocusNode();
+
+  Color _color = Colors.blue;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +74,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
           ),
         ],
       ),
-      body: _displaysBody(themeProvider),
+      body: SingleChildScrollView(
+        child: _displaysBody(themeProvider),
+      ),
     );
   }
 
@@ -110,7 +115,26 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
               ),
             ),
             SizedBox(height: 16.0),
-            ColorSelector(),
+            ColorSelector(
+              onColorSelected: (Color color) {
+                setState(() {
+                  _color = color;
+                });
+              },
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              AppTranslations.of(context).text("icons"),
+              style: TextStyle(
+                color: themeProvider.textColor,
+                fontWeight: FontWeight.w600,
+                fontSize: 17,
+              ),
+            ),
+            SizedBox(height: 16.0),
+            IconSelector(
+              color: _color,
+            ),
           ],
         ),
       ),

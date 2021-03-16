@@ -1,9 +1,17 @@
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 class ColorSelector extends StatefulWidget {
+  final Function(Color) onColorSelected;
+
+  ColorSelector({
+    required this.onColorSelected,
+  });
+
   @override
   _ColorSelectorState createState() => _ColorSelectorState();
 }
@@ -15,19 +23,52 @@ class _ColorSelectorState extends State<ColorSelector> {
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    var crossAxisSize = ChicPlatform.isDesktop() ? 9 : 7;
+
+    return GridView.count(
+        shrinkWrap: true,
+        crossAxisCount: crossAxisSize,
         children: _generateColorsCircles(themeProvider),
-      ),
     );
   }
 
   List<Widget> _generateColorsCircles(ThemeProvider themeProvider) {
     List<Widget> circles = [];
 
-    for (var color in colors) {
-      circles.add(_generateColorWidget(themeProvider, color));
+    var colorListSize = ChicPlatform.isDesktop() ? 9 : 7;
+
+    for (var colorIndex = 0; colorIndex < colorListSize; colorIndex++) {
+      if (colorIndex != colorListSize - 1) {
+        // Show Color
+        circles.add(
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: Container(
+              margin: EdgeInsets.only(left: 6, right: 6),
+              child: _generateColorWidget(themeProvider, colors[colorIndex]),
+            ),
+          ),
+        );
+      } else {
+        // Show get more colors button
+        circles.add(
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: Container(
+              margin: EdgeInsets.all(8),
+              child: ClipOval(
+                child: Container(
+                  color: themeProvider.textColor,
+                  child: Icon(
+                    Icons.add,
+                    color: themeProvider.backgroundColor,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      }
     }
 
     return circles;
@@ -37,13 +78,10 @@ class _ColorSelectorState extends State<ColorSelector> {
     if (_selectedColor == color) {
       // If the color is selected
       return Container(
-        width: 36,
-        height: 36,
         decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         child: Center(
           child: Container(
-            width: 31,
-            height: 31,
+            margin: EdgeInsets.all(2),
             decoration: BoxDecoration(
               color: color,
               shape: BoxShape.circle,
@@ -60,14 +98,22 @@ class _ColorSelectorState extends State<ColorSelector> {
     // If it's not selected
     return GestureDetector(
       onTap: () {
+        widget.onColorSelected(color);
+
         setState(() {
           _selectedColor = color;
         });
       },
       child: Container(
-        width: 31,
-        height: 31,
-        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        width: 36,
+        height: 36,
+        child: Center(
+          child: Container(
+            width: 31,
+            height: 31,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
+        ),
       ),
     );
   }
