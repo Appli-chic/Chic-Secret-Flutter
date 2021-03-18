@@ -21,5 +21,8 @@
   "settings": "Options",
   "new_category": "Nouvelle Catégorie",
   "colors": "Couleurs",
-  "icons": "Icônes"
+  "icons": "Icônes",
+  "select_color": "Selectionnez votre couleur",
+  "select_color_shade": "Selectionnez votre nuance",
+  "select_color_and_shade": "Selectionnez votre couleur et sa nuance"
 }

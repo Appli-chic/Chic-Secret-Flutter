@@ -1,4 +1,5 @@
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/ui/component/color_picker_dialog.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +27,9 @@ class _ColorSelectorState extends State<ColorSelector> {
     var crossAxisSize = ChicPlatform.isDesktop() ? 9 : 7;
 
     return GridView.count(
-        shrinkWrap: true,
-        crossAxisCount: crossAxisSize,
-        children: _generateColorsCircles(themeProvider),
+      shrinkWrap: true,
+      crossAxisCount: crossAxisSize,
+      children: _generateColorsCircles(themeProvider),
     );
   }
 
@@ -54,14 +55,23 @@ class _ColorSelectorState extends State<ColorSelector> {
         circles.add(
           MouseRegion(
             cursor: SystemMouseCursors.click,
-            child: Container(
-              margin: EdgeInsets.all(8),
-              child: ClipOval(
-                child: Container(
-                  color: themeProvider.textColor,
-                  child: Icon(
-                    Icons.add,
-                    color: themeProvider.backgroundColor,
+            child: GestureDetector(
+              onTap: () async {
+                await ColorPickerDialog.colorPickerDialog(
+                  context,
+                  _selectedColor,
+                  _onColorSelected,
+                );
+              },
+              child: Container(
+                margin: EdgeInsets.all(8),
+                child: ClipOval(
+                  child: Container(
+                    color: themeProvider.textColor,
+                    child: Icon(
+                      Icons.add,
+                      color: themeProvider.backgroundColor,
+                    ),
                   ),
                 ),
               ),
@@ -98,11 +108,7 @@ class _ColorSelectorState extends State<ColorSelector> {
     // If it's not selected
     return GestureDetector(
       onTap: () {
-        widget.onColorSelected(color);
-
-        setState(() {
-          _selectedColor = color;
-        });
+        _onColorSelected(color);
       },
       child: Container(
         width: 36,
@@ -116,5 +122,13 @@ class _ColorSelectorState extends State<ColorSelector> {
         ),
       ),
     );
+  }
+
+  _onColorSelected(Color color) {
+    widget.onColorSelected(color);
+
+    setState(() {
+      _selectedColor = color;
+    });
   }
 }

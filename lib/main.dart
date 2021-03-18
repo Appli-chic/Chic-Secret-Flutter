@@ -47,6 +47,8 @@ class _AppState extends State<App> {
         theme: ThemeData(
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
+        darkTheme: ThemeData.dark(),
+        themeMode: ThemeMode.dark,
         localizationsDelegates: [
           _newLocaleDelegate,
           GlobalMaterialLocalizations.delegate,
@@ -56,8 +58,8 @@ class _AppState extends State<App> {
           const Locale('en', ''), // English
           const Locale('fr', ''), // French
         ],
-        localeListResolutionCallback: (
-            List<Locale>? locales, Iterable<Locale> supportedLocales) {
+        localeListResolutionCallback:
+            (List<Locale>? locales, Iterable<Locale> supportedLocales) {
           if (locales != null) {
             for (final locale in locales) {
               var localeFiltered = supportedLocales
