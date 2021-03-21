@@ -1,3 +1,4 @@
+import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
@@ -31,18 +32,34 @@ class _IconSelectorState extends State<IconSelector> {
       crossAxisCount: crossAxisSize,
       children: List.generate(iconsListSize, (index) {
         if (index != iconsListSize - 1) {
-          return _displayIcon(index, themeProvider);
+          return _displayIcon(
+            index,
+            _icon,
+            widget.color,
+            (IconData icon) {
+              setState(() {
+                _icon = icon;
+              });
+            },
+            themeProvider,
+          );
         } else {
           return MouseRegion(
             cursor: SystemMouseCursors.click,
-            child: Container(
-              margin: EdgeInsets.all(10),
-              child: ClipOval(
-                child: Container(
-                  color: themeProvider.textColor,
-                  child: Icon(
-                    Icons.add,
-                    color: themeProvider.backgroundColor,
+            child: GestureDetector(
+              onTap: () {
+                // IconPickerDialog
+                
+              },
+              child: Container(
+                margin: EdgeInsets.all(10),
+                child: ClipOval(
+                  child: Container(
+                    color: themeProvider.textColor,
+                    child: Icon(
+                      Icons.add,
+                      color: themeProvider.backgroundColor,
+                    ),
                   ),
                 ),
               ),
@@ -52,46 +69,122 @@ class _IconSelectorState extends State<IconSelector> {
       }),
     );
   }
+}
 
-  Widget _displayIcon(int index, ThemeProvider themeProvider) {
-    var child = Container();
+class IconPickerDialog extends StatefulWidget {
+  final IconData icon;
+  final Color color;
 
-    if (_icon == icons[index]) {
-      // Display selected icon
-      child = Container(
-        margin: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: widget.color,
-          borderRadius: BorderRadius.all(Radius.circular(6)),
-        ),
-        child: Icon(
-          icons[index],
+  IconPickerDialog({
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  _IconPickerDialogState createState() => _IconPickerDialogState();
+}
+
+class _IconPickerDialogState extends State<IconPickerDialog> {
+  @override
+  Widget build(BuildContext context) {
+    var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+    IconData _icon = icons[0];
+
+    return AlertDialog(
+      title: Text(
+        AppTranslations.of(context).text("new_category"),
+        style: TextStyle(
           color: themeProvider.textColor,
-          size: 24,
         ),
-      );
-    } else {
-      // Display icon not selected
-      child = Container(
-        margin: EdgeInsets.all(8),
-        child: Icon(
-          icons[index],
-          color: themeProvider.textColor,
-          size: 24,
+      ),
+      backgroundColor: themeProvider.secondBackgroundColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+      ),
+      content: Container(
+        width: 320,
+        height: 460,
+        child: GridView.count(
+          crossAxisCount: 6,
+          children: List.generate(icons.length, (index) {
+            if (index != icons.length - 1) {
+              return _displayIcon(
+                index,
+                _icon,
+                widget.color,
+                    (IconData icon) {
+                  setState(() {
+                    _icon = icon;
+                  });
+                },
+                themeProvider,
+              );
+            } else {
+              return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: Container(
+                  margin: EdgeInsets.all(10),
+                  child: ClipOval(
+                    child: Container(
+                      color: themeProvider.textColor,
+                      child: Icon(
+                        Icons.add,
+                        color: themeProvider.backgroundColor,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }
+          }),
         ),
-      );
-    }
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _icon = icons[index];
-        });
-      },
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: child,
       ),
     );
   }
+}
+
+Widget _displayIcon(
+  int index,
+  IconData icon,
+  Color color,
+  Function(IconData) onTap,
+  ThemeProvider themeProvider,
+) {
+  var child = Container();
+
+  if (icon == icons[index]) {
+    // Display selected icon
+    child = Container(
+      margin: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.all(Radius.circular(6)),
+      ),
+      child: Icon(
+        icons[index],
+        color: themeProvider.textColor,
+        size: 24,
+      ),
+    );
+  } else {
+    // Display icon not selected
+    child = Container(
+      margin: EdgeInsets.all(8),
+      child: Icon(
+        icons[index],
+        color: themeProvider.textColor,
+        size: 24,
+      ),
+    );
+  }
+
+  return GestureDetector(
+    onTap: () {
+      onTap(icons[index]);
+    },
+    child: MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: child,
+    ),
+  );
 }
