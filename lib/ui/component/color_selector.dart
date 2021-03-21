@@ -19,16 +19,15 @@ class ColorSelector extends StatefulWidget {
 
 class _ColorSelectorState extends State<ColorSelector> {
   Color _selectedColor = Colors.blue;
+  List<Color> _colors = colors.toList();
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    var crossAxisSize = ChicPlatform.isDesktop() ? 9 : 7;
-
     return GridView.count(
       shrinkWrap: true,
-      crossAxisCount: crossAxisSize,
+      crossAxisCount: _colorListSize(),
       children: _generateColorsCircles(themeProvider),
     );
   }
@@ -36,17 +35,15 @@ class _ColorSelectorState extends State<ColorSelector> {
   List<Widget> _generateColorsCircles(ThemeProvider themeProvider) {
     List<Widget> circles = [];
 
-    var colorListSize = ChicPlatform.isDesktop() ? 9 : 7;
-
-    for (var colorIndex = 0; colorIndex < colorListSize; colorIndex++) {
-      if (colorIndex != colorListSize - 1) {
+    for (var colorIndex = 0; colorIndex < _colorListSize(); colorIndex++) {
+      if (colorIndex != _colorListSize() - 1) {
         // Show Color
         circles.add(
           MouseRegion(
             cursor: SystemMouseCursors.click,
             child: Container(
               margin: EdgeInsets.only(left: 6, right: 6),
-              child: _generateColorWidget(themeProvider, colors[colorIndex]),
+              child: _generateColorWidget(themeProvider, _colors[colorIndex]),
             ),
           ),
         );
@@ -125,10 +122,20 @@ class _ColorSelectorState extends State<ColorSelector> {
   }
 
   _onColorSelected(Color color) {
+    // Check if the color exist in the list
+    var indexColor = _colors.indexOf(color);
+    if (indexColor == -1 || indexColor > _colorListSize()) {
+      _colors[0] = color;
+    }
+
     widget.onColorSelected(color);
 
     setState(() {
       _selectedColor = color;
     });
+  }
+
+  int _colorListSize() {
+    return ChicPlatform.isDesktop() ? 9 : 7;
   }
 }
