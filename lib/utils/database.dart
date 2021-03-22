@@ -40,6 +40,7 @@ Future<void> initDatabase() async {
 
 _onCreate(db, version) async {
   var batch = db.batch();
-  batch.execute(CREATE_VAULT_TABLE);
+  batch.execute(createVaultTable);
+  batch.execute(createCategoryTable);
   await batch.commit();
 }

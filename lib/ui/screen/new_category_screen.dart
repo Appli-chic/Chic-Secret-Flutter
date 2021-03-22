@@ -1,14 +1,19 @@
 import 'package:chic_secret/localization/app_translations.dart';
+import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/ui/component/color_selector.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/component/icon_selector.dart';
+import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:chic_secret/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class NewCategoryScreen extends StatefulWidget {
   @override
@@ -23,6 +28,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   var _desktopNameFocusNode = FocusNode();
 
   Color _color = Colors.blue;
+  IconData _icon = icons[0];
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +59,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
           margin: EdgeInsets.only(right: 8, bottom: 8),
           child: ChicElevatedButton(
             child: Text(AppTranslations.of(context).text("save")),
-            onPressed: () {},
+            onPressed: _onAddingCategory,
           ),
         ),
       ],
@@ -70,7 +76,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         actions: [
           ChicTextButton(
             child: Text(AppTranslations.of(context).text("save").toUpperCase()),
-            onPressed: () {},
+            onPressed: _onAddingCategory,
           ),
         ],
       ),
@@ -134,11 +140,33 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
             SizedBox(height: 16.0),
             IconSelector(
               color: _color,
+              onIconSelected: (IconData icon) {
+                setState(() {
+                  _icon = icon;
+                });
+              },
             ),
           ],
         ),
       ),
     );
+  }
+
+  _onAddingCategory() async {
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      var category = Category(
+        id: Uuid().v4(),
+        name: _nameController.text,
+        color: '#${_color.value.toRadixString(16)}',
+        icon: _icon.codePoint,
+        vaultId: selectedVault!.id,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      category = await CategoryService.save(category);
+      Navigator.pop(context, category);
+    }
   }
 
   @override
