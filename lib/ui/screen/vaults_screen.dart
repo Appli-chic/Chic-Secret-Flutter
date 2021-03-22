@@ -203,6 +203,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
           vault: _vaults[index],
           onTap: (vault) async {
             if (await _isVaultUnlocking(vault)) {
+              selectedVault = vault;
               await ChicNavigator.push(context, MainMobileScreen());
             }
           },

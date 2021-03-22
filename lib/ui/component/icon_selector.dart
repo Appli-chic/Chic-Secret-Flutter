@@ -140,7 +140,7 @@ class _IconPickerDialogState extends State<IconPickerDialog> {
         width: 320,
         height: 460,
         child: GridView.count(
-          crossAxisCount: 6,
+          crossAxisCount: ChicPlatform.isDesktop() ? 6 : 4,
           children: List.generate(icons.length, (index) {
             return _displayIcon(
               index,
