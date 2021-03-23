@@ -122,7 +122,11 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
                 shape: BoxShape.circle,
                 color: themeProvider.primaryColor,
               ),
-              child: Icon(Icons.add, size: 24),
+              child: Icon(
+                Icons.add,
+                size: 24,
+                color: Colors.white,
+              ),
             ),
           ),
         ),

@@ -1,7 +1,11 @@
 import 'package:chic_secret/localization/app_translations.dart';
+import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/category_service.dart';
+import 'package:chic_secret/ui/component/category_item.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
+import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +15,21 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
+  List<Category> _categories = [];
+
+  @override
+  void initState() {
+    _loadCategories();
+    super.initState();
+  }
+
+  _loadCategories() async {
+    if (selectedVault != null) {
+      _categories = await CategoryService.getAllByVault(selectedVault!.id);
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
@@ -31,7 +50,20 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           )
         ],
       ),
-      body: Container(),
+      body: ListView.builder(
+        itemCount: _categories.length,
+        itemBuilder: (context, index) {
+          return CategoryItem(
+            category: _categories[index],
+            isSelected: selectedCategory != null &&
+                selectedCategory!.id == _categories[index].id,
+            onTap: (Category category) {
+              selectedCategory = category;
+              setState(() {});
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -39,6 +71,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     var data =
         await ChicNavigator.push(context, NewCategoryScreen(), isModal: true);
 
-    if (data != null) {}
+    if (data != null) {
+      _loadCategories();
+    }
   }
 }

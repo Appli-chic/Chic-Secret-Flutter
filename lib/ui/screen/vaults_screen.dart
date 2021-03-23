@@ -1,9 +1,12 @@
 import 'dart:io';
 
 import 'package:chic_secret/localization/app_translations.dart';
+import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
+import 'package:chic_secret/ui/component/category_item.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/vault_item.dart';
@@ -16,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 Vault? selectedVault;
+Category? selectedCategory;
 
 class VaultsScreen extends StatefulWidget {
   final Function() onVaultChange;
@@ -30,6 +34,7 @@ class VaultsScreen extends StatefulWidget {
 
 class _VaultsScreenState extends State<VaultsScreen> {
   List<Vault> _vaults = [];
+  List<Category> _categories = [];
 
   @override
   void initState() {
@@ -40,6 +45,13 @@ class _VaultsScreenState extends State<VaultsScreen> {
   _loadVaults() async {
     _vaults = await VaultService.getAll();
     setState(() {});
+  }
+
+  _loadCategories() async {
+    if (selectedVault != null) {
+      _categories = await CategoryService.getAllByVault(selectedVault!.id);
+      setState(() {});
+    }
   }
 
   @override
@@ -67,8 +79,12 @@ class _VaultsScreenState extends State<VaultsScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _displayVaults(themeProvider),
-                _displayCategories(themeProvider),
-                _displayTags(themeProvider),
+                selectedVault != null
+                    ? _displayCategories(themeProvider)
+                    : SizedBox.shrink(),
+                selectedVault != null
+                    ? _displayTags(themeProvider)
+                    : SizedBox.shrink(),
               ],
             ),
           ),
@@ -120,6 +136,14 @@ class _VaultsScreenState extends State<VaultsScreen> {
                 if (await _isVaultUnlocking(vault)) {
                   selectedVault = vault;
                   widget.onVaultChange();
+
+                  // Only load categories and tags if it's the desktop version
+                  if (ChicPlatform.isDesktop()) {
+                    selectedCategory = null;
+                    _loadCategories();
+                  }
+
+                  setState(() {});
                 }
               },
             );
@@ -145,13 +169,21 @@ class _VaultsScreenState extends State<VaultsScreen> {
         ),
         ListView.builder(
           shrinkWrap: true,
-          itemCount: 0,
+          itemCount: _categories.length,
           itemBuilder: (context, index) {
-            return Container();
+            return CategoryItem(
+              category: _categories[index],
+              isSelected: selectedCategory != null &&
+                  selectedCategory!.id == _categories[index].id,
+              onTap: (Category category) {
+                selectedCategory = category;
+                setState(() {});
+              },
+            );
           },
         ),
         Container(
-          margin: EdgeInsets.only(left: 16, bottom: 8),
+          margin: EdgeInsets.only(left: 16, bottom: 8, top: 8),
           child: ChicTextIconButton(
             onPressed: _onAddCategoryClicked,
             icon: Icon(
@@ -258,7 +290,9 @@ class _VaultsScreenState extends State<VaultsScreen> {
     var data =
         await ChicNavigator.push(context, NewCategoryScreen(), isModal: true);
 
-    if (data != null) {}
+    if (data != null) {
+      _loadCategories();
+    }
   }
 
   Future<bool> _isVaultUnlocking(Vault vault) async {
