@@ -25,7 +25,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
         view1: VaultsScreen(onVaultChange: _reloadPasswordScreen),
         view2: SplitView(
           gripColor: themeProvider.divider,
-          view1: Center(child: PasswordsScreen()),
+          view1: PasswordsScreen(),
           view2: Center(
             child: Container(
               color: themeProvider.backgroundColor,

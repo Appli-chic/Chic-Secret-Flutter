@@ -25,5 +25,6 @@
   "select_color": "Select color",
   "select_color_shade": "Select color shade",
   "select_color_and_shade": "Selected color and its shades",
-  "ok": "Ok"
+  "ok": "Ok",
+  "search_passwords": "Search passwords..."
 }

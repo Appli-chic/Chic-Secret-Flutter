@@ -4,11 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+class ChicTextFieldType {
+  const ChicTextFieldType._(this.index);
+
+  final int index;
+
+  static const ChicTextFieldType outlineBorder = ChicTextFieldType._(0);
+
+  static const ChicTextFieldType filledRounded = ChicTextFieldType._(1);
+}
+
 class ChicTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hint;
   final bool isPassword;
   final Widget? suffix;
+  final Widget? prefix;
   final FocusNode focus;
   final FocusNode desktopFocus;
   final FocusNode? nextFocus;
@@ -18,12 +29,14 @@ class ChicTextField extends StatefulWidget {
   final String? errorMessage;
   final bool Function(String)? validating;
   final Function(String)? onSubmitted;
+  final ChicTextFieldType type;
 
   ChicTextField({
     required this.controller,
     required this.hint,
     this.isPassword = false,
     this.suffix,
+    this.prefix,
     required this.focus,
     required this.desktopFocus,
     this.nextFocus,
@@ -33,6 +46,7 @@ class ChicTextField extends StatefulWidget {
     this.errorMessage,
     this.validating,
     this.onSubmitted,
+    this.type = ChicTextFieldType.outlineBorder,
   });
 
   @override
@@ -81,30 +95,41 @@ class _ChicTextFieldState extends State<ChicTextField> {
           widget.focus.requestFocus();
         },
         decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderSide: BorderSide(color: themeProvider.placeholder),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: themeProvider.primaryColor),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.red),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: themeProvider.placeholder),
-          ),
+          filled: widget.type == ChicTextFieldType.filledRounded,
+          fillColor: widget.type == ChicTextFieldType.filledRounded
+              ? themeProvider.secondBackgroundColor
+              : null,
+          border: _getInputBorder(themeProvider.placeholder),
+          focusedBorder: _getInputBorder(themeProvider.primaryColor),
+          errorBorder: _getInputBorder(Colors.red),
+          enabledBorder: _getInputBorder(themeProvider.placeholder),
           hintText: widget.hint,
-          // errorText: _displaysErrorMessage(),
           hintStyle: TextStyle(
             color: themeProvider.placeholder,
           ),
           suffixIcon: _displaysSuffixIcon(themeProvider),
+          prefixIcon: widget.prefix,
         ),
         style: TextStyle(
           color: themeProvider.textColor,
         ),
       ),
     );
+  }
+
+  InputBorder? _getInputBorder(Color color) {
+    if (widget.type == ChicTextFieldType.outlineBorder) {
+      return OutlineInputBorder(
+        borderSide: BorderSide(color: color),
+      );
+    } else {
+      return OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.transparent),
+        borderRadius: const BorderRadius.all(
+          const Radius.circular(6),
+        ),
+      );
+    }
   }
 
   _onNext(RawKeyEvent event) {
