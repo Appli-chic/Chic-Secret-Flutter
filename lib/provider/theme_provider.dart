@@ -11,6 +11,7 @@ ChicTheme defaultDarkTheme = ChicTheme(
   backgroundColor: Color(0xFF000000),
   secondBackgroundColor: Color(0xFF1C1C1E),
   primaryColor: Color(0xFF0A84FF),
+  secondaryColor: Color(0xFF1976d2),
   textColor: Color(0xFFFFFFFF),
   secondTextColor: Color(0x99EBEBF5),
   thirdTextColor: Color(0x4DEBEBF5),
@@ -78,6 +79,9 @@ class ThemeProvider with ChangeNotifier {
 
   /// Retrieve the first color corresponding to the [_theme]
   Color get primaryColor => _theme.primaryColor;
+
+  /// Retrieve the second color corresponding to the [_theme]
+  Color get secondaryColor => _theme.secondaryColor;
 
   /// Retrieve the text color corresponding to the [_theme]
   Color get textColor => _theme.textColor;

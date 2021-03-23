@@ -5,6 +5,7 @@ class ChicTheme {
   final Color backgroundColor;
   final Color secondBackgroundColor;
   final Color primaryColor;
+  final Color secondaryColor;
   final Color textColor;
   final Color secondTextColor;
   final Color thirdTextColor;
@@ -17,6 +18,7 @@ class ChicTheme {
     required this.backgroundColor,
     required this.secondBackgroundColor,
     required this.primaryColor,
+    required this.secondaryColor,
     required this.textColor,
     required this.secondTextColor,
     required this.thirdTextColor,

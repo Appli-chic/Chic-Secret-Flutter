@@ -44,7 +44,7 @@ class ChicIconButton extends StatelessWidget {
       );
     } else {
       return Container(
-        padding: EdgeInsets.all(6),
+        padding: EdgeInsets.only(left: 4, right: 4),
         decoration: BoxDecoration(
           color: themeProvider.primaryColor,
           borderRadius: BorderRadius.circular(6),

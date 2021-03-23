@@ -1,10 +1,16 @@
 import 'package:chic_secret/localization/app_translations.dart';
+import 'package:chic_secret/model/database/category.dart';
+import 'package:chic_secret/model/database/password.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
+import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
+import 'package:chic_secret/ui/component/password_item.dart';
+import 'package:chic_secret/ui/screen/new_password_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class PasswordsScreen extends StatefulWidget {
   @override
@@ -12,9 +18,71 @@ class PasswordsScreen extends StatefulWidget {
 }
 
 class _PasswordsScreenState extends State<PasswordsScreen> {
+  List<Password> _passwords = [
+    Password(
+      id: Uuid().v4(),
+      name: "Gmail",
+      username: "applichic@gmail.com",
+      hash: "",
+      vaultId: Uuid().v4(),
+      categoryId: Uuid().v4(),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      category: Category(
+        id: Uuid().v4(),
+        name: "Email",
+        color: '#${Colors.red.value.toRadixString(16)}',
+        icon: Icons.email.codePoint,
+        vaultId: Uuid().v4(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    ),
+    Password(
+      id: Uuid().v4(),
+      name: "Protonmail",
+      username: "gbelouin@protonmail.com",
+      hash: "",
+      vaultId: Uuid().v4(),
+      categoryId: Uuid().v4(),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      category: Category(
+        id: Uuid().v4(),
+        name: "Email",
+        color: '#${Colors.red.value.toRadixString(16)}',
+        icon: Icons.email.codePoint,
+        vaultId: Uuid().v4(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    ),
+    Password(
+      id: Uuid().v4(),
+      name: "Spotify",
+      username: "applichic@gmail.com",
+      hash: "",
+      vaultId: Uuid().v4(),
+      categoryId: Uuid().v4(),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      category: Category(
+        id: Uuid().v4(),
+        name: "Music",
+        color: '#${Colors.green.value.toRadixString(16)}',
+        icon: Icons.music_note.codePoint,
+        vaultId: Uuid().v4(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    ),
+  ];
+
   final _searchController = TextEditingController();
   var _searchFocusNode = FocusNode();
   var _desktopSearchFocusNode = FocusNode();
+
+  Password? _selectedPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -76,23 +144,52 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
               Container(
                 margin: EdgeInsets.only(left: 16, right: 16, top: 16),
                 child: ChicIconButton(
-                  onPressed: () {},
+                  onPressed: _onAddPasswordClicked,
                   icon: Icons.add,
                   type: ChicIconButtonType.filledRectangle,
                 ),
               ),
             ],
           ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _passwords.length,
+              itemBuilder: (context, index) {
+                return PasswordItem(
+                  password: _passwords[index],
+                  isSelected: _selectedPassword != null &&
+                      _selectedPassword == _passwords[index],
+                  onTap: (Password password) {
+                    setState(() {
+                      _selectedPassword = password;
+                    });
+                  },
+                );
+              },
+            ),
+          ),
         ],
       );
     }
 
-    return Column(
-      children: [],
+    return ListView.builder(
+      itemCount: _passwords.length,
+      itemBuilder: (context, index) {
+        return PasswordItem(
+          password: _passwords[index],
+          isSelected: false,
+          onTap: (Password password) {},
+        );
+      },
     );
   }
 
-  _onAddPasswordClicked() async {}
+  _onAddPasswordClicked() async {
+    var data =
+        await ChicNavigator.push(context, NewPasswordScreen(), isModal: true);
+
+    if (data != null) {}
+  }
 
   @override
   void dispose() {

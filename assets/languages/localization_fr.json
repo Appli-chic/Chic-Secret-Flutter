@@ -26,5 +26,8 @@
   "select_color_shade": "Selectionnez votre nuance",
   "select_color_and_shade": "Selectionnez votre couleur et sa nuance",
   "ok": "Ok",
-  "search_passwords": "Rechercher vos mots de passe..."
+  "search_passwords": "Recherchez vos mots de passe...",
+  "new_password": "Nouveau mot de passe",
+  "username_email": "Nom d'utilisateur/Courriel",
+  "error_username_empty": "Le nom d'utilisateur ne doit pas être vide."
 }

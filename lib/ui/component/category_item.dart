@@ -32,11 +32,12 @@ class CategoryItem extends StatelessWidget {
     return Card(
       margin: EdgeInsets.only(left: 16, right: 16, top: 8),
       color: themeProvider.secondBackgroundColor,
-      shape: BeveledRectangleBorder(
-        borderRadius: BorderRadius.circular(4.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(6.0),
       ),
       child: ListTile(
-        contentPadding: EdgeInsets.only(top: 4, bottom: 4, left: 16, right: 16),
+        dense: true,
+        contentPadding: EdgeInsets.only(top: 4, bottom: 4, left: 10, right: 10),
         onTap: () {
           onTap(category);
         },

@@ -1,5 +1,6 @@
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
+import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -95,6 +96,7 @@ class _ChicTextFieldState extends State<ChicTextField> {
           widget.focus.requestFocus();
         },
         decoration: InputDecoration(
+          isDense: ChicPlatform.isDesktop(),
           filled: widget.type == ChicTextFieldType.filledRounded,
           fillColor: widget.type == ChicTextFieldType.filledRounded
               ? themeProvider.secondBackgroundColor

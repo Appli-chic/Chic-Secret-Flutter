@@ -26,5 +26,8 @@
   "select_color_shade": "Select color shade",
   "select_color_and_shade": "Selected color and its shades",
   "ok": "Ok",
-  "search_passwords": "Search passwords..."
+  "search_passwords": "Search passwords...",
+  "new_password": "New Password",
+  "username_email": "Username/Email",
+  "error_username_empty": "The username must not be empty"
 }
