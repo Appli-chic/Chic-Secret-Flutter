@@ -14,6 +14,7 @@
   "error_empty_password": "The password must not be empty",
   "password_incorrect": "The password doesn't match",
   "categories": "Categories",
+  "category": "Category",
   "tags": "Tags",
   "unlock": "Unlock",
   "unlock_vault": "Unlock Vault",
@@ -29,5 +30,10 @@
   "search_passwords": "Search passwords...",
   "new_password": "New Password",
   "username_email": "Username/Email",
-  "error_username_empty": "The username must not be empty"
+  "error_username_empty": "The username must not be empty",
+  "error_category_empty": "The category must not be empty",
+  "generate_password": "Generate Password",
+  "create_category": "Create a category",
+  "done": "Done",
+  "select_category": "Select a category"
 }

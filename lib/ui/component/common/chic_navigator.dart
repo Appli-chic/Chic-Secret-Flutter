@@ -14,6 +14,7 @@ class ChicNavigator {
       {bool isModal = false}) async {
     if (isModal && ChicPlatform.isDesktop()) {
       return await showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
           return screen;

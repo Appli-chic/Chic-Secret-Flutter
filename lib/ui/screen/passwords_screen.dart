@@ -185,10 +185,14 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
   }
 
   _onAddPasswordClicked() async {
-    var data =
-        await ChicNavigator.push(context, NewPasswordScreen(), isModal: true);
+    var data = await ChicNavigator.push(
+      context,
+      NewPasswordScreen(),
+      isModal: true,
+    );
 
-    if (data != null) {}
+    if (data != null) {
+    }
   }
 
   @override

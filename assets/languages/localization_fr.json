@@ -14,6 +14,7 @@
   "error_empty_password": "Le mot de passe ne doit pas être vide",
   "password_incorrect": "Mauvais mot de passe",
   "categories": "Catégories",
+  "category": "Catégorie",
   "tags": "Tags",
   "unlock": "Déverrouiller",
   "unlock_vault": "Déverrouiller le coffre",
@@ -29,5 +30,10 @@
   "search_passwords": "Recherchez vos mots de passe...",
   "new_password": "Nouveau mot de passe",
   "username_email": "Nom d'utilisateur/Courriel",
-  "error_username_empty": "Le nom d'utilisateur ne doit pas être vide."
+  "error_username_empty": "Le nom d'utilisateur ne doit pas être vide.",
+  "error_category_empty": "La catégorie d'utilisateur ne doit pas être vide.",
+  "generate_password": "Générer un mot de passe",
+  "create_category": "Créer une catégorie",
+  "done": "Terminer",
+  "select_category": "Selectionnez une catégorie"
 }

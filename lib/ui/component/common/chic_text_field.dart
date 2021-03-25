@@ -31,6 +31,9 @@ class ChicTextField extends StatefulWidget {
   final bool Function(String)? validating;
   final Function(String)? onSubmitted;
   final ChicTextFieldType type;
+  final bool isEnabled;
+  final bool isReadOnly;
+  final Function()? onTap;
 
   ChicTextField({
     required this.controller,
@@ -48,6 +51,9 @@ class ChicTextField extends StatefulWidget {
     this.validating,
     this.onSubmitted,
     this.type = ChicTextFieldType.outlineBorder,
+    this.isEnabled = true,
+    this.isReadOnly = false,
+    this.onTap,
   });
 
   @override
@@ -75,6 +81,8 @@ class _ChicTextFieldState extends State<ChicTextField> {
       onKey: _onNext,
       child: TextFormField(
         controller: widget.controller,
+        enabled: widget.isEnabled,
+        readOnly: widget.isReadOnly,
         focusNode: widget.focus,
         autofocus: widget.autoFocus,
         obscureText: _isHidden,
@@ -93,6 +101,10 @@ class _ChicTextFieldState extends State<ChicTextField> {
         },
         onFieldSubmitted: widget.onSubmitted,
         onTap: () {
+          if (widget.onTap != null) {
+            widget.onTap!();
+          }
+
           widget.focus.requestFocus();
         },
         decoration: InputDecoration(

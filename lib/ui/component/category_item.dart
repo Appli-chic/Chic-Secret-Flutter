@@ -10,18 +10,20 @@ class CategoryItem extends StatelessWidget {
   final Category category;
   final bool isSelected;
   final Function(Category) onTap;
+  final bool isForcingMobileStyle;
 
   CategoryItem({
     required this.category,
     required this.isSelected,
     required this.onTap,
+    this.isForcingMobileStyle = false,
   });
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    if (ChicPlatform.isDesktop()) {
+    if (ChicPlatform.isDesktop() && !isForcingMobileStyle) {
       return _buildDesktopItem(themeProvider);
     } else {
       return _buildMobileItem(themeProvider);
@@ -31,13 +33,17 @@ class CategoryItem extends StatelessWidget {
   Widget _buildMobileItem(ThemeProvider themeProvider) {
     return Card(
       margin: EdgeInsets.only(left: 16, right: 16, top: 8),
-      color: themeProvider.secondBackgroundColor,
+      color: isSelected
+          ? themeProvider.primaryColor
+          : _getNotSelectedBackgroundColor(themeProvider),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(6.0),
       ),
       child: ListTile(
         dense: true,
-        contentPadding: EdgeInsets.only(top: 4, bottom: 4, left: 10, right: 10),
+        contentPadding: ChicPlatform.isDesktop()
+            ? EdgeInsets.all(10)
+            : EdgeInsets.only(top: 4, bottom: 4, left: 10, right: 10),
         onTap: () {
           onTap(category);
         },
@@ -59,7 +65,7 @@ class CategoryItem extends StatelessWidget {
             category.name,
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              fontSize: 18,
+              fontSize: ChicPlatform.isDesktop() ? 16 : 18,
               color: themeProvider.textColor,
             ),
           ),
@@ -112,5 +118,13 @@ class CategoryItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _getNotSelectedBackgroundColor(ThemeProvider themeProvider) {
+    if (ChicPlatform.isDesktop()) {
+      return themeProvider.divider;
+    } else {
+      return themeProvider.secondBackgroundColor;
+    }
   }
 }
