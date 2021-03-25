@@ -1,48 +1,18 @@
 import 'package:chic_secret/localization/app_translations.dart';
-import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/service/category_service.dart';
-import 'package:chic_secret/ui/component/category_item.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
-import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SelectCategoryScreen extends StatefulWidget {
-  final Category? category;
-
-  SelectCategoryScreen({
-    this.category,
-  });
-
+class GeneratePasswordScreen extends StatefulWidget {
   @override
-  _SelectCategoryScreenState createState() => _SelectCategoryScreenState();
+  _GeneratePasswordScreenState createState() => _GeneratePasswordScreenState();
 }
 
-class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
-  List<Category> _categories = [];
-  Category? _category;
-
-  @override
-  void initState() {
-    if (widget.category != null) {
-      _category = widget.category!;
-    }
-
-    _loadCategories();
-    super.initState();
-  }
-
-  _loadCategories() async {
-    if (selectedVault != null) {
-      _categories = await CategoryService.getAllByVault(selectedVault!.id);
-      setState(() {});
-    }
-  }
-
+class _GeneratePasswordScreenState extends State<GeneratePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
@@ -56,7 +26,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
 
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
-      title: AppTranslations.of(context).text("select_category"),
+      title: AppTranslations.of(context).text("generate_password"),
       body: _displaysBody(themeProvider),
       actions: [
         Container(
@@ -73,7 +43,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
           child: ChicElevatedButton(
             child: Text(AppTranslations.of(context).text("done")),
             onPressed: () {
-              Navigator.pop(context, _category);
+
             },
           ),
         ),
@@ -87,35 +57,36 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
       appBar: AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
         brightness: themeProvider.getBrightness(),
-        title: Text(AppTranslations.of(context).text("select_category")),
+        title: Text(AppTranslations.of(context).text("generate_password")),
         actions: [
           ChicTextButton(
             child: Text(AppTranslations.of(context).text("done").toUpperCase()),
             onPressed: () {
-              Navigator.pop(context, _category);
+
             },
           ),
         ],
       ),
-      body: _displaysBody(themeProvider),
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: SingleChildScrollView(
+          child: _displaysBody(themeProvider),
+        ),
+      ),
     );
   }
 
   Widget _displaysBody(ThemeProvider themeProvider) {
-    return ListView.builder(
-      itemCount: _categories.length,
-      itemBuilder: (context, index) {
-        return CategoryItem(
-          category: _categories[index],
-          isSelected:
-              _category != null && _category!.id == _categories[index].id,
-          isForcingMobileStyle: true,
-          onTap: (Category category) {
-            _category = category;
-            setState(() {});
-          },
-        );
-      },
+    return Container(
+      margin: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+        ],
+      ),
     );
   }
 }

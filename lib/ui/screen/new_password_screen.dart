@@ -7,6 +7,7 @@ import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
+import 'package:chic_secret/ui/screen/generate_password_screen.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
 import 'package:chic_secret/ui/screen/select_category_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
@@ -88,8 +89,14 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: _displaysBody(themeProvider),
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: SingleChildScrollView(
+          child: _displaysBody(themeProvider),
+        ),
       ),
     );
   }
@@ -167,7 +174,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
             ),
             SizedBox(height: 16.0),
             ChicTextIconButton(
-              onPressed: () {},
+              onPressed: _generateNewPassword,
               icon: Icon(
                 Icons.auto_fix_high,
                 color: themeProvider.primaryColor,
@@ -252,6 +259,16 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
       _category = category;
       setState(() {});
     }
+  }
+
+  _generateNewPassword() async {
+    var password = await ChicNavigator.push(
+      context,
+      GeneratePasswordScreen(),
+      isModal: true,
+    );
+
+    if (password != null && password is String) {}
   }
 
   @override

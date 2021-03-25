@@ -80,8 +80,14 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: _displaysBody(themeProvider),
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: SingleChildScrollView(
+          child: _displaysBody(themeProvider),
+        ),
       ),
     );
   }

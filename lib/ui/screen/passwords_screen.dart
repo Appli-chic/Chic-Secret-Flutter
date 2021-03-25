@@ -7,6 +7,7 @@ import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/password_item.dart';
 import 'package:chic_secret/ui/screen/new_password_screen.dart';
+import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -117,6 +118,10 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
   }
 
   Widget _displayBody(ThemeProvider themeProvider) {
+    if(selectedVault == null) {
+      return SizedBox.shrink();
+    }
+
     if (ChicPlatform.isDesktop()) {
       return Column(
         children: [
