@@ -104,6 +104,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen> {
             desktopFocus: _desktopNameFocusNode,
             hint: "",
             isReadOnly: true,
+            hasStrengthIndicator: true,
           ),
         ],
       ),

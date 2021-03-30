@@ -138,6 +138,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
               nextFocus: _desktopVerifyPasswordFocusNode,
               hint: AppTranslations.of(context).text("password"),
               isPassword: true,
+              hasStrengthIndicator: true,
               errorMessage:
                   AppTranslations.of(context).text("error_small_password"),
               validating: (String text) {

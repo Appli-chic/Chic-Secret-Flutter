@@ -159,6 +159,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
               desktopFocus: _desktopPasswordFocusNode,
               autoFocus: false,
               isPassword: true,
+              hasStrengthIndicator: true,
               textCapitalization: TextCapitalization.sentences,
               hint: AppTranslations.of(context).text("password"),
               errorMessage:
