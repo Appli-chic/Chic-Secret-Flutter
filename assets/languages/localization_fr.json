@@ -35,5 +35,9 @@
   "generate_password": "Générer un mot de passe",
   "create_category": "Créer une catégorie",
   "done": "Terminer",
-  "select_category": "Selectionnez une catégorie"
+  "select_category": "Selectionnez une catégorie",
+  "words": "Mots",
+  "uppercase": "Majuscule",
+  "digit": "Chiffre",
+  "symbol": "Charactère special"
 }

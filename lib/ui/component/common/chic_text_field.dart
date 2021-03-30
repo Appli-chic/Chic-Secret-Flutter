@@ -35,6 +35,7 @@ class ChicTextField extends StatefulWidget {
   final bool isReadOnly;
   final Function()? onTap;
   final bool hasStrengthIndicator;
+  final int? maxLines;
 
   ChicTextField({
     required this.controller,
@@ -56,6 +57,7 @@ class ChicTextField extends StatefulWidget {
     this.isReadOnly = false,
     this.onTap,
     this.hasStrengthIndicator = false,
+    this.maxLines = 1,
   });
 
   @override
@@ -103,6 +105,7 @@ class _ChicTextFieldState extends State<ChicTextField> {
         obscureText: _isHidden,
         textCapitalization: widget.textCapitalization,
         textInputAction: widget.textInputAction,
+        maxLines: widget.maxLines,
         validator: (text) {
           if (widget.validating != null && text != null) {
             var result = widget.validating!(text);

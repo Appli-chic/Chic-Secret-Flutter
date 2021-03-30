@@ -35,5 +35,9 @@
   "generate_password": "Generate Password",
   "create_category": "Create a category",
   "done": "Done",
-  "select_category": "Select a category"
+  "select_category": "Select a category",
+  "words": "Words",
+  "uppercase": "Uppercase",
+  "digit": "Digit",
+  "symbol": "Symbols"
 }
