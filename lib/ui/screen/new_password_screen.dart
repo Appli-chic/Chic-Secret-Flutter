@@ -11,6 +11,7 @@ import 'package:chic_secret/ui/screen/generate_password_screen.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
 import 'package:chic_secret/ui/screen/select_category_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:chic_secret/utils/rick_text_editing_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +25,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
 
   final _nameController = TextEditingController();
   final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _passwordController = RichTextEditingController();
   final _categoryController = TextEditingController();
 
   var _nameFocusNode = FocusNode();
@@ -269,7 +270,10 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
       isModal: true,
     );
 
-    if (password != null && password is String) {}
+    if (password != null && password is String) {
+      _passwordController.text = password;
+      setState(() {});
+    }
   }
 
   @override

@@ -40,5 +40,6 @@
   "uppercase": "Uppercase",
   "digit": "Digit",
   "symbol": "Symbols",
-  "characters": "Characters"
+  "characters": "Characters",
+  "empty_category": "No categories"
 }

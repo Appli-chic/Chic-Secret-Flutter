@@ -2,6 +2,8 @@ import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+const desktopHeight = 500.0;
+
 class DesktopModal extends StatefulWidget {
   final String title;
   final Widget body;
@@ -36,9 +38,9 @@ class _DesktopModalState extends State<DesktopModal> {
         borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       content: Container(
-        width: 500,
+        width: desktopHeight,
         height: widget.height,
-        child: widget.body,
+        child: SingleChildScrollView(child: widget.body),
       ),
       actions: widget.actions,
     );

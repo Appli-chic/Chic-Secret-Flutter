@@ -74,7 +74,9 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
           margin: EdgeInsets.only(right: 8, bottom: 8),
           child: ChicElevatedButton(
             child: Text(AppTranslations.of(context).text("done")),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pop(_passwordController.text);
+            },
           ),
         ),
       ],
@@ -115,10 +117,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ChicPlatform.isDesktop()
-              ? Container(
-                  color: themeProvider.backgroundColor,
-                  child: _displayTabBar(themeProvider),
-                )
+              ? _displayTabBar(themeProvider)
               : SizedBox.shrink(),
           ChicPlatform.isDesktop() ? SizedBox(height: 16.0) : SizedBox.shrink(),
           ChicTextField(

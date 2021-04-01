@@ -40,5 +40,6 @@
   "uppercase": "Majuscule",
   "digit": "Chiffre",
   "symbol": "Caractère special",
-  "characters": "Caractères"
+  "characters": "Caractères",
+  "empty_category": "Pas de catégories"
 }

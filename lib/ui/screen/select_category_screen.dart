@@ -102,7 +102,25 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   }
 
   Widget _displaysBody(ThemeProvider themeProvider) {
+    if (_categories.isEmpty) {
+      return ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: desktopHeight,
+        ),
+        child: Center(
+          child: Text(
+            AppTranslations.of(context).text("empty_category"),
+            style: TextStyle(
+              fontSize: 20,
+              color: themeProvider.textColor,
+            ),
+          ),
+        ),
+      );
+    }
+
     return ListView.builder(
+      shrinkWrap: true,
       itemCount: _categories.length,
       itemBuilder: (context, index) {
         return CategoryItem(
