@@ -155,7 +155,7 @@ class _UnlockVaultScreenState extends State<UnlockVaultScreen> {
             Security.decrypt(_passwordController.text, widget.vault.signature);
 
         if (message == signature) {
-          Navigator.pop(context, true);
+          Navigator.pop(context, _passwordController.text);
         } else {
           setState(() {
             _isPasswordIncorrect = true;

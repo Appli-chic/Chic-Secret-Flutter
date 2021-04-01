@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 Vault? selectedVault;
+String? currentPassword;
 Category? selectedCategory;
 
 class VaultsScreen extends StatefulWidget {
@@ -133,8 +134,11 @@ class _VaultsScreenState extends State<VaultsScreen> {
               isSelected: isSelected,
               vault: _vaults[index],
               onTap: (vault) async {
-                if (await _isVaultUnlocking(vault)) {
+                var unlockingPassword = await _isVaultUnlocking(vault);
+
+                if (unlockingPassword != null) {
                   selectedVault = vault;
+                  currentPassword = unlockingPassword;
                   widget.onVaultChange();
 
                   // Only load categories and tags if it's the desktop version
@@ -234,8 +238,11 @@ class _VaultsScreenState extends State<VaultsScreen> {
           isSelected: false,
           vault: _vaults[index],
           onTap: (vault) async {
-            if (await _isVaultUnlocking(vault)) {
+            var unlockingPassword = await _isVaultUnlocking(vault);
+
+            if (unlockingPassword != null) {
               selectedVault = vault;
+              currentPassword = unlockingPassword;
               await ChicNavigator.push(context, MainMobileScreen());
             }
           },
@@ -295,17 +302,13 @@ class _VaultsScreenState extends State<VaultsScreen> {
     }
   }
 
-  Future<bool> _isVaultUnlocking(Vault vault) async {
-    var isUnlocked = await ChicNavigator.push(
+  Future<String?> _isVaultUnlocking(Vault vault) async {
+    var unlockingPassword = await ChicNavigator.push(
       context,
       UnlockVaultScreen(vault: vault),
       isModal: true,
     );
 
-    if (isUnlocked != null && isUnlocked) {
-      return true;
-    }
-
-    return false;
+    return unlockingPassword;
   }
 }
