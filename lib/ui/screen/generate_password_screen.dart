@@ -3,11 +3,13 @@ import 'dart:math';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
+import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
+import 'package:chic_secret/utils/rick_text_editing_controller.dart';
 import 'package:chic_secret/utils/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,20 +19,29 @@ class GeneratePasswordScreen extends StatefulWidget {
   _GeneratePasswordScreenState createState() => _GeneratePasswordScreenState();
 }
 
-class _GeneratePasswordScreenState extends State<GeneratePasswordScreen> {
-  final _nameController = TextEditingController();
-  var _nameFocusNode = FocusNode();
-  var _desktopNameFocusNode = FocusNode();
+class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
+    with TickerProviderStateMixin {
+  late TabController _tabController;
+  final _passwordController = RichTextEditingController();
+  var _passwordFocusNode = FocusNode();
+  var _desktopPasswordFocusNode = FocusNode();
 
   var _isGeneratingWords = true;
-  var _numberWords = 4.0;
+
   var _hasUppercase = true;
   var _hasNumbers = true;
   var _hasSpecialCharacters = true;
 
+  // if _isGeneratingWords is false then it's the number of characters
+  var _numberWords = 4.0;
+  var _minWords = 1.0;
+  var _maxWords = 10.0;
+  var _divisionWords = 9;
+
   @override
   void initState() {
-    _nameController.text = _generatePassword();
+    _tabController = TabController(length: 2, vsync: this);
+    _passwordController.text = _generatePassword();
     super.initState();
   }
 
@@ -102,18 +113,62 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          TabBar(
+            controller: _tabController,
+            indicatorColor: themeProvider.primaryColor,
+            onTap: (int index) {
+              if (index == 0) {
+                _isGeneratingWords = true;
+                _numberWords = 4;
+                _minWords = 1.0;
+                _maxWords = 10.0;
+                _divisionWords = 9;
+              } else {
+                _isGeneratingWords = false;
+                _numberWords = 16;
+                _minWords = 6.0;
+                _maxWords = 50.0;
+                _divisionWords = 43;
+              }
+
+              _passwordController.text = _generatePassword();
+              setState(() {});
+            },
+            tabs: <Widget>[
+              Tab(
+                text: AppTranslations.of(context).text("words"),
+              ),
+              Tab(
+                text: AppTranslations.of(context).text("characters"),
+              ),
+            ],
+          ),
+          SizedBox(height: 16.0),
           ChicTextField(
-            controller: _nameController,
-            focus: _nameFocusNode,
-            desktopFocus: _desktopNameFocusNode,
+            controller: _passwordController,
+            focus: _passwordFocusNode,
+            desktopFocus: _desktopPasswordFocusNode,
             hint: "",
             isReadOnly: true,
             hasStrengthIndicator: true,
             maxLines: null,
+            suffix: Container(
+              margin: EdgeInsets.only(right: 8),
+              child: ChicIconButton(
+                icon: Icons.refresh,
+                color: themeProvider.primaryColor,
+                onPressed: () {
+                  _passwordController.text = _generatePassword();
+                  setState(() {});
+                },
+              ),
+            ),
           ),
           SizedBox(height: 32.0),
           Text(
-            AppTranslations.of(context).text("words"),
+            _isGeneratingWords
+                ? AppTranslations.of(context).text("words")
+                : AppTranslations.of(context).text("characters"),
             style: TextStyle(
               color: themeProvider.textColor,
               fontWeight: FontWeight.w600,
@@ -126,13 +181,13 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen> {
               Expanded(
                 child: Slider.adaptive(
                   value: _numberWords,
-                  min: 1.0,
-                  max: 10.0,
-                  divisions: 9,
+                  min: _minWords,
+                  max: _maxWords,
+                  divisions: _divisionWords,
                   activeColor: themeProvider.primaryColor,
                   onChanged: (double value) {
                     _numberWords = value;
-                    _nameController.text = _generatePassword();
+                    _passwordController.text = _generatePassword();
                     setState(() {});
                   },
                 ),
@@ -176,7 +231,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen> {
                 activeColor: themeProvider.primaryColor,
                 onChanged: (bool value) {
                   _hasUppercase = value;
-                  _nameController.text = _generatePassword();
+                  _passwordController.text = _generatePassword();
                   setState(() {});
                 },
               ),
@@ -199,7 +254,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen> {
                 activeColor: themeProvider.primaryColor,
                 onChanged: (bool value) {
                   _hasNumbers = value;
-                  _nameController.text = _generatePassword();
+                  _passwordController.text = _generatePassword();
                   setState(() {});
                 },
               ),
@@ -222,7 +277,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen> {
                 activeColor: themeProvider.primaryColor,
                 onChanged: (bool value) {
                   _hasSpecialCharacters = value;
-                  _nameController.text = _generatePassword();
+                  _passwordController.text = _generatePassword();
                   setState(() {});
                 },
               ),
@@ -236,63 +291,95 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen> {
   String _generatePassword() {
     if (_isGeneratingWords) {
       // Generating a password composed of words
-      var newPassword = "";
-
-      for (var wordIndex = 0; wordIndex < _numberWords; wordIndex++) {
-        var rng = new Random();
-        var randomWord = words[rng.nextInt(words.length - 1)];
-
-        // Randomly add an uppercase
-        if (_hasUppercase) {
-          var uppercaseLuck = rng.nextInt(10);
-
-          if (uppercaseLuck >= 8) {
-            randomWord = randomWord.capitalizeLast();
-          } else if (uppercaseLuck >= 4) {
-            randomWord = randomWord.capitalizeFirst();
-          }
-        }
-
-        // Randomly add a number
-        if (_hasNumbers) {
-          var numberLuck = rng.nextInt(10);
-
-          if (numberLuck >= 8) {
-            var randomNumber = numbers[rng.nextInt(numbers.length - 1)];
-            randomWord += randomNumber;
-          }
-        }
-
-        // Randomly add a special character
-        if (_hasSpecialCharacters) {
-          var specialCharacterLuck = rng.nextInt(10);
-
-          if (specialCharacterLuck >= 6) {
-            var randomSpecialCharacter =
-                specialCharacters[rng.nextInt(specialCharacters.length - 1)];
-            randomWord += randomSpecialCharacter;
-          }
-        }
-
-        // Add space between words
-        if (wordIndex != _numberWords.ceil() - 1) {
-          randomWord += "_";
-        }
-
-        newPassword += randomWord;
-      }
-
-      return newPassword;
+      return _generatePasswordWithWords();
     }
 
-    return "";
+    // Generating a random password
+    return _generateRandomPassword();
+  }
+
+  String _generateRandomPassword() {
+    var newPassword = "";
+    List<String> dictionary = [];
+
+    dictionary.addAll(letters);
+    dictionary.addAll(letters);
+
+    if (_hasUppercase) {
+      dictionary.addAll(uppercase);
+    }
+
+    if (_hasNumbers) {
+      dictionary.addAll(numbers);
+    }
+
+    if (_hasSpecialCharacters) {
+      dictionary.addAll(specialCharacters);
+    }
+
+    for (var wordIndex = 0; wordIndex < _numberWords; wordIndex++) {
+      var rng = new Random();
+      newPassword += dictionary[rng.nextInt(dictionary.length - 1)];
+    }
+
+    return newPassword;
+  }
+
+  String _generatePasswordWithWords() {
+    var newPassword = "";
+
+    for (var wordIndex = 0; wordIndex < _numberWords; wordIndex++) {
+      var rng = new Random();
+      var randomWord = words[rng.nextInt(words.length - 1)];
+
+      // Randomly add an uppercase
+      if (_hasUppercase) {
+        var uppercaseLuck = rng.nextInt(10);
+
+        if (uppercaseLuck >= 8) {
+          randomWord = randomWord.capitalizeLast();
+        } else if (uppercaseLuck >= 4) {
+          randomWord = randomWord.capitalizeFirst();
+        }
+      }
+
+      // Randomly add a number
+      if (_hasNumbers) {
+        var numberLuck = rng.nextInt(10);
+
+        if (numberLuck >= 8) {
+          var randomNumber = numbers[rng.nextInt(numbers.length - 1)];
+          randomWord += randomNumber;
+        }
+      }
+
+      // Randomly add a special character
+      if (_hasSpecialCharacters) {
+        var specialCharacterLuck = rng.nextInt(10);
+
+        if (specialCharacterLuck >= 6) {
+          var randomSpecialCharacter =
+              specialCharacters[rng.nextInt(specialCharacters.length - 1)];
+          randomWord += randomSpecialCharacter;
+        }
+      }
+
+      // Add space between words
+      if (wordIndex != _numberWords.ceil() - 1) {
+        randomWord += "_";
+      }
+
+      newPassword += randomWord;
+    }
+
+    return newPassword;
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _nameFocusNode.dispose();
-    _desktopNameFocusNode.dispose();
+    _passwordController.dispose();
+    _passwordFocusNode.dispose();
+    _desktopPasswordFocusNode.dispose();
 
     super.dispose();
   }

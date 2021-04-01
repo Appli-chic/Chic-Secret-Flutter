@@ -161,7 +161,7 @@ class _ChicTextFieldState extends State<ChicTextField> {
     if (widget.controller.text.length == 0) {
       value = 0.0;
       color = Colors.red;
-    } else if (widget.controller.text.length < 6) {
+    } else if (widget.controller.text.length <= 6) {
       value = 0.25;
       color = Colors.red;
     } else if (widget.controller.text.length < 10) {
