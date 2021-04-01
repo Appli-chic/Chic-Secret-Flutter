@@ -94,6 +94,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
             onPressed: () {},
           ),
         ],
+        bottom: _displayTabBar(themeProvider),
       ),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -113,37 +114,13 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TabBar(
-            controller: _tabController,
-            indicatorColor: themeProvider.primaryColor,
-            onTap: (int index) {
-              if (index == 0) {
-                _isGeneratingWords = true;
-                _numberWords = 4;
-                _minWords = 1.0;
-                _maxWords = 10.0;
-                _divisionWords = 9;
-              } else {
-                _isGeneratingWords = false;
-                _numberWords = 16;
-                _minWords = 6.0;
-                _maxWords = 50.0;
-                _divisionWords = 43;
-              }
-
-              _passwordController.text = _generatePassword();
-              setState(() {});
-            },
-            tabs: <Widget>[
-              Tab(
-                text: AppTranslations.of(context).text("words"),
-              ),
-              Tab(
-                text: AppTranslations.of(context).text("characters"),
-              ),
-            ],
-          ),
-          SizedBox(height: 16.0),
+          ChicPlatform.isDesktop()
+              ? Container(
+                  color: themeProvider.backgroundColor,
+                  child: _displayTabBar(themeProvider),
+                )
+              : SizedBox.shrink(),
+          ChicPlatform.isDesktop() ? SizedBox(height: 16.0) : SizedBox.shrink(),
           ChicTextField(
             controller: _passwordController,
             focus: _passwordFocusNode,
@@ -285,6 +262,39 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
           ),
         ],
       ),
+    );
+  }
+
+  PreferredSizeWidget _displayTabBar(ThemeProvider themeProvider) {
+    return TabBar(
+      controller: _tabController,
+      indicatorColor: themeProvider.primaryColor,
+      onTap: (int index) {
+        if (index == 0) {
+          _isGeneratingWords = true;
+          _numberWords = 4;
+          _minWords = 1.0;
+          _maxWords = 10.0;
+          _divisionWords = 9;
+        } else {
+          _isGeneratingWords = false;
+          _numberWords = 16;
+          _minWords = 6.0;
+          _maxWords = 50.0;
+          _divisionWords = 43;
+        }
+
+        _passwordController.text = _generatePassword();
+        setState(() {});
+      },
+      tabs: <Widget>[
+        Tab(
+          text: AppTranslations.of(context).text("words"),
+        ),
+        Tab(
+          text: AppTranslations.of(context).text("characters"),
+        ),
+      ],
     );
   }
 
