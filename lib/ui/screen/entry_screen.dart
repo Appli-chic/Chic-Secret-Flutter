@@ -22,9 +22,11 @@ class EntryScreenController {
 
 class PasswordsScreen extends StatefulWidget {
   final EntryScreenController? passwordScreenController;
+  final Function()? reloadCategories;
 
   const PasswordsScreen({
     this.passwordScreenController,
+    this.reloadCategories,
   });
 
   @override
@@ -168,6 +170,10 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
       NewEntryScreen(),
       isModal: true,
     );
+
+    if(widget.reloadCategories != null) {
+      widget.reloadCategories!();
+    }
 
     if (data != null) {
       _entries = await EntryService.getAllByVault(selectedVault!.id);

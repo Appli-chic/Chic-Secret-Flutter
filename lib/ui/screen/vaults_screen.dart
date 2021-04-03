@@ -22,10 +22,20 @@ Vault? selectedVault;
 String? currentPassword;
 Category? selectedCategory;
 
+class VaultScreenController {
+  void Function()? reloadCategories;
+
+  VaultScreenController({
+    this.reloadCategories,
+  });
+}
+
 class VaultsScreen extends StatefulWidget {
+  final VaultScreenController? vaultScreenController;
   final Function() onVaultChange;
 
   VaultsScreen({
+    this.vaultScreenController,
     required this.onVaultChange,
   });
 
@@ -39,6 +49,10 @@ class _VaultsScreenState extends State<VaultsScreen> {
 
   @override
   void initState() {
+    if (widget.vaultScreenController != null) {
+      widget.vaultScreenController!.reloadCategories = _loadCategories;
+    }
+
     _loadVaults();
     super.initState();
   }

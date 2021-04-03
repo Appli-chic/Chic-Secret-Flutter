@@ -11,6 +11,7 @@ class MainDesktopScreen extends StatefulWidget {
 }
 
 class _MainDesktopScreenState extends State<MainDesktopScreen> {
+  VaultScreenController _vaultScreenController = VaultScreenController();
   EntryScreenController _passwordScreenController = EntryScreenController();
 
   _reloadPasswordScreen() {
@@ -21,6 +22,12 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     setState(() {});
   }
 
+  _reloadCategories() {
+    if (_vaultScreenController.reloadCategories != null) {
+      _vaultScreenController.reloadCategories!();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
@@ -28,11 +35,15 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     return Scaffold(
       body: SplitView(
         gripColor: themeProvider.divider,
-        view1: VaultsScreen(onVaultChange: _reloadPasswordScreen),
+        view1: VaultsScreen(
+          onVaultChange: _reloadPasswordScreen,
+          vaultScreenController: _vaultScreenController,
+        ),
         view2: SplitView(
           gripColor: themeProvider.divider,
           view1: PasswordsScreen(
             passwordScreenController: _passwordScreenController,
+            reloadCategories: _reloadCategories,
           ),
           view2: Center(
             child: Container(

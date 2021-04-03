@@ -150,13 +150,13 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
       isModal: true,
     );
 
+    if (_categoryScreenController.reloadCategories != null) {
+      _categoryScreenController.reloadCategories!();
+    }
+
     if (data != null) {
       if (_passwordScreenController.reloadPasswords != null) {
         _passwordScreenController.reloadPasswords!();
-      }
-
-      if (_categoryScreenController.reloadCategories != null) {
-        _categoryScreenController.reloadCategories!();
       }
 
       setState(() {});

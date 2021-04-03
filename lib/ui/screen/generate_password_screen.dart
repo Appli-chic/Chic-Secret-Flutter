@@ -9,7 +9,7 @@ import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
-import 'package:chic_secret/utils/rick_text_editing_controller.dart';
+import 'package:chic_secret/utils/rich_text_editing_controller.dart';
 import 'package:chic_secret/utils/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
