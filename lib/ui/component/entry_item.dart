@@ -1,16 +1,16 @@
-import 'package:chic_secret/model/database/password.dart';
+import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PasswordItem extends StatelessWidget {
-  final Password password;
+class EntryItem extends StatelessWidget {
+  final Entry password;
   final bool isSelected;
-  final Function(Password) onTap;
+  final Function(Entry) onTap;
 
-  PasswordItem({
+  EntryItem({
     required this.password,
     required this.isSelected,
     required this.onTap,

@@ -93,7 +93,9 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
         actions: [
           ChicTextButton(
             child: Text(AppTranslations.of(context).text("done").toUpperCase()),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pop(_passwordController.text);
+            },
           ),
         ],
         bottom: _displayTabBar(themeProvider),

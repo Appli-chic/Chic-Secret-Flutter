@@ -1,89 +1,62 @@
 import 'package:chic_secret/localization/app_translations.dart';
-import 'package:chic_secret/model/database/category.dart';
-import 'package:chic_secret/model/database/password.dart';
+import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
-import 'package:chic_secret/ui/component/password_item.dart';
-import 'package:chic_secret/ui/screen/new_password_screen.dart';
+import 'package:chic_secret/ui/component/entry_item.dart';
+import 'package:chic_secret/ui/screen/new_entry_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
+
+class EntryScreenController {
+  void Function()? reloadPasswords;
+
+  EntryScreenController({
+    this.reloadPasswords,
+  });
+}
 
 class PasswordsScreen extends StatefulWidget {
+  final EntryScreenController? passwordScreenController;
+
+  const PasswordsScreen({
+    this.passwordScreenController,
+  });
+
   @override
   _PasswordsScreenState createState() => _PasswordsScreenState();
 }
 
 class _PasswordsScreenState extends State<PasswordsScreen> {
-  List<Password> _passwords = [
-    Password(
-      id: Uuid().v4(),
-      name: "Gmail",
-      username: "applichic@gmail.com",
-      hash: "",
-      vaultId: Uuid().v4(),
-      categoryId: Uuid().v4(),
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      category: Category(
-        id: Uuid().v4(),
-        name: "Email",
-        color: '#${Colors.red.value.toRadixString(16)}',
-        icon: Icons.email.codePoint,
-        vaultId: Uuid().v4(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      ),
-    ),
-    Password(
-      id: Uuid().v4(),
-      name: "Protonmail",
-      username: "gbelouin@protonmail.com",
-      hash: "",
-      vaultId: Uuid().v4(),
-      categoryId: Uuid().v4(),
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      category: Category(
-        id: Uuid().v4(),
-        name: "Email",
-        color: '#${Colors.red.value.toRadixString(16)}',
-        icon: Icons.email.codePoint,
-        vaultId: Uuid().v4(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      ),
-    ),
-    Password(
-      id: Uuid().v4(),
-      name: "Spotify",
-      username: "applichic@gmail.com",
-      hash: "",
-      vaultId: Uuid().v4(),
-      categoryId: Uuid().v4(),
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      category: Category(
-        id: Uuid().v4(),
-        name: "Music",
-        color: '#${Colors.green.value.toRadixString(16)}',
-        icon: Icons.music_note.codePoint,
-        vaultId: Uuid().v4(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      ),
-    ),
-  ];
+  List<Entry> _entries = [];
 
   final _searchController = TextEditingController();
   var _searchFocusNode = FocusNode();
   var _desktopSearchFocusNode = FocusNode();
 
-  Password? _selectedPassword;
+  Entry? _selectedEntry;
+
+  @override
+  void initState() {
+    if (widget.passwordScreenController != null) {
+      widget.passwordScreenController!.reloadPasswords = _loadPassword;
+    }
+
+    _loadPassword();
+
+    super.initState();
+  }
+
+  _loadPassword() async {
+    if (selectedVault != null) {
+      _entries = await EntryService.getAllByVault(selectedVault!.id);
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +81,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
               Icons.add,
               color: themeProvider.textColor,
             ),
-            onPressed: _onAddPasswordClicked,
+            onPressed: _onAddEntryClicked,
           )
         ],
       );
@@ -118,7 +91,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
   }
 
   Widget _displayBody(ThemeProvider themeProvider) {
-    if(selectedVault == null) {
+    if (selectedVault == null) {
       return SizedBox.shrink();
     }
 
@@ -149,7 +122,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
               Container(
                 margin: EdgeInsets.only(left: 16, right: 16, top: 16),
                 child: ChicIconButton(
-                  onPressed: _onAddPasswordClicked,
+                  onPressed: _onAddEntryClicked,
                   icon: Icons.add,
                   type: ChicIconButtonType.filledRectangle,
                 ),
@@ -158,15 +131,15 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: _passwords.length,
+              itemCount: _entries.length,
               itemBuilder: (context, index) {
-                return PasswordItem(
-                  password: _passwords[index],
-                  isSelected: _selectedPassword != null &&
-                      _selectedPassword == _passwords[index],
-                  onTap: (Password password) {
+                return EntryItem(
+                  password: _entries[index],
+                  isSelected: _selectedEntry != null &&
+                      _selectedEntry == _entries[index],
+                  onTap: (Entry password) {
                     setState(() {
-                      _selectedPassword = password;
+                      _selectedEntry = password;
                     });
                   },
                 );
@@ -178,25 +151,27 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
     }
 
     return ListView.builder(
-      itemCount: _passwords.length,
+      itemCount: _entries.length,
       itemBuilder: (context, index) {
-        return PasswordItem(
-          password: _passwords[index],
+        return EntryItem(
+          password: _entries[index],
           isSelected: false,
-          onTap: (Password password) {},
+          onTap: (Entry password) {},
         );
       },
     );
   }
 
-  _onAddPasswordClicked() async {
+  _onAddEntryClicked() async {
     var data = await ChicNavigator.push(
       context,
-      NewPasswordScreen(),
+      NewEntryScreen(),
       isModal: true,
     );
 
     if (data != null) {
+      _entries = await EntryService.getAllByVault(selectedVault!.id);
+      setState(() {});
     }
   }
 

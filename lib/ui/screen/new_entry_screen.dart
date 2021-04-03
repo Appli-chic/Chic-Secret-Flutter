@@ -1,8 +1,8 @@
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
-import 'package:chic_secret/model/database/password.dart';
+import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/service/password_service.dart';
+import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
@@ -14,19 +14,18 @@ import 'package:chic_secret/ui/screen/new_category_screen.dart';
 import 'package:chic_secret/ui/screen/select_category_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
-import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/rick_text_editing_controller.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-class NewPasswordScreen extends StatefulWidget {
+class NewEntryScreen extends StatefulWidget {
   @override
-  _NewPasswordScreenState createState() => _NewPasswordScreenState();
+  _NewEntryScreenState createState() => _NewEntryScreenState();
 }
 
-class _NewPasswordScreenState extends State<NewPasswordScreen> {
+class _NewEntryScreenState extends State<NewEntryScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final _nameController = TextEditingController();
@@ -284,11 +283,11 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
 
   _addPassword() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-      if (_category != null) {
+      if (_category == null) {
         return;
       }
 
-      var password = Password(
+      var password = Entry(
         id: Uuid().v4(),
         name: _nameController.text,
         username: _usernameController.text,
@@ -299,7 +298,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
         updatedAt: DateTime.now(),
       );
 
-      password = await PasswordService.save(password);
+      password = await EntryService.save(password);
       Navigator.pop(context, password);
     }
   }

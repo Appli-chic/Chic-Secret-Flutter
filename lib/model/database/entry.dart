@@ -2,14 +2,14 @@ import 'package:chic_secret/model/database/category.dart';
 import 'package:intl/intl.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 
-const String passwordTable = "Password";
-const String columnPasswordName = "name";
-const String columnPasswordUsername = "username";
-const String columnPasswordHash = "hash";
-const String columnPasswordVaultId = "vault_id";
-const String columnPasswordCategoryId = "category_id";
+const String entryTable = "Entry";
+const String columnEntryName = "name";
+const String columnEntryUsername = "username";
+const String columnEntryHash = "hash";
+const String columnEntryVaultId = "vault_id";
+const String columnEntryCategoryId = "category_id";
 
-class Password {
+class Entry {
   String id;
   String name;
   String username;
@@ -22,7 +22,7 @@ class Password {
 
   Category? category;
 
-  Password({
+  Entry({
     required this.id,
     required this.name,
     required this.username,
@@ -35,25 +35,25 @@ class Password {
     this.category,
   });
 
-  factory Password.fromMap(Map<String, dynamic> data) {
-    var createdAtString = DateTime.parse(data['created_at']);
-    var updatedAtString = DateTime.parse(data['updated_at']);
+  factory Entry.fromMap(Map<String, dynamic> data) {
+    var createdAtString = DateTime.parse(data[columnCreatedAt]);
+    var updatedAtString = DateTime.parse(data[columnUpdatedAt]);
     var deletedAtString;
 
-    if (data['deleted_at'] != null) {
-      deletedAtString = DateTime.parse(data['deleted_at']);
+    if (data[columnDeletedAt] != null) {
+      deletedAtString = DateTime.parse(data[columnDeletedAt]);
     }
 
-    return Password(
+    return Entry(
       id: data[columnId],
-      name: data[columnPasswordName],
-      username: data[columnPasswordUsername],
-      hash: data[columnPasswordHash],
-      vaultId: data[columnPasswordVaultId],
-      categoryId: data[columnPasswordCategoryId],
+      name: data[columnEntryName],
+      username: data[columnEntryUsername],
+      hash: data[columnEntryHash],
+      vaultId: data[columnEntryVaultId],
+      categoryId: data[columnEntryCategoryId],
       createdAt: createdAtString,
       updatedAt: updatedAtString,
-      deletedAt: deletedAtString
+      deletedAt: deletedAtString,
     );
   }
 
@@ -69,11 +69,11 @@ class Password {
 
     return {
       columnId: id,
-      columnPasswordName: name,
-      columnPasswordUsername: username,
-      columnPasswordHash: hash,
-      columnPasswordVaultId: vaultId,
-      columnPasswordCategoryId: categoryId,
+      columnEntryName: name,
+      columnEntryUsername: username,
+      columnEntryHash: hash,
+      columnEntryVaultId: vaultId,
+      columnEntryCategoryId: categoryId,
       columnCreatedAt: createdAtString,
       columnUpdatedAt: updatedAtString,
       columnDeletedAt: deletedAtString,

@@ -1,8 +1,10 @@
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/clipper/half_circle_clipper.dart';
+import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/screen/category_screen.dart';
-import 'package:chic_secret/ui/screen/passwords_screen.dart';
+import 'package:chic_secret/ui/screen/entry_screen.dart';
+import 'package:chic_secret/ui/screen/new_entry_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,6 +14,9 @@ class MainMobileScreen extends StatefulWidget {
 }
 
 class _MainMobileScreenState extends State<MainMobileScreen> {
+  EntryScreenController _passwordScreenController = EntryScreenController();
+  CategoryScreenController _categoryScreenController =
+      CategoryScreenController();
   PageController _pageController = PageController();
   int _index = 0;
 
@@ -25,8 +30,12 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
         controller: _pageController,
         physics: NeverScrollableScrollPhysics(),
         children: [
-          PasswordsScreen(),
-          CategoriesScreen(),
+          PasswordsScreen(
+            passwordScreenController: _passwordScreenController,
+          ),
+          CategoriesScreen(
+            categoryScreenController: _categoryScreenController,
+          ),
           Container(),
           Container(),
           Container(),
@@ -114,7 +123,7 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
             backgroundColor: Colors.transparent,
             elevation: 0,
             highlightElevation: 0,
-            onPressed: () async {},
+            onPressed: _onAddEntryClicked,
             child: Container(
               height: 56,
               width: 56,
@@ -132,6 +141,26 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
         ),
       ],
     );
+  }
+
+  _onAddEntryClicked() async {
+    var data = await ChicNavigator.push(
+      context,
+      NewEntryScreen(),
+      isModal: true,
+    );
+
+    if (data != null) {
+      if (_passwordScreenController.reloadPasswords != null) {
+        _passwordScreenController.reloadPasswords!();
+      }
+
+      if (_categoryScreenController.reloadCategories != null) {
+        _categoryScreenController.reloadCategories!();
+      }
+
+      setState(() {});
+    }
   }
 
   @override

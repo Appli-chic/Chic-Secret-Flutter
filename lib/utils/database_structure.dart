@@ -1,5 +1,5 @@
 import 'package:chic_secret/model/database/category.dart';
-import 'package:chic_secret/model/database/password.dart';
+import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/vault.dart';
 
 const String columnId = "id";
@@ -33,17 +33,17 @@ FOREIGN KEY($columnCategoryVaultId) REFERENCES $vaultTable(id)
 ''';
 
 const String createPasswordTable = '''
-CREATE TABLE $passwordTable(
+CREATE TABLE $entryTable(
 $columnId TEXT PRIMARY KEY, 
-$columnPasswordName TEXT, 
-$columnPasswordUsername TEXT, 
-$columnPasswordHash TEXT, 
-$columnPasswordVaultId TEXT, 
-$columnPasswordCategoryId TEXT, 
+$columnEntryName TEXT, 
+$columnEntryUsername TEXT, 
+$columnEntryHash TEXT, 
+$columnEntryVaultId TEXT, 
+$columnEntryCategoryId TEXT, 
 $columnCreatedAt DATETIME, 
 $columnUpdatedAt DATETIME, 
 $columnDeletedAt DATETIME,
-FOREIGN KEY($columnPasswordVaultId) REFERENCES $vaultTable(id)
-FOREIGN KEY($columnPasswordCategoryId) REFERENCES $categoryTable(id)
+FOREIGN KEY($columnEntryVaultId) REFERENCES $vaultTable(id)
+FOREIGN KEY($columnEntryCategoryId) REFERENCES $categoryTable(id)
 )
 ''';

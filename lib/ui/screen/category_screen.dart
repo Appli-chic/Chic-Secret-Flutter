@@ -9,7 +9,21 @@ import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+class CategoryScreenController {
+  void Function()? reloadCategories;
+
+  CategoryScreenController({
+    this.reloadCategories,
+  });
+}
+
 class CategoriesScreen extends StatefulWidget {
+  final CategoryScreenController? categoryScreenController;
+
+  const CategoriesScreen({
+    this.categoryScreenController,
+  });
+
   @override
   _CategoriesScreenState createState() => _CategoriesScreenState();
 }
@@ -19,6 +33,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   @override
   void initState() {
+    if (widget.categoryScreenController != null) {
+      widget.categoryScreenController!.reloadCategories = _loadCategories;
+    }
+
     _loadCategories();
     super.initState();
   }

@@ -29,12 +29,12 @@ class Category {
   });
 
   factory Category.fromMap(Map<String, dynamic> data) {
-    var createdAtString = DateTime.parse(data['created_at']);
-    var updatedAtString = DateTime.parse(data['updated_at']);
+    var createdAtString = DateTime.parse(data[columnCreatedAt]);
+    var updatedAtString = DateTime.parse(data[columnUpdatedAt]);
     var deletedAtString;
 
-    if (data['deleted_at'] != null) {
-      deletedAtString = DateTime.parse(data['deleted_at']);
+    if (data[columnDeletedAt] != null) {
+      deletedAtString = DateTime.parse(data[columnDeletedAt]);
     }
 
     return Category(

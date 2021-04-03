@@ -1,5 +1,6 @@
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/utils/database.dart';
+import 'package:chic_secret/utils/database_structure.dart';
 
 class CategoryService {
   static Future<Category> save(Category category) async {
@@ -14,6 +15,7 @@ class CategoryService {
     List<Category> categories = [];
     List<Map<String, dynamic>> maps = await db.query(
       categoryTable,
+      where: "$columnCategoryVaultId = '$vaultId'"
     );
 
     if (maps.isNotEmpty) {
@@ -23,5 +25,19 @@ class CategoryService {
     }
 
     return categories;
+  }
+
+  static Future<Category?> getCategoryById(String categoryId) async {
+    Category? category;
+    List<Map<String, dynamic>> maps = await db.query(
+        categoryTable,
+        where: "$columnId = '$categoryId'"
+    );
+
+    if (maps.isNotEmpty) {
+      category = Category.fromMap(maps[0]);
+    }
+
+    return category;
   }
 }
