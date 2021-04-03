@@ -42,6 +42,7 @@ class _UnlockVaultScreenState extends State<UnlockVaultScreen> {
     }
   }
 
+  /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: AppTranslations.of(context).text("unlock_vault"),
@@ -68,6 +69,7 @@ class _UnlockVaultScreenState extends State<UnlockVaultScreen> {
     );
   }
 
+  /// Displays the [Scaffold] for the mobile version
   Widget _displaysMobile(ThemeProvider themeProvider) {
     return Scaffold(
       backgroundColor: themeProvider.backgroundColor,
@@ -82,6 +84,7 @@ class _UnlockVaultScreenState extends State<UnlockVaultScreen> {
     );
   }
 
+  /// Displays the appBar for the mobile version
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     if (!ChicPlatform.isDesktop()) {
       return AppBar(
@@ -101,6 +104,7 @@ class _UnlockVaultScreenState extends State<UnlockVaultScreen> {
     }
   }
 
+  /// Displays a unified body for both mobile and desktop version
   Widget _displaysBody(ThemeProvider themeProvider) {
     return Container(
       margin: EdgeInsets.all(16),
@@ -148,6 +152,9 @@ class _UnlockVaultScreenState extends State<UnlockVaultScreen> {
     );
   }
 
+  /// Check if the encrypted signature can be decrypted thanks to the
+  /// password. If we find back the right signature then we define
+  /// the vault as unlocked.
   _unlockVault() {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       try {

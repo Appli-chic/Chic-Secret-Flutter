@@ -14,6 +14,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
   VaultScreenController _vaultScreenController = VaultScreenController();
   EntryScreenController _passwordScreenController = EntryScreenController();
 
+  /// Ask to reload the passwords from the [PasswordsScreen]
   _reloadPasswordScreen() {
     if (_passwordScreenController.reloadPasswords != null) {
       _passwordScreenController.reloadPasswords!();
@@ -22,6 +23,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     setState(() {});
   }
 
+  /// Ask to reload the categories from the [VaultsScreen]
   _reloadCategories() {
     if (_vaultScreenController.reloadCategories != null) {
       _vaultScreenController.reloadCategories!();

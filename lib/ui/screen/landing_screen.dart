@@ -9,6 +9,9 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
+
+  /// Displays the next screen depending if the application is launched on
+  /// desktop or mobile version
   _firstConnection() async {
     if (ChicPlatform.isDesktop()) {
       return await Navigator.pushReplacement(

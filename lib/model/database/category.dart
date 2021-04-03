@@ -28,6 +28,7 @@ class Category {
     this.deletedAt,
   });
 
+  /// Transform a map of [data] into a category
   factory Category.fromMap(Map<String, dynamic> data) {
     var createdAtString = DateTime.parse(data[columnCreatedAt]);
     var updatedAtString = DateTime.parse(data[columnUpdatedAt]);
@@ -49,6 +50,7 @@ class Category {
     );
   }
 
+  /// Transform a category into a map of data
   Map<String, dynamic> toMap() {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     String createdAtString = dateFormatter.format(createdAt);

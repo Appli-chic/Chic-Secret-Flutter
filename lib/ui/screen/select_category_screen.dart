@@ -36,6 +36,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
     super.initState();
   }
 
+  /// Load the categories linked to the current vault
   _loadCategories() async {
     if (selectedVault != null) {
       _categories = await CategoryService.getAllByVault(selectedVault!.id);
@@ -54,6 +55,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
     }
   }
 
+  /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: AppTranslations.of(context).text("select_category"),
@@ -81,6 +83,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
     );
   }
 
+  /// Displays the [Scaffold] for the mobile version
   Widget _displaysMobile(ThemeProvider themeProvider) {
     return Scaffold(
       backgroundColor: themeProvider.backgroundColor,
@@ -101,6 +104,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
     );
   }
 
+  /// Displays a unified body for both mobile and desktop version
   Widget _displaysBody(ThemeProvider themeProvider) {
     if (_categories.isEmpty) {
       return ConstrainedBox(

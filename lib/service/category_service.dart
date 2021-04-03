@@ -3,6 +3,8 @@ import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 
 class CategoryService {
+
+  /// Save a [category] into the local database
   static Future<Category> save(Category category) async {
     await db.insert(
       categoryTable,
@@ -11,6 +13,7 @@ class CategoryService {
     return category;
   }
 
+  /// Retrieve all the categories linked to a vault
   static Future<List<Category>> getAllByVault(String vaultId) async {
     List<Category> categories = [];
     List<Map<String, dynamic>> maps = await db.query(
@@ -27,6 +30,7 @@ class CategoryService {
     return categories;
   }
 
+  /// Retrieve the category from it's id
   static Future<Category?> getCategoryById(String categoryId) async {
     Category? category;
     List<Map<String, dynamic>> maps = await db.query(

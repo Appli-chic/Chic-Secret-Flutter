@@ -173,6 +173,8 @@ class _IconPickerDialogState extends State<IconPickerDialog> {
   }
 }
 
+/// Displays the icon that will be displayed in the list of icons
+/// and in the icon picker
 Widget _displayIcon(
   int index,
   IconData icon,

@@ -30,6 +30,7 @@ class CategoryItem extends StatelessWidget {
     }
   }
 
+  /// Displays the mobile version of the [CategoryItem]
   Widget _buildMobileItem(ThemeProvider themeProvider) {
     return Card(
       margin: EdgeInsets.only(left: 16, right: 16, top: 8),
@@ -74,6 +75,7 @@ class CategoryItem extends StatelessWidget {
     );
   }
 
+  /// Displays the desktop version of the [CategoryItem]
   Widget _buildDesktopItem(ThemeProvider themeProvider) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -120,6 +122,8 @@ class CategoryItem extends StatelessWidget {
     );
   }
 
+  /// Retrieve the [CategoryItem]'s background color depending of
+  /// the operating system.
   Color _getNotSelectedBackgroundColor(ThemeProvider themeProvider) {
     if (ChicPlatform.isDesktop()) {
       return themeProvider.divider;

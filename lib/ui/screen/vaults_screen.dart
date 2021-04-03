@@ -57,11 +57,13 @@ class _VaultsScreenState extends State<VaultsScreen> {
     super.initState();
   }
 
+  /// Loads all the vaults from the database
   _loadVaults() async {
     _vaults = await VaultService.getAll();
     setState(() {});
   }
 
+  /// Loads the categories linked to the current vault
   _loadCategories() async {
     if (selectedVault != null) {
       _categories = await CategoryService.getAllByVault(selectedVault!.id);
@@ -83,6 +85,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
     );
   }
 
+  /// Displays the body corresponding only to the desktop version
   Widget _displaysDesktopBody(ThemeProvider themeProvider) {
     return Container(
       margin: EdgeInsets.only(top: 8),
@@ -123,6 +126,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
     );
   }
 
+  /// Displays the list of vaults for the desktop version
   Widget _displayVaults(ThemeProvider themeProvider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,6 +175,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
     );
   }
 
+  /// Displays the categories for the desktop version
   Widget _displayCategories(ThemeProvider themeProvider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,6 +224,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
     );
   }
 
+  /// Displays the list of tags for the desktop version
   Widget _displayTags(ThemeProvider themeProvider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,6 +250,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
     );
   }
 
+  /// Displays the list of vaults only for the mobile version
   Widget _displaysMobileBody(ThemeProvider themeProvider) {
     return ListView.builder(
       itemCount: _vaults.length,
@@ -265,6 +272,8 @@ class _VaultsScreenState extends State<VaultsScreen> {
     );
   }
 
+  /// Displays a floating action button only for the mobile version
+  /// to create new vaults.
   Widget? _displaysFloatingActionButton(ThemeProvider themeProvider) {
     if (Platform.isAndroid) {
       return FloatingActionButton(
@@ -277,6 +286,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
     }
   }
 
+  /// Displays the appbar only for the mobile version
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     if (!ChicPlatform.isDesktop()) {
       return AppBar(
@@ -298,6 +308,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
     }
   }
 
+  /// Calls the [NewVaultScreen] screen to create a new vault
   _onAddVaultClicked() async {
     var data = await ChicNavigator.push(
       context,
@@ -317,6 +328,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
     }
   }
 
+  /// Calls the [NewCategoryScreen] screen to create a new category
   _onAddCategoryClicked() async {
     var data = await ChicNavigator.push(
       context,
@@ -329,6 +341,8 @@ class _VaultsScreenState extends State<VaultsScreen> {
     }
   }
 
+  /// Check if the vault is unlocked and returns the password used
+  /// to unlock the vault
   Future<String?> _isVaultUnlocking(Vault vault) async {
     var unlockingPassword = await ChicNavigator.push(
       context,

@@ -20,7 +20,7 @@ class Application {
     "fr",
   ];
 
-  //returns the list of supported Locales
+  /// Returns the list of supported Locales
   Iterable<Locale> supportedLocales() =>
       supportedLanguagesCodes.map<Locale>((language) => Locale(language, ""));
 }

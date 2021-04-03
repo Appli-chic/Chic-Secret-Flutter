@@ -60,6 +60,7 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
     }
   }
 
+  /// Displays the bottom navigation bar in the mobile version
   BottomNavigationBar _displayBottomBar(ThemeProvider themeProvider) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
@@ -101,6 +102,7 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
     );
   }
 
+  /// Displays a centered floating button to create a new password
   Widget _displaysFloatingButton(ThemeProvider themeProvider) {
     return Stack(
       alignment: Alignment.center,
@@ -143,6 +145,7 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
     );
   }
 
+  /// Call the [NewEntryScreen] screen to create a new entry.
   _onAddEntryClicked() async {
     var data = await ChicNavigator.push(
       context,

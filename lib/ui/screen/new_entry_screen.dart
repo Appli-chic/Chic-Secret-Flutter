@@ -56,6 +56,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     }
   }
 
+  /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: AppTranslations.of(context).text("new_password"),
@@ -74,13 +75,14 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
           margin: EdgeInsets.only(right: 8, bottom: 8),
           child: ChicElevatedButton(
             child: Text(AppTranslations.of(context).text("save")),
-            onPressed: _addPassword,
+            onPressed: _addEntry,
           ),
         ),
       ],
     );
   }
 
+  /// Displays the [Scaffold] for the mobile version
   Widget _displaysMobile(ThemeProvider themeProvider) {
     return Scaffold(
       backgroundColor: themeProvider.backgroundColor,
@@ -91,7 +93,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         actions: [
           ChicTextButton(
             child: Text(AppTranslations.of(context).text("save").toUpperCase()),
-            onPressed: _addPassword,
+            onPressed: _addEntry,
           ),
         ],
       ),
@@ -107,6 +109,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     );
   }
 
+  /// Displays a unified body for both mobile and desktop version
   Widget _displaysBody(ThemeProvider themeProvider) {
     return Container(
       margin: EdgeInsets.all(16),
@@ -240,6 +243,8 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     );
   }
 
+  /// Call the [SelectCategoryScreen] screen to select which category will
+  /// be linked to the new password.
   _selectCategory() async {
     var category = await ChicNavigator.push(
       context,
@@ -254,6 +259,8 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     }
   }
 
+  /// Calls the [NewCategoryScreen] screen to create a new category directly
+  /// from the [NewEntryScreen] screen
   _createCategory() async {
     var category = await ChicNavigator.push(
       context,
@@ -268,6 +275,8 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     }
   }
 
+  /// Calls the [GeneratePasswordScreen] screen to help the user
+  /// generating a new password
   _generateNewPassword() async {
     var password = await ChicNavigator.push(
       context,
@@ -281,7 +290,8 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     }
   }
 
-  _addPassword() async {
+  /// Save a new entry in the local database
+  _addEntry() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       if (_category == null) {
         return;

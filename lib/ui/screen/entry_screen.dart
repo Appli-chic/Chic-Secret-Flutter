@@ -53,6 +53,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
     super.initState();
   }
 
+  /// Load the list of passwords linked to the current vault
   _loadPassword() async {
     if (selectedVault != null) {
       _entries = await EntryService.getAllByVault(selectedVault!.id);
@@ -71,6 +72,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
     );
   }
 
+  /// Displays the appbar that is only appearing on the mobile version
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     if (!ChicPlatform.isDesktop()) {
       return AppBar(
@@ -92,6 +94,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
     }
   }
 
+  /// Displays the body of the screen for both Mobile and Desktop version
   Widget _displayBody(ThemeProvider themeProvider) {
     if (selectedVault == null) {
       return SizedBox.shrink();
@@ -164,6 +167,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
     );
   }
 
+  /// Call the [NewEntryScreen] screen to create a new entry
   _onAddEntryClicked() async {
     var data = await ChicNavigator.push(
       context,

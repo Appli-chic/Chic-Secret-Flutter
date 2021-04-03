@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 const int version = 1;
 late Database db;
 
+/// Init the local database for all the platforms
 Future<void> initDatabase() async {
   if (Platform.isWindows || Platform.isLinux) {
     sqfliteFfiInit();
@@ -38,6 +39,7 @@ Future<void> initDatabase() async {
   }
 }
 
+/// Execute the scripts to create the database structure
 _onCreate(db, version) async {
   var batch = db.batch();
   batch.execute(createVaultTable);

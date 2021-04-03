@@ -92,6 +92,7 @@ class _ChicTextFieldState extends State<ChicTextField> {
     }
   }
 
+  /// Displays the text field input
   Widget _displayInput(ThemeProvider themeProvider) {
     return RawKeyboardListener(
       focusNode: widget.desktopFocus,
@@ -154,6 +155,8 @@ class _ChicTextFieldState extends State<ChicTextField> {
     );
   }
 
+  /// Displays a strength indicator, only for passwords and if the
+  /// [widget.hasStrengthIndicator] is set to true.
   Widget _displayStrengthIndicator(ThemeProvider themeProvider) {
     var value = 0.0;
     Color color = Colors.red;
@@ -190,6 +193,7 @@ class _ChicTextFieldState extends State<ChicTextField> {
     );
   }
 
+  /// Defines the border [color] of the input
   InputBorder? _getInputBorder(Color color) {
     if (widget.type == ChicTextFieldType.outlineBorder) {
       return OutlineInputBorder(
@@ -205,6 +209,8 @@ class _ChicTextFieldState extends State<ChicTextField> {
     }
   }
 
+  /// Manages getting the focus of the next input
+  /// Only for Windows/MacOs/Linux
   _onNext(RawKeyEvent event) {
     if (widget.nextFocus == null) {
       return;
@@ -250,6 +256,8 @@ class _ChicTextFieldState extends State<ChicTextField> {
     }
   }
 
+  /// Displays a custom [widget.suffix] icon
+  /// Or the password icon visibility if [widget.isPassword] is set to true
   Widget? _displaysSuffixIcon(ThemeProvider themeProvider) {
     if (widget.isPassword) {
       return Container(

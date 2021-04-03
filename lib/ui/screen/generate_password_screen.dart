@@ -56,6 +56,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     }
   }
 
+  /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: AppTranslations.of(context).text("generate_password"),
@@ -83,6 +84,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     );
   }
 
+  /// Displays the Mobile scaffold
   Widget _displaysMobile(ThemeProvider themeProvider) {
     return Scaffold(
       backgroundColor: themeProvider.backgroundColor,
@@ -112,6 +114,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     );
   }
 
+  /// Displays a unified body for Mobile and Desktop
   Widget _displaysBody(ThemeProvider themeProvider) {
     return Container(
       margin: EdgeInsets.all(16),
@@ -266,6 +269,8 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     );
   }
 
+  /// Displays a tabBar to select the type of password generation
+  /// Word based password or random number/characters password
   PreferredSizeWidget _displayTabBar(ThemeProvider themeProvider) {
     return TabBar(
       controller: _tabController,
@@ -299,6 +304,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     );
   }
 
+  /// Called to generate a new password
   String _generatePassword() {
     if (_isGeneratingWords) {
       // Generating a password composed of words
@@ -309,6 +315,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     return _generateRandomPassword();
   }
 
+  /// Generates a password made of random numbers/characters
   String _generateRandomPassword() {
     var newPassword = "";
     List<String> dictionary = [];
@@ -336,6 +343,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     return newPassword;
   }
 
+  /// Generates a password based of words
   String _generatePasswordWithWords() {
     var newPassword = "";
 

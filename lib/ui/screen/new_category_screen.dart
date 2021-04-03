@@ -41,6 +41,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     }
   }
 
+  /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: AppTranslations.of(context).text("new_category"),
@@ -66,6 +67,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     );
   }
 
+  /// Displays the [Scaffold] for the mobile version
   Widget _displaysMobile(ThemeProvider themeProvider) {
     return Scaffold(
       backgroundColor: themeProvider.backgroundColor,
@@ -92,6 +94,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     );
   }
 
+  /// Displays a unified body for both mobile and desktop version
   Widget _displaysBody(ThemeProvider themeProvider) {
     return Container(
       margin: EdgeInsets.all(16),
@@ -158,6 +161,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     );
   }
 
+  /// Save a new category in the local database
   _onAddingCategory() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       var category = Category(

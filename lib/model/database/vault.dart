@@ -22,6 +22,7 @@ class Vault {
     this.deletedAt,
   });
 
+  /// Transform a map of [data] into a vault
   factory Vault.fromMap(Map<String, dynamic> data) {
     var createdAtString = DateTime.parse(data[columnCreatedAt]);
     var updatedAtString = DateTime.parse(data[columnUpdatedAt]);
@@ -41,6 +42,7 @@ class Vault {
     );
   }
 
+  // Transform a vault into a map of data
   Map<String, dynamic> toMap() {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     String createdAtString = dateFormatter.format(createdAt);

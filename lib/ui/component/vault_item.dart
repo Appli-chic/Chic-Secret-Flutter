@@ -27,6 +27,7 @@ class VaultItem extends StatelessWidget {
     }
   }
 
+  /// Displays the vault item for the mobile version
   Widget _buildMobileItem(ThemeProvider themeProvider) {
     return Card(
       margin: EdgeInsets.only(left: 16, right: 16, top: 8),
@@ -55,6 +56,7 @@ class VaultItem extends StatelessWidget {
     );
   }
 
+  /// Displays the vault item for the desktop version
   Widget _buildDesktopItem(ThemeProvider themeProvider) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,

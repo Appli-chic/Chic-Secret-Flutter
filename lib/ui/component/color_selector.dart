@@ -33,6 +33,7 @@ class _ColorSelectorState extends State<ColorSelector> {
     );
   }
 
+  /// Generates a list of selectable color circles
   List<Widget> _generateColorsCircles(ThemeProvider themeProvider) {
     List<Widget> circles = [];
 
@@ -82,6 +83,7 @@ class _ColorSelectorState extends State<ColorSelector> {
     return circles;
   }
 
+  /// Displays A single color circle
   Widget _generateColorWidget(ThemeProvider themeProvider, Color color) {
     if (_selectedColor == color) {
       // If the color is selected
@@ -142,6 +144,8 @@ class _ColorSelectorState extends State<ColorSelector> {
 }
 
 class ColorPickerDialog {
+
+  /// Show the color picker dialog to select a custom color
   static Future<bool> colorPickerDialog(
       BuildContext context,
       Color color,

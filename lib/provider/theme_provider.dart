@@ -98,5 +98,6 @@ class ThemeProvider with ChangeNotifier {
   /// Retrieve the divider color corresponding to the [_theme]
   Color get divider => _theme.divider;
 
+  /// Retrieve if the theme is a light [_theme]
   bool get isLight => _theme.isLight;
 }

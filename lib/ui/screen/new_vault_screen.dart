@@ -45,6 +45,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     }
   }
 
+  /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: AppTranslations.of(context).text("new_vault"),
@@ -70,6 +71,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     );
   }
 
+  /// Displays the [Scaffold] for the mobile version
   Widget _displaysMobile(ThemeProvider themeProvider) {
     return Scaffold(
       backgroundColor: themeProvider.backgroundColor,
@@ -84,6 +86,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     );
   }
 
+  /// Displays the appBar for the mobile version
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     if (!ChicPlatform.isDesktop()) {
       return AppBar(
@@ -102,6 +105,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     }
   }
 
+  /// Displays a unified body for both mobile and desktop version
   Widget _displaysBody(ThemeProvider themeProvider) {
     return Container(
       margin: EdgeInsets.all(16),
@@ -188,6 +192,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     );
   }
 
+  /// Save a new vault in the local database
   _onAddingVault() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       var vault = Vault(
