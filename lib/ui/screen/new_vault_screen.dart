@@ -6,6 +6,7 @@ import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
+import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/security.dart';
@@ -198,6 +199,11 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
       );
 
       vault = await VaultService.save(vault);
+
+      // Select the vault and keep the password in memory
+      selectedVault = vault;
+      currentPassword = _passwordController.text;
+
       Navigator.pop(context, vault);
     }
   }

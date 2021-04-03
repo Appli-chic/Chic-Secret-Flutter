@@ -61,7 +61,9 @@ class VaultItem extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          onTap(vault);
+          if(!isSelected) {
+            onTap(vault);
+          }
         },
         child: Container(
           margin: EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 4),

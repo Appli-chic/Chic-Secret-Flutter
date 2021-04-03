@@ -299,17 +299,30 @@ class _VaultsScreenState extends State<VaultsScreen> {
   }
 
   _onAddVaultClicked() async {
-    var data =
-        await ChicNavigator.push(context, NewVaultScreen(), isModal: true);
+    var data = await ChicNavigator.push(
+      context,
+      NewVaultScreen(),
+      isModal: true,
+    );
 
     if (data != null) {
       _loadVaults();
+
+      // Select the vault and start working on it
+      widget.onVaultChange();
+
+      if(!ChicPlatform.isDesktop()) {
+        await ChicNavigator.push(context, MainMobileScreen());
+      }
     }
   }
 
   _onAddCategoryClicked() async {
-    var data =
-        await ChicNavigator.push(context, NewCategoryScreen(), isModal: true);
+    var data = await ChicNavigator.push(
+      context,
+      NewCategoryScreen(),
+      isModal: true,
+    );
 
     if (data != null) {
       _loadCategories();
