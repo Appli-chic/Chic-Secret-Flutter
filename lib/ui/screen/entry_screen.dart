@@ -56,7 +56,15 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
   /// Load the list of passwords linked to the current vault
   _loadPassword() async {
     if (selectedVault != null) {
-      _entries = await EntryService.getAllByVault(selectedVault!.id);
+      if (selectedCategory.id.isEmpty) {
+        // Load all the passwords in the current vault
+        _entries = await EntryService.getAllByVault(selectedVault!.id);
+      } else {
+        // Load the passwords in the current vault and selected category
+        _entries = await EntryService.getAllByVaultAndCategory(
+            selectedVault!.id, selectedCategory.id);
+      }
+
       setState(() {});
     }
   }
@@ -175,7 +183,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
       isModal: true,
     );
 
-    if(widget.reloadCategories != null) {
+    if (widget.reloadCategories != null) {
       widget.reloadCategories!();
     }
 

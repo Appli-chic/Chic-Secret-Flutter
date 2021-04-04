@@ -101,15 +101,20 @@ class CategoryItem extends StatelessWidget {
                     color: isSelected ? Colors.white : themeProvider.textColor,
                     size: 13,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Text(
-                      category.name,
-                      style: TextStyle(
-                        color:
-                            isSelected ? Colors.white : themeProvider.textColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Text(
+                        category.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: isSelected
+                              ? Colors.white
+                              : themeProvider.textColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),

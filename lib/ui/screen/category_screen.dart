@@ -74,8 +74,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         itemBuilder: (context, index) {
           return CategoryItem(
             category: _categories[index],
-            isSelected: selectedCategory != null &&
-                selectedCategory!.id == _categories[index].id,
+            isSelected: selectedCategory.id == _categories[index].id,
             onTap: (Category category) {
               selectedCategory = category;
               setState(() {});
@@ -88,8 +87,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   /// Call the [NewCategoryScreen] screen to create a new category.
   _onAddCategoryClicked() async {
-    var data =
-        await ChicNavigator.push(context, NewCategoryScreen(), isModal: true);
+    var data = await ChicNavigator.push(
+      context,
+      NewCategoryScreen(),
+      isModal: true,
+    );
 
     if (data != null) {
       _loadCategories();

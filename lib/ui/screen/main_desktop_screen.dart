@@ -39,6 +39,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
         gripColor: themeProvider.divider,
         view1: VaultsScreen(
           onVaultChange: _reloadPasswordScreen,
+          onCategoryChange: _reloadPasswordScreen,
           vaultScreenController: _vaultScreenController,
         ),
         view2: SplitView(

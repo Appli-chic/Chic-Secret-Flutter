@@ -41,5 +41,6 @@
   "digit": "Digit",
   "symbol": "Symbols",
   "characters": "Characters",
-  "empty_category": "No categories"
+  "empty_category": "No categories",
+  "all": "All"
 }

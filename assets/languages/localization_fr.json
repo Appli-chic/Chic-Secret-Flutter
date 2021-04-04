@@ -41,5 +41,6 @@
   "digit": "Chiffre",
   "symbol": "Caractère special",
   "characters": "Caractères",
-  "empty_category": "Pas de catégories"
+  "empty_category": "Pas de catégories",
+  "all": "Tous"
 }

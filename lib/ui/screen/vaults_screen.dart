@@ -20,7 +20,16 @@ import 'package:provider/provider.dart';
 
 Vault? selectedVault;
 String? currentPassword;
-Category? selectedCategory;
+
+Category selectedCategory = Category(
+  id: "",
+  name: "",
+  color: "",
+  icon: Icons.apps.codePoint,
+  vaultId: "",
+  createdAt: DateTime.now(),
+  updatedAt: DateTime.now(),
+);
 
 class VaultScreenController {
   void Function()? reloadCategories;
@@ -31,12 +40,14 @@ class VaultScreenController {
 }
 
 class VaultsScreen extends StatefulWidget {
-  final VaultScreenController? vaultScreenController;
   final Function() onVaultChange;
+  final Function()? onCategoryChange;
+  final VaultScreenController? vaultScreenController;
 
   VaultsScreen({
-    this.vaultScreenController,
     required this.onVaultChange,
+    this.onCategoryChange,
+    this.vaultScreenController,
   });
 
   @override
@@ -96,12 +107,12 @@ class _VaultsScreenState extends State<VaultsScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _displayVaults(themeProvider),
+                _displaysVaults(themeProvider),
                 selectedVault != null
-                    ? _displayCategories(themeProvider)
+                    ? _displaysCategories(themeProvider)
                     : SizedBox.shrink(),
                 selectedVault != null
-                    ? _displayTags(themeProvider)
+                    ? _displaysTags(themeProvider)
                     : SizedBox.shrink(),
               ],
             ),
@@ -127,7 +138,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
   }
 
   /// Displays the list of vaults for the desktop version
-  Widget _displayVaults(ThemeProvider themeProvider) {
+  Widget _displaysVaults(ThemeProvider themeProvider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -161,7 +172,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
 
                   // Only load categories and tags if it's the desktop version
                   if (ChicPlatform.isDesktop()) {
-                    selectedCategory = null;
                     _loadCategories();
                   }
 
@@ -176,7 +186,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
   }
 
   /// Displays the categories for the desktop version
-  Widget _displayCategories(ThemeProvider themeProvider) {
+  Widget _displaysCategories(ThemeProvider themeProvider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -192,14 +202,35 @@ class _VaultsScreenState extends State<VaultsScreen> {
         ),
         ListView.builder(
           shrinkWrap: true,
-          itemCount: _categories.length,
+          itemCount: _categories.length + 1,
           itemBuilder: (context, index) {
+            var category;
+
+            // Add a "Fake" category to display all the passwords
+            if (index == 0) {
+              category = Category(
+                id: "",
+                name: AppTranslations.of(context).text("all"),
+                color: "#${themeProvider.primaryColor.value.toRadixString(16)}",
+                icon: Icons.apps.codePoint,
+                vaultId: "",
+                createdAt: DateTime.now(),
+                updatedAt: DateTime.now(),
+              );
+            } else {
+              category = _categories[index - 1];
+            }
+
             return CategoryItem(
-              category: _categories[index],
-              isSelected: selectedCategory != null &&
-                  selectedCategory!.id == _categories[index].id,
+              category: category,
+              isSelected: selectedCategory.id == category.id,
               onTap: (Category category) {
                 selectedCategory = category;
+
+                if (widget.onCategoryChange != null) {
+                  widget.onCategoryChange!();
+                }
+
                 setState(() {});
               },
             );
@@ -225,7 +256,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
   }
 
   /// Displays the list of tags for the desktop version
-  Widget _displayTags(ThemeProvider themeProvider) {
+  Widget _displaysTags(ThemeProvider themeProvider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,7 +353,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
       // Select the vault and start working on it
       widget.onVaultChange();
 
-      if(!ChicPlatform.isDesktop()) {
+      if (!ChicPlatform.isDesktop()) {
         await ChicNavigator.push(context, MainMobileScreen());
       }
     }
