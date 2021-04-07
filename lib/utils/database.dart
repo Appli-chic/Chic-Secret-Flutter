@@ -25,17 +25,13 @@ Future<void> initDatabase() async {
     );
   } else {
     var databasesPath = await getDatabasesPath();
-    if (databasesPath != null) {
-      String path = join(databasesPath, databaseName);
+    String path = join(databasesPath, databaseName);
 
-      db = await openDatabase(
-        path,
-        version: version,
-        onCreate: _onCreate,
-      );
-    } else {
-      throw Error();
-    }
+    db = await openDatabase(
+      path,
+      version: version,
+      onCreate: _onCreate,
+    );
   }
 }
 

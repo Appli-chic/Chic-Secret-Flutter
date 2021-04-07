@@ -2,6 +2,7 @@ import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
@@ -44,6 +45,22 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   var _desktopCategoryFocusNode = FocusNode();
 
   Category? _category;
+
+  @override
+  void initState() {
+    _loadFirstCategory();
+    super.initState();
+  }
+
+  /// Load the first category if it exists
+  _loadFirstCategory() async {
+    _category = await CategoryService.getFirstByVault(selectedVault!.id);
+
+    if(_category != null) {
+      _categoryController.text = _category!.name;
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

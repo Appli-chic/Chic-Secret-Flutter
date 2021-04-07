@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class EntryItem extends StatelessWidget {
-  final Entry password;
+  final Entry entry;
   final bool isSelected;
   final Function(Entry) onTap;
 
   EntryItem({
-    required this.password,
+    required this.entry,
     required this.isSelected,
     required this.onTap,
   });
@@ -32,24 +32,24 @@ class EntryItem extends StatelessWidget {
         dense: true,
         contentPadding: EdgeInsets.only(top: 4, bottom: 4, left: 10, right: 10),
         onTap: () {
-          onTap(password);
+          onTap(entry);
         },
         horizontalTitleGap: 0,
         leading: Container(
           padding: EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: getColorFromHex(password.category!.color),
+            color: getColorFromHex(entry.category!.color),
             borderRadius: BorderRadius.all(Radius.circular(6)),
           ),
           child: Icon(
-            IconData(password.category!.icon, fontFamily: 'MaterialIcons'),
+            IconData(entry.category!.icon, fontFamily: 'MaterialIcons'),
             color: Colors.white,
           ),
         ),
         title: Container(
           margin: EdgeInsets.only(left: 16),
           child: Text(
-            password.name,
+            entry.name,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: ChicPlatform.isDesktop() ? 16 : 18,
@@ -60,7 +60,7 @@ class EntryItem extends StatelessWidget {
         subtitle: Container(
           margin: EdgeInsets.only(left: 16),
           child: Text(
-            password.username,
+            entry.username,
             style: TextStyle(
               color: isSelected
                   ? themeProvider.textColor

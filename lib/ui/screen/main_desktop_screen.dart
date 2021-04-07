@@ -1,5 +1,7 @@
+import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/split_view.dart';
+import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
 import 'package:chic_secret/ui/screen/entry_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:flutter/material.dart';
@@ -11,13 +13,14 @@ class MainDesktopScreen extends StatefulWidget {
 }
 
 class _MainDesktopScreenState extends State<MainDesktopScreen> {
+  Entry? _selectedEntry;
   VaultScreenController _vaultScreenController = VaultScreenController();
-  EntryScreenController _passwordScreenController = EntryScreenController();
+  EntryScreenController _entryScreenController = EntryScreenController();
 
   /// Ask to reload the passwords from the [PasswordsScreen]
   _reloadPasswordScreen() {
-    if (_passwordScreenController.reloadPasswords != null) {
-      _passwordScreenController.reloadPasswords!();
+    if (_entryScreenController.reloadPasswords != null) {
+      _entryScreenController.reloadPasswords!();
     }
 
     setState(() {});
@@ -28,6 +31,12 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     if (_vaultScreenController.reloadCategories != null) {
       _vaultScreenController.reloadCategories!();
     }
+  }
+
+  /// Reload the [EntryDetailScreen] with the new selected entry
+  _onEntrySelected(Entry entry) {
+    _selectedEntry = entry;
+    setState(() {});
   }
 
   @override
@@ -45,14 +54,15 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
         view2: SplitView(
           gripColor: themeProvider.divider,
           view1: PasswordsScreen(
-            passwordScreenController: _passwordScreenController,
+            passwordScreenController: _entryScreenController,
             reloadCategories: _reloadCategories,
+            onEntrySelected: _onEntrySelected,
           ),
-          view2: Center(
-            child: Container(
-              color: themeProvider.backgroundColor,
-            ),
-          ),
+          view2: _selectedEntry != null
+              ? EntryDetailScreen(entry: _selectedEntry!)
+              : Container(
+                  color: themeProvider.backgroundColor,
+                ),
           initialWeight: 0.4,
           onWeightChanged: (double value) {},
         ),

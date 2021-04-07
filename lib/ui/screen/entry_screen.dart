@@ -6,6 +6,7 @@ import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/entry_item.dart';
+import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
@@ -23,10 +24,12 @@ class EntryScreenController {
 class PasswordsScreen extends StatefulWidget {
   final EntryScreenController? passwordScreenController;
   final Function()? reloadCategories;
+  final Function(Entry entry)? onEntrySelected;
 
   const PasswordsScreen({
     this.passwordScreenController,
     this.reloadCategories,
+    this.onEntrySelected,
   });
 
   @override
@@ -35,12 +38,11 @@ class PasswordsScreen extends StatefulWidget {
 
 class _PasswordsScreenState extends State<PasswordsScreen> {
   List<Entry> _entries = [];
+  Entry? _selectedEntry;
 
   final _searchController = TextEditingController();
   var _searchFocusNode = FocusNode();
   var _desktopSearchFocusNode = FocusNode();
-
-  Entry? _selectedEntry;
 
   @override
   void initState() {
@@ -147,14 +149,10 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
               itemCount: _entries.length,
               itemBuilder: (context, index) {
                 return EntryItem(
-                  password: _entries[index],
+                  entry: _entries[index],
                   isSelected: _selectedEntry != null &&
                       _selectedEntry == _entries[index],
-                  onTap: (Entry password) {
-                    setState(() {
-                      _selectedEntry = password;
-                    });
-                  },
+                  onTap: _onEntrySelected,
                 );
               },
             ),
@@ -167,12 +165,27 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
       itemCount: _entries.length,
       itemBuilder: (context, index) {
         return EntryItem(
-          password: _entries[index],
+          entry: _entries[index],
           isSelected: false,
-          onTap: (Entry password) {},
+          onTap: _onEntrySelected,
         );
       },
     );
+  }
+
+  /// When the entry is selected by the user, it will display the user screen
+  _onEntrySelected(Entry entry) async {
+    _selectedEntry = entry;
+
+    if (ChicPlatform.isDesktop()) {
+      if (widget.onEntrySelected != null) {
+        widget.onEntrySelected!(entry);
+      }
+    } else {
+      await ChicNavigator.push(context, EntryDetailScreen(entry: entry));
+    }
+
+    setState(() {});
   }
 
   /// Call the [NewEntryScreen] screen to create a new entry
