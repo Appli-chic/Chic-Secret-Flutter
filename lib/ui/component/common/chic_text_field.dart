@@ -36,6 +36,7 @@ class ChicTextField extends StatefulWidget {
   final Function()? onTap;
   final bool hasStrengthIndicator;
   final int? maxLines;
+  final Function(String)? ontextChanged;
 
   ChicTextField({
     required this.controller,
@@ -58,6 +59,7 @@ class ChicTextField extends StatefulWidget {
     this.onTap,
     this.hasStrengthIndicator = false,
     this.maxLines = 1,
+    this.ontextChanged,
   });
 
   @override
@@ -127,6 +129,10 @@ class _ChicTextFieldState extends State<ChicTextField> {
           widget.focus.requestFocus();
         },
         onChanged: (String text) {
+          if(widget.ontextChanged != null) {
+            widget.ontextChanged!(text);
+          }
+
           if (widget.hasStrengthIndicator) {
             setState(() {});
           }

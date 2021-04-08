@@ -36,7 +36,7 @@ class Entry {
   });
 
   /// Transform a map of [data] into an entry
-  factory Entry.fromMap(Map<String, dynamic> data) {
+  factory Entry.fromMap(Map<String, dynamic> data, {String? categoryPrefix}) {
     var createdAtString = DateTime.parse(data[columnCreatedAt]);
     var updatedAtString = DateTime.parse(data[columnUpdatedAt]);
     var deletedAtString;
@@ -55,6 +55,9 @@ class Entry {
       createdAt: createdAtString,
       updatedAt: updatedAtString,
       deletedAt: deletedAtString,
+      category: categoryPrefix != null
+          ? Category.fromMap(data, prefix: categoryPrefix)
+          : null,
     );
   }
 

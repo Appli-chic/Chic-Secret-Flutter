@@ -42,17 +42,4 @@ class CategoryService {
 
     return categories;
   }
-
-  /// Retrieve the category from it's id
-  static Future<Category?> getCategoryById(String categoryId) async {
-    Category? category;
-    List<Map<String, dynamic>> maps =
-        await db.query(categoryTable, where: "$columnId = '$categoryId'");
-
-    if (maps.isNotEmpty) {
-      category = Category.fromMap(maps[0]);
-    }
-
-    return category;
-  }
 }

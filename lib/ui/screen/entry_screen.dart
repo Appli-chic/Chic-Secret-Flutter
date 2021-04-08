@@ -71,6 +71,21 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
     }
   }
 
+  /// Search the entries that have a field containing the text
+  _searchPassword(String text) async {
+    if (selectedVault != null) {
+      if (selectedCategory.id.isEmpty) {
+        // Search the passwords in the current vault
+        _entries = await EntryService.searchByVault(selectedVault!.id, text);
+        setState(() {});
+      } else {
+        // Search passwords in the current vault and selected category
+        _entries = await EntryService.searchByVaultAndCategory(selectedVault!.id, selectedCategory.id, text);
+        setState(() {});
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
@@ -131,6 +146,9 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
                         color: themeProvider.placeholder,
                       ),
                     ),
+                    ontextChanged: (String text) {
+                      _searchPassword(text);
+                    },
                   ),
                 ),
               ),
