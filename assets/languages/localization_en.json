@@ -30,6 +30,7 @@
   "search_passwords": "Search passwords...",
   "new_password": "New Password",
   "username_email": "Username/Email",
+  "username": "Username",
   "error_username_empty": "The username must not be empty",
   "error_category_empty": "The category must not be empty",
   "generate_password": "Generate Password",
@@ -42,5 +43,6 @@
   "symbol": "Symbols",
   "characters": "Characters",
   "empty_category": "No categories",
-  "all": "All"
+  "all": "All",
+  "text_copied": "Text copied"
 }

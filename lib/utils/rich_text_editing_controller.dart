@@ -2,19 +2,24 @@ import 'package:chic_secret/utils/constant.dart';
 import 'package:flutter/material.dart';
 
 class RichTextEditingController extends TextEditingController {
-  TextStyle numberStyle = TextStyle(
+  static TextStyle numberStyle = TextStyle(
     color: Colors.green,
     fontWeight: FontWeight.bold,
   );
 
-  TextStyle uppercaseStyle = TextStyle(
+  static TextStyle uppercaseStyle = TextStyle(
     color: Colors.blue,
     fontWeight: FontWeight.bold,
   );
 
   @override
   TextSpan buildTextSpan({TextStyle? style, required bool withComposing}) {
-    var characters = text.characters;
+    return textToSpan(text.characters);
+  }
+
+  /// Transform a text to a span to display the number and uppercase
+  /// in a different color.
+  static TextSpan textToSpan(Characters characters) {
     List<TextSpan> textSpanList = [];
 
     characters.forEach((character) {

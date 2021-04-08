@@ -32,11 +32,15 @@ class CategoryItem extends StatelessWidget {
 
   /// Displays the mobile version of the [CategoryItem]
   Widget _buildMobileItem(ThemeProvider themeProvider) {
+    var backgroundColor = _getNotSelectedBackgroundColor(themeProvider);
+
+    if (ChicPlatform.isDesktop() && isSelected) {
+      backgroundColor = themeProvider.primaryColor;
+    }
+
     return Card(
       margin: EdgeInsets.only(left: 16, right: 16, top: 8),
-      color: isSelected
-          ? themeProvider.primaryColor
-          : _getNotSelectedBackgroundColor(themeProvider),
+      color: backgroundColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(6.0),
       ),

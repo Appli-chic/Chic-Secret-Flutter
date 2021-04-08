@@ -1,3 +1,4 @@
+import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/entry_detail_input.dart';
@@ -19,6 +20,7 @@ class EntryDetailScreen extends StatefulWidget {
 }
 
 class _EntryDetailScreenState extends State<EntryDetailScreen> {
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
@@ -27,8 +29,8 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
       backgroundColor: themeProvider.backgroundColor,
       appBar: _displaysAppbar(themeProvider),
       body: ChicPlatform.isDesktop()
-          ? _displaysDesktopBody(themeProvider)
-          : _displaysMobileBody(themeProvider),
+          ? _displaysBody(themeProvider)
+          : _displaysBody(themeProvider),
     );
   }
 
@@ -46,8 +48,8 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     }
   }
 
-  /// Displays the body of the screen for the Desktop version
-  Widget _displaysDesktopBody(ThemeProvider themeProvider) {
+  /// Displays the body of the screen
+  Widget _displaysBody(ThemeProvider themeProvider) {
     return Container(
       margin: EdgeInsets.all(20),
       child: Container(
@@ -61,31 +63,35 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            ChicPlatform.isDesktop()
+                ? EntryDetailInput(
+                    label: AppTranslations.of(context).text("name"),
+                    text: widget.entry.name,
+                  )
+                : SizedBox.shrink(),
+            ChicPlatform.isDesktop() ? SizedBox(height: 24) : SizedBox.shrink(),
             EntryDetailInput(
-              label: "Name",
-              text: widget.entry.name,
-            ),
-            SizedBox(height: 24),
-            EntryDetailInput(
-              label: "Username",
+              label: AppTranslations.of(context).text("username"),
               text: widget.entry.username,
               canCopy: true,
             ),
             SizedBox(height: 24),
             EntryDetailInput(
-              label: "Password",
+              label: AppTranslations.of(context).text("password"),
               text: Security.decrypt(currentPassword!, widget.entry.hash),
               canCopy: true,
               isPassword: true,
+            ),
+            SizedBox(height: 24),
+            EntryDetailInput(
+              label: AppTranslations.of(context).text("category"),
+              text: widget.entry.category != null
+                  ? widget.entry.category!.name
+                  : "",
             ),
           ],
         ),
       ),
     );
-  }
-
-  /// Displays the body of the screen for the Mobile version
-  Widget _displaysMobileBody(ThemeProvider themeProvider) {
-    return Container();
   }
 }

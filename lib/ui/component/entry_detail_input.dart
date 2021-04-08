@@ -1,6 +1,9 @@
+import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/utils/rich_text_editing_controller.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class EntryDetailInput extends StatefulWidget {
@@ -22,6 +25,13 @@ class EntryDetailInput extends StatefulWidget {
 
 class _EntryDetailInputState extends State<EntryDetailInput> {
   bool _isPasswordHidden = true;
+  FToast _toast = FToast();
+
+  @override
+  void initState() {
+    super.initState();
+    _toast.init(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,9 +97,36 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
           ),
           onPressed: () {
             FlutterClipboard.copy(widget.text);
+            _displaysTextCopiedToast(themeProvider);
           },
         ),
       ),
+    );
+  }
+
+  /// Show a toast to attest the text had been copied in the clipboard
+  void _displaysTextCopiedToast(ThemeProvider themeProvider) {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25.0),
+        color: themeProvider.divider,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            AppTranslations.of(context).text("text_copied"),
+            style: TextStyle(color: themeProvider.textColor),
+          ),
+        ],
+      ),
+    );
+
+    _toast.showToast(
+      child: toast,
+      gravity: ToastGravity.CENTER,
+      toastDuration: Duration(seconds: 2),
     );
   }
 
@@ -122,9 +159,8 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
       return Expanded(
         child: Container(
           margin: EdgeInsets.only(top: 4),
-          child: Text(
-            widget.text,
-            style: TextStyle(color: themeProvider.textColor),
+          child: RichText(
+            text: RichTextEditingController.textToSpan(widget.text.characters),
           ),
         ),
       );

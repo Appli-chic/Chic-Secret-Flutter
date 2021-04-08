@@ -30,6 +30,7 @@
   "search_passwords": "Recherchez vos mots de passe...",
   "new_password": "Nouveau mot de passe",
   "username_email": "Nom d'utilisateur/Courriel",
+  "username": "Nom d'utilisateur",
   "error_username_empty": "Le nom d'utilisateur ne doit pas être vide.",
   "error_category_empty": "La catégorie d'utilisateur ne doit pas être vide.",
   "generate_password": "Générer un mot de passe",
@@ -42,5 +43,6 @@
   "symbol": "Caractère special",
   "characters": "Caractères",
   "empty_category": "Pas de catégories",
-  "all": "Tous"
+  "all": "Tous",
+  "text_copied": "Texte copié"
 }
