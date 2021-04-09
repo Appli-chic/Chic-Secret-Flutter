@@ -1,5 +1,6 @@
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/entry.dart';
+import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/model/database/vault.dart';
 
 const String columnId = "id";
@@ -28,7 +29,7 @@ $columnCategoryVaultId TEXT,
 $columnCreatedAt DATETIME, 
 $columnUpdatedAt DATETIME, 
 $columnDeletedAt DATETIME,
-FOREIGN KEY($columnCategoryVaultId) REFERENCES $vaultTable(id)
+FOREIGN KEY($columnCategoryVaultId) REFERENCES $vaultTable($columnId)
 )
 ''';
 
@@ -43,7 +44,21 @@ $columnEntryCategoryId TEXT,
 $columnCreatedAt DATETIME, 
 $columnUpdatedAt DATETIME, 
 $columnDeletedAt DATETIME,
-FOREIGN KEY($columnEntryVaultId) REFERENCES $vaultTable(id)
-FOREIGN KEY($columnEntryCategoryId) REFERENCES $categoryTable(id)
+FOREIGN KEY($columnEntryVaultId) REFERENCES $vaultTable($columnId)
+FOREIGN KEY($columnEntryCategoryId) REFERENCES $categoryTable($columnId)
+)
+''';
+
+const String createTagTable = '''
+CREATE TABLE $tagTable(
+$columnId TEXT PRIMARY KEY, 
+$columnTagName TEXT, 
+$columnTagVaultId TEXT, 
+$columnTagEntryId TEXT, 
+$columnCreatedAt DATETIME, 
+$columnUpdatedAt DATETIME, 
+$columnDeletedAt DATETIME,
+FOREIGN KEY($columnEntryVaultId) REFERENCES $vaultTable($columnId)
+FOREIGN KEY($columnTagEntryId) REFERENCES $entryTable($columnId)
 )
 ''';

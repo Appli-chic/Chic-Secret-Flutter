@@ -88,6 +88,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
           child: _displaysBody(themeProvider),
         ),
       ),

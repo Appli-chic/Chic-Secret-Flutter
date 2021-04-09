@@ -70,11 +70,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         ],
       ),
       body: ListView.builder(
+        physics: BouncingScrollPhysics(),
         itemCount: _categories.length,
         itemBuilder: (context, index) {
           return CategoryItem(
             category: _categories[index],
-            isSelected: selectedCategory.id == _categories[index].id,
             onTap: (Category category) {
               selectedCategory = category;
               setState(() {});

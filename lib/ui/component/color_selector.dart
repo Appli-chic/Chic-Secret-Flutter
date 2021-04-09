@@ -27,6 +27,7 @@ class _ColorSelectorState extends State<ColorSelector> {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
     return GridView.count(
+      physics: BouncingScrollPhysics(),
       shrinkWrap: true,
       crossAxisCount: _colorListSize(),
       children: _generateColorsCircles(themeProvider),

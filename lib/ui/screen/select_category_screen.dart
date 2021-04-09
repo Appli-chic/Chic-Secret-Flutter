@@ -124,6 +124,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
     }
 
     return ListView.builder(
+      physics: BouncingScrollPhysics(),
       shrinkWrap: true,
       itemCount: _categories.length,
       itemBuilder: (context, index) {

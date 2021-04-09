@@ -17,8 +17,19 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
   VaultScreenController _vaultScreenController = VaultScreenController();
   EntryScreenController _entryScreenController = EntryScreenController();
 
-  /// Ask to reload the passwords from the [PasswordsScreen]
-  _reloadPasswordScreen() {
+  /// Ask to reload the passwords from the [PasswordsScreen] when the vault change
+  _reloadPasswordScreenOnVaultChange() {
+    _selectedEntry = null;
+
+    if (_entryScreenController.reloadPasswords != null) {
+      _entryScreenController.reloadPasswords!();
+    }
+
+    setState(() {});
+  }
+
+  /// Ask to reload the passwords from the [PasswordsScreen] when the category change
+  _reloadPasswordScreenOnCategoryChange() {
     if (_entryScreenController.reloadPasswords != null) {
       _entryScreenController.reloadPasswords!();
     }
@@ -47,8 +58,8 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
       body: SplitView(
         gripColor: themeProvider.divider,
         view1: VaultsScreen(
-          onVaultChange: _reloadPasswordScreen,
-          onCategoryChange: _reloadPasswordScreen,
+          onVaultChange: _reloadPasswordScreenOnVaultChange,
+          onCategoryChange: _reloadPasswordScreenOnCategoryChange,
           vaultScreenController: _vaultScreenController,
         ),
         view2: SplitView(

@@ -8,13 +8,13 @@ import 'package:provider/provider.dart';
 
 class CategoryItem extends StatelessWidget {
   final Category category;
-  final bool isSelected;
+  final bool? isSelected;
   final Function(Category) onTap;
   final bool isForcingMobileStyle;
 
   CategoryItem({
     required this.category,
-    required this.isSelected,
+    this.isSelected,
     required this.onTap,
     this.isForcingMobileStyle = false,
   });
@@ -34,7 +34,7 @@ class CategoryItem extends StatelessWidget {
   Widget _buildMobileItem(ThemeProvider themeProvider) {
     var backgroundColor = _getNotSelectedBackgroundColor(themeProvider);
 
-    if (ChicPlatform.isDesktop() && isSelected) {
+    if (ChicPlatform.isDesktop() || isSelected != null && isSelected!) {
       backgroundColor = themeProvider.primaryColor;
     }
 
@@ -96,13 +96,13 @@ class CategoryItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4)),
             ),
             child: Container(
-              color: isSelected ? getColorFromHex(category.color) : null,
+              color: isSelected! ? getColorFromHex(category.color) : null,
               padding: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
               child: Row(
                 children: [
                   Icon(
                     IconData(category.icon, fontFamily: 'MaterialIcons'),
-                    color: isSelected ? Colors.white : themeProvider.textColor,
+                    color: isSelected! ? Colors.white : themeProvider.textColor,
                     size: 13,
                   ),
                   Flexible(
@@ -113,7 +113,7 @@ class CategoryItem extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          color: isSelected
+                          color: isSelected!
                               ? Colors.white
                               : themeProvider.textColor,
                           fontSize: 12,

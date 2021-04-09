@@ -33,6 +33,7 @@ class _IconSelectorState extends State<IconSelector> {
     var iconsListSize = ChicPlatform.isDesktop() ? 18 : 12;
 
     return GridView.count(
+      physics: BouncingScrollPhysics(),
       shrinkWrap: true,
       crossAxisCount: crossAxisSize,
       children: List.generate(iconsListSize, (index) {
@@ -140,6 +141,7 @@ class _IconPickerDialogState extends State<IconPickerDialog> {
         width: 320,
         height: 460,
         child: GridView.count(
+          physics: BouncingScrollPhysics(),
           crossAxisCount: ChicPlatform.isDesktop() ? 6 : 4,
           children: List.generate(icons.length, (index) {
             return _displayIcon(

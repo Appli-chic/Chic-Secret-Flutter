@@ -40,11 +40,12 @@ class _DesktopModalState extends State<DesktopModal> {
       content: Container(
         width: desktopHeight,
         height: widget.height,
-        child: SingleChildScrollView(child: widget.body),
+        child: Scrollbar(
+          isAlwaysShown: true,
+          child: SingleChildScrollView(child: widget.body),
+        ),
       ),
       actions: widget.actions,
     );
   }
 }
-
-

@@ -58,13 +58,13 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
   /// Load the list of passwords linked to the current vault
   _loadPassword() async {
     if (selectedVault != null) {
-      if (selectedCategory.id.isEmpty) {
-        // Load all the passwords in the current vault
-        _entries = await EntryService.getAllByVault(selectedVault!.id);
-      } else {
+      if (selectedCategory.id.isNotEmpty && ChicPlatform.isDesktop()) {
         // Load the passwords in the current vault and selected category
         _entries = await EntryService.getAllByVaultAndCategory(
             selectedVault!.id, selectedCategory.id);
+      } else {
+        // Load all the passwords in the current vault
+        _entries = await EntryService.getAllByVault(selectedVault!.id);
       }
 
       setState(() {});
@@ -74,15 +74,16 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
   /// Search the entries that have a field containing the text
   _searchPassword(String text) async {
     if (selectedVault != null) {
-      if (selectedCategory.id.isEmpty) {
+      if (selectedCategory.id.isNotEmpty && ChicPlatform.isDesktop()) {
+        // Search passwords in the current vault and selected category
+        _entries = await EntryService.searchByVaultAndCategory(
+            selectedVault!.id, selectedCategory.id, text);
+      } else {
         // Search the passwords in the current vault
         _entries = await EntryService.searchByVault(selectedVault!.id, text);
-        setState(() {});
-      } else {
-        // Search passwords in the current vault and selected category
-        _entries = await EntryService.searchByVaultAndCategory(selectedVault!.id, selectedCategory.id, text);
-        setState(() {});
       }
+
+      setState(() {});
     }
   }
 
@@ -180,6 +181,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
     }
 
     return ListView.builder(
+      physics: BouncingScrollPhysics(),
       itemCount: _entries.length,
       itemBuilder: (context, index) {
         return EntryItem(

@@ -1,15 +1,18 @@
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/entry.dart';
+import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
+import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
+import 'package:chic_secret/ui/component/tag_chip.dart';
 import 'package:chic_secret/ui/screen/generate_password_screen.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
 import 'package:chic_secret/ui/screen/select_category_screen.dart';
@@ -33,18 +36,22 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = RichTextEditingController();
   final _categoryController = TextEditingController();
+  final _tagController = TextEditingController();
 
   var _nameFocusNode = FocusNode();
   var _usernameFocusNode = FocusNode();
   var _passwordFocusNode = FocusNode();
   var _categoryFocusNode = FocusNode();
+  var _tagFocusNode = FocusNode();
 
   var _desktopNameFocusNode = FocusNode();
   var _desktopUsernameFocusNode = FocusNode();
   var _desktopPasswordFocusNode = FocusNode();
   var _desktopCategoryFocusNode = FocusNode();
+  var _desktopTagFocusNode = FocusNode();
 
   Category? _category;
+  List<String> _tagLabelList = [];
 
   @override
   void initState() {
@@ -56,7 +63,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   _loadFirstCategory() async {
     _category = await CategoryService.getFirstByVault(selectedVault!.id);
 
-    if(_category != null) {
+    if (_category != null) {
       _categoryController.text = _category!.name;
       setState(() {});
     }
@@ -106,7 +113,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       appBar: AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
         brightness: themeProvider.getBrightness(),
-        title: Text(AppTranslations.of(context).text("new_category")),
+        title: Text(AppTranslations.of(context).text("new_password")),
         actions: [
           ChicTextButton(
             child: Text(AppTranslations.of(context).text("save").toUpperCase()),
@@ -120,6 +127,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
           child: _displaysBody(themeProvider),
         ),
       ),
@@ -254,10 +262,64 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                 style: TextStyle(color: themeProvider.primaryColor),
               ),
             ),
+            SizedBox(height: 32.0),
+            Text(
+              AppTranslations.of(context).text("tags"),
+              style: TextStyle(
+                color: themeProvider.textColor,
+                fontWeight: FontWeight.w600,
+                fontSize: 17,
+              ),
+            ),
+            SizedBox(height: 16.0),
+            ChicTextField(
+              controller: _tagController,
+              focus: _tagFocusNode,
+              desktopFocus: _desktopTagFocusNode,
+              autoFocus: false,
+              textCapitalization: TextCapitalization.sentences,
+              hint: AppTranslations.of(context).text("tags"),
+              onSubmitted: (String text) {
+                if (ChicPlatform.isDesktop()) {
+                  _desktopTagFocusNode.requestFocus();
+                } else {
+                  _tagFocusNode.requestFocus();
+                }
+
+                _tagLabelList.add(text);
+                _tagController.clear();
+
+                setState(() {});
+              },
+            ),
+            SizedBox(height: 16.0),
+            Wrap(
+              children: _createChipsList(themeProvider),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  /// Displays the list of chips that had been added
+  List<Widget> _createChipsList(ThemeProvider themeProvider) {
+    List<Widget> chips = [];
+
+    for (var tagIndex = 0; tagIndex < _tagLabelList.length; tagIndex++) {
+      chips.add(
+        TagChip(
+          name: _tagLabelList[tagIndex],
+          index: tagIndex,
+          onDelete: (int index) {
+            _tagLabelList.removeAt(tagIndex);
+            setState(() {});
+          },
+        ),
+      );
+    }
+
+    return chips;
   }
 
   /// Call the [SelectCategoryScreen] screen to select which category will
@@ -314,7 +376,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         return;
       }
 
-      var password = Entry(
+      var entry = Entry(
         id: Uuid().v4(),
         name: _nameController.text,
         username: _usernameController.text,
@@ -325,8 +387,24 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         updatedAt: DateTime.now(),
       );
 
-      password = await EntryService.save(password);
-      Navigator.pop(context, password);
+      // Save the entry
+      entry = await EntryService.save(entry);
+
+      // Save all the tags linked to the password
+      for (var tagLabel in _tagLabelList) {
+        var tag = Tag(
+          id: Uuid().v4(),
+          name: tagLabel,
+          vaultId: selectedVault!.id,
+          entryId: entry.id,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+
+        await TagService.save(tag);
+      }
+
+      Navigator.pop(context, entry);
     }
   }
 
@@ -336,16 +414,19 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     _usernameController.dispose();
     _passwordController.dispose();
     _categoryController.dispose();
+    _tagController.dispose();
 
     _nameFocusNode.dispose();
     _usernameFocusNode.dispose();
     _passwordFocusNode.dispose();
     _categoryFocusNode.dispose();
+    _tagFocusNode.dispose();
 
     _desktopNameFocusNode.dispose();
     _desktopUsernameFocusNode.dispose();
     _desktopPasswordFocusNode.dispose();
     _desktopCategoryFocusNode.dispose();
+    _desktopTagFocusNode.dispose();
 
     super.dispose();
   }

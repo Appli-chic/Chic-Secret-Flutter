@@ -129,7 +129,7 @@ class _ChicTextFieldState extends State<ChicTextField> {
           widget.focus.requestFocus();
         },
         onChanged: (String text) {
-          if(widget.ontextChanged != null) {
+          if (widget.ontextChanged != null) {
             widget.ontextChanged!(text);
           }
 
@@ -257,7 +257,9 @@ class _ChicTextFieldState extends State<ChicTextField> {
         return null;
     }
 
-    if (isKeyDown && keyCode == LogicalKeyboardKey.tab) {
+    if (isKeyDown &&
+        keyCode == LogicalKeyboardKey.tab &&
+        widget.nextFocus != null) {
       widget.nextFocus!.requestFocus();
     }
   }
