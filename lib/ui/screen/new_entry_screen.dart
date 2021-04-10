@@ -6,6 +6,7 @@ import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
+import 'package:chic_secret/ui/component/common/chic_ahead_text_field.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
@@ -48,7 +49,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   var _desktopUsernameFocusNode = FocusNode();
   var _desktopPasswordFocusNode = FocusNode();
   var _desktopCategoryFocusNode = FocusNode();
-  var _desktopTagFocusNode = FocusNode();
 
   Category? _category;
   List<String> _tagLabelList = [];
@@ -84,7 +84,13 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: AppTranslations.of(context).text("new_password"),
-      body: _displaysBody(themeProvider),
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: _displaysBody(themeProvider),
+      ),
       actions: [
         Container(
           margin: EdgeInsets.only(right: 8, bottom: 8),
@@ -272,23 +278,32 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
               ),
             ),
             SizedBox(height: 16.0),
-            ChicTextField(
+            ChicAheadTextField(
               controller: _tagController,
-              focus: _tagFocusNode,
-              desktopFocus: _desktopTagFocusNode,
-              autoFocus: false,
-              textCapitalization: TextCapitalization.sentences,
               hint: AppTranslations.of(context).text("tags"),
-              onSubmitted: (String text) {
-                if (ChicPlatform.isDesktop()) {
-                  _desktopTagFocusNode.requestFocus();
-                } else {
-                  _tagFocusNode.requestFocus();
+              suggestionsCallback: (pattern) async {
+                if (pattern.isEmpty) {
+                  return [];
                 }
 
+                return await TagService.searchingTagInVault(
+                    selectedVault!.id, pattern);
+              },
+              itemBuilder: (context, tag) {
+                return ListTile(
+                  horizontalTitleGap: 0,
+                  leading: Icon(Icons.tag),
+                  title: Text(tag.name),
+                );
+              },
+              onSuggestionSelected: (tag) {
+                _tagLabelList.add(tag.name);
+                _tagController.clear();
+                setState(() {});
+              },
+              onSubmitted: (String text) {
                 _tagLabelList.add(text);
                 _tagController.clear();
-
                 setState(() {});
               },
             ),
@@ -426,7 +441,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     _desktopUsernameFocusNode.dispose();
     _desktopPasswordFocusNode.dispose();
     _desktopCategoryFocusNode.dispose();
-    _desktopTagFocusNode.dispose();
 
     super.dispose();
   }
