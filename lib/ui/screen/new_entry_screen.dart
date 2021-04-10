@@ -134,7 +134,12 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         },
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
-          child: _displaysBody(themeProvider),
+          child: ConstrainedBox(
+            constraints: BoxConstraints.tightFor(
+              height: MediaQuery.of(context).size.height - kToolbarHeight,
+            ),
+            child: _displaysBody(themeProvider),
+          ),
         ),
       ),
     );

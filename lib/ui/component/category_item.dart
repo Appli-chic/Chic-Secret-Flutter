@@ -39,7 +39,9 @@ class CategoryItem extends StatelessWidget {
 
     var backgroundColor = _getNotSelectedBackgroundColor(themeProvider);
 
-    if (ChicPlatform.isDesktop() || isSelected != null && isSelected!) {
+    if ((ChicPlatform.isDesktop() || isForcingMobileStyle) &&
+        isSelected != null &&
+        isSelected!) {
       backgroundColor = themeProvider.primaryColor;
     }
 
