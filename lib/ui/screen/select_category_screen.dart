@@ -133,7 +133,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
           isSelected:
               _category != null && _category!.id == _categories[index].id,
           isForcingMobileStyle: true,
-          onTap: (Category category) {
+          onTap: (Category? category) {
             _category = category;
             setState(() {});
           },

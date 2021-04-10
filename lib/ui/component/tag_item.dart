@@ -1,3 +1,4 @@
+import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -5,12 +6,12 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 class TagItem extends StatelessWidget {
-  final Tag tag;
+  final Tag? tag;
   final bool isSelected;
-  final Function(Tag) onTap;
+  final Function(Tag?) onTap;
 
   TagItem({
-    required this.tag,
+    this.tag,
     required this.isSelected,
     required this.onTap,
   });
@@ -41,14 +42,14 @@ class TagItem extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(
-                    Icons.tag,
+                    tag != null ? Icons.tag : Icons.apps,
                     color: isSelected ? Colors.white : themeProvider.textColor,
                     size: 13,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 8),
                     child: Text(
-                      tag.name,
+                      tag != null ? tag!.name : AppTranslations.of(context).text("none"),
                       style: TextStyle(
                         color:
                             isSelected ? Colors.white : themeProvider.textColor,

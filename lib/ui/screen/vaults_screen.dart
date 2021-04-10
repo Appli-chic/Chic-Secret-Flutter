@@ -25,15 +25,7 @@ import 'package:provider/provider.dart';
 Vault? selectedVault;
 String? currentPassword;
 
-Category selectedCategory = Category(
-  id: "",
-  name: "",
-  color: "",
-  icon: Icons.apps.codePoint,
-  vaultId: "",
-  createdAt: DateTime.now(),
-  updatedAt: DateTime.now(),
-);
+Category? selectedCategory;
 
 class VaultScreenController {
   void Function()? reloadCategories;
@@ -185,15 +177,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
 
                 if (unlockingPassword != null) {
                   // Set the selected category back to "null"
-                  selectedCategory = Category(
-                    id: "",
-                    name: "",
-                    color: "",
-                    icon: Icons.apps.codePoint,
-                    vaultId: "",
-                    createdAt: DateTime.now(),
-                    updatedAt: DateTime.now(),
-                  );
+                  selectedCategory = null;
 
                   selectedVault = vault;
                   currentPassword = unlockingPassword;
@@ -235,36 +219,36 @@ class _VaultsScreenState extends State<VaultsScreen> {
           shrinkWrap: true,
           itemCount: _categories.length + 1,
           itemBuilder: (context, index) {
-            var category;
-
             // Add a "Fake" category to display all the passwords
             if (index == 0) {
-              category = Category(
-                id: "",
-                name: AppTranslations.of(context).text("all"),
-                color: "#${themeProvider.primaryColor.value.toRadixString(16)}",
-                icon: Icons.apps.codePoint,
-                vaultId: "",
-                createdAt: DateTime.now(),
-                updatedAt: DateTime.now(),
+              return CategoryItem(
+                isSelected: selectedCategory == null,
+                onTap: (Category? category) {
+                  selectedCategory = category;
+
+                  if (widget.onCategoryChange != null) {
+                    widget.onCategoryChange!();
+                  }
+
+                  setState(() {});
+                },
               );
             } else {
-              category = _categories[index - 1];
+              return CategoryItem(
+                category: _categories[index - 1],
+                isSelected: selectedCategory != null &&
+                    selectedCategory!.id == _categories[index - 1].id,
+                onTap: (Category? category) {
+                  selectedCategory = category;
+
+                  if (widget.onCategoryChange != null) {
+                    widget.onCategoryChange!();
+                  }
+
+                  setState(() {});
+                },
+              );
             }
-
-            return CategoryItem(
-              category: category,
-              isSelected: selectedCategory.id == category.id,
-              onTap: (Category category) {
-                selectedCategory = category;
-
-                if (widget.onCategoryChange != null) {
-                  widget.onCategoryChange!();
-                }
-
-                setState(() {});
-              },
-            );
           },
         ),
         Container(
@@ -303,18 +287,31 @@ class _VaultsScreenState extends State<VaultsScreen> {
         ),
         ListView.builder(
           shrinkWrap: true,
-          itemCount: _tags.length,
+          itemCount: _tags.length + 1,
           itemBuilder: (context, index) {
-            return TagItem(
-              tag: _tags[index],
-              isSelected:
-                  _selectedTag != null && _selectedTag!.id == _tags[index].id,
-              onTap: (Tag tag) {
-                setState(() {
-                  _selectedTag = tag;
-                });
-              },
-            );
+            if (index == 0) {
+              // Displays a "no tag" to stop the filter on tags
+              return TagItem(
+                isSelected: _selectedTag == null,
+                onTap: (Tag? tag) {
+                  setState(() {
+                    _selectedTag = null;
+                  });
+                },
+              );
+            } else {
+              // Display a tag
+              return TagItem(
+                tag: _tags[index - 1],
+                isSelected: _selectedTag != null &&
+                    _selectedTag!.id == _tags[index - 1].id,
+                onTap: (Tag? tag) {
+                  setState(() {
+                    _selectedTag = tag;
+                  });
+                },
+              );
+            }
           },
         ),
       ],

@@ -24,7 +24,7 @@ class _TagChipState extends State<TagChip> {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
     return Container(
-      margin: EdgeInsets.only(left: 8, top: 8),
+      margin: EdgeInsets.only(right: 8, bottom: 8),
       child: Chip(
         onDeleted: widget.onDelete != null ? _onTagDeleted : null,
         useDeleteButtonTooltip: false,

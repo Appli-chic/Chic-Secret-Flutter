@@ -75,7 +75,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         itemBuilder: (context, index) {
           return CategoryItem(
             category: _categories[index],
-            onTap: (Category category) {
+            onTap: (Category? category) {
               selectedCategory = category;
               setState(() {});
             },

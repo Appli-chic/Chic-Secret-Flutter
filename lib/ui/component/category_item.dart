@@ -1,3 +1,4 @@
+import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
@@ -7,13 +8,13 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 class CategoryItem extends StatelessWidget {
-  final Category category;
+  final Category? category;
   final bool? isSelected;
-  final Function(Category) onTap;
+  final Function(Category?) onTap;
   final bool isForcingMobileStyle;
 
   CategoryItem({
-    required this.category,
+    this.category,
     this.isSelected,
     required this.onTap,
     this.isForcingMobileStyle = false,
@@ -24,7 +25,7 @@ class CategoryItem extends StatelessWidget {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
     if (ChicPlatform.isDesktop() && !isForcingMobileStyle) {
-      return _buildDesktopItem(themeProvider);
+      return _buildDesktopItem(context, themeProvider);
     } else {
       return _buildMobileItem(themeProvider);
     }
@@ -32,6 +33,10 @@ class CategoryItem extends StatelessWidget {
 
   /// Displays the mobile version of the [CategoryItem]
   Widget _buildMobileItem(ThemeProvider themeProvider) {
+    if (category == null) {
+      return Container();
+    }
+
     var backgroundColor = _getNotSelectedBackgroundColor(themeProvider);
 
     if (ChicPlatform.isDesktop() || isSelected != null && isSelected!) {
@@ -50,24 +55,24 @@ class CategoryItem extends StatelessWidget {
             ? EdgeInsets.all(10)
             : EdgeInsets.only(top: 4, bottom: 4, left: 10, right: 10),
         onTap: () {
-          onTap(category);
+          onTap(category!);
         },
         horizontalTitleGap: 0,
         leading: Container(
           padding: EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: getColorFromHex(category.color),
+            color: getColorFromHex(category!.color),
             borderRadius: BorderRadius.all(Radius.circular(6)),
           ),
           child: Icon(
-            IconData(category.icon, fontFamily: 'MaterialIcons'),
+            IconData(category!.icon, fontFamily: 'MaterialIcons'),
             color: Colors.white,
           ),
         ),
         title: Container(
           margin: EdgeInsets.only(left: 16),
           child: Text(
-            category.name,
+            category!.name,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: ChicPlatform.isDesktop() ? 16 : 18,
@@ -80,7 +85,7 @@ class CategoryItem extends StatelessWidget {
   }
 
   /// Displays the desktop version of the [CategoryItem]
-  Widget _buildDesktopItem(ThemeProvider themeProvider) {
+  Widget _buildDesktopItem(BuildContext context, ThemeProvider themeProvider) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
@@ -96,12 +101,16 @@ class CategoryItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4)),
             ),
             child: Container(
-              color: isSelected! ? getColorFromHex(category.color) : null,
+              color: isSelected!
+                  ? _getSelectedBackgroundColor(themeProvider)
+                  : null,
               padding: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
               child: Row(
                 children: [
                   Icon(
-                    IconData(category.icon, fontFamily: 'MaterialIcons'),
+                    category != null
+                        ? IconData(category!.icon, fontFamily: 'MaterialIcons')
+                        : Icons.apps,
                     color: isSelected! ? Colors.white : themeProvider.textColor,
                     size: 13,
                   ),
@@ -109,7 +118,9 @@ class CategoryItem extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 8),
                       child: Text(
-                        category.name,
+                        category != null
+                            ? category!.name
+                            : AppTranslations.of(context).text("all"),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -131,13 +142,23 @@ class CategoryItem extends StatelessWidget {
     );
   }
 
-  /// Retrieve the [CategoryItem]'s background color depending of
-  /// the operating system.
+  /// Retrieve the [CategoryItem]'s background color when the category is not selected
+  /// depending of the operating system.
   Color _getNotSelectedBackgroundColor(ThemeProvider themeProvider) {
     if (ChicPlatform.isDesktop()) {
       return themeProvider.divider;
     } else {
       return themeProvider.secondBackgroundColor;
+    }
+  }
+
+  /// Retrieve the [CategoryItem]'s background color depending of
+  /// the operating system.
+  Color _getSelectedBackgroundColor(ThemeProvider themeProvider) {
+    if (category != null) {
+      return getColorFromHex(category!.color);
+    } else {
+      return themeProvider.primaryColor;
     }
   }
 }
