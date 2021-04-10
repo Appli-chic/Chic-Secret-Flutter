@@ -58,17 +58,28 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
   /// Load the list of passwords linked to the current vault
   _loadPassword() async {
     if (selectedVault != null) {
+      String? categoryId;
+      String? tagId;
+
+      // Check if a category is selected
       if (selectedCategory != null &&
           selectedCategory!.id.isNotEmpty &&
           ChicPlatform.isDesktop()) {
-        // Load the passwords in the current vault and selected category
-        _entries = await EntryService.getAllByVaultAndCategory(
-            selectedVault!.id, selectedCategory!.id);
-      } else {
-        // Load all the passwords in the current vault
-        _entries = await EntryService.getAllByVault(selectedVault!.id);
+        categoryId = selectedCategory!.id;
       }
 
+      // Check if a tag is selected
+      if (selectedTag != null &&
+          selectedTag!.id.isNotEmpty &&
+          ChicPlatform.isDesktop()) {
+        tagId = selectedTag!.id;
+      }
+
+      _entries = await EntryService.getAllByVault(
+        selectedVault!.id,
+        categoryId: categoryId,
+        tagId: tagId,
+      );
       setState(() {});
     }
   }
@@ -76,16 +87,29 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
   /// Search the entries that have a field containing the text
   _searchPassword(String text) async {
     if (selectedVault != null) {
+      String? categoryId;
+      String? tagId;
+
+      // Check if a category is selected
       if (selectedCategory != null &&
           selectedCategory!.id.isNotEmpty &&
           ChicPlatform.isDesktop()) {
-        // Search passwords in the current vault and selected category
-        _entries = await EntryService.searchByVaultAndCategory(
-            selectedVault!.id, selectedCategory!.id, text);
-      } else {
-        // Search the passwords in the current vault
-        _entries = await EntryService.searchByVault(selectedVault!.id, text);
+        categoryId = selectedCategory!.id;
       }
+
+      // Check if a tag is selected
+      if (selectedTag != null &&
+          selectedTag!.id.isNotEmpty &&
+          ChicPlatform.isDesktop()) {
+        tagId = selectedTag!.id;
+      }
+
+      _entries = await EntryService.search(
+        selectedVault!.id,
+        text,
+        categoryId: categoryId,
+        tagId: tagId,
+      );
 
       setState(() {});
     }

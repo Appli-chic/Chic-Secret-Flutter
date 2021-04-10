@@ -1,10 +1,11 @@
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/entry.dart';
+import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 
 const entryWithCategoryGeneralSelect = """
-SELECT e.$columnId, e.$columnEntryName, e.$columnEntryUsername, e.$columnEntryHash,
+SELECT DISTINCT e.$columnId, e.$columnEntryName, e.$columnEntryUsername, e.$columnEntryHash,
 e.$columnEntryVaultId, e.$columnEntryCategoryId, e.$columnCreatedAt, 
 e.$columnUpdatedAt, e.$columnDeletedAt, 
 
@@ -16,6 +17,7 @@ c.$columnDeletedAt as c_$columnDeletedAt
 
 FROM $entryTable as e
 LEFT JOIN $categoryTable as c ON c.$columnId = e.$columnEntryCategoryId
+LEFT JOIN $tagTable as t ON t.$columnTagEntryId = e.$columnId 
 """;
 
 class EntryService {
@@ -30,32 +32,27 @@ class EntryService {
   }
 
   /// Retrieve all the entries linked to a vault
-  static Future<List<Entry>> getAllByVault(String vaultId) async {
+  static Future<List<Entry>> getAllByVault(String vaultId,
+      {String? categoryId, String? tagId}) async {
     List<Entry> entries = [];
-    var maps = await db.rawQuery(entryWithCategoryGeneralSelect +
-        """
-    WHERE e.$columnEntryVaultId = '$vaultId'
-    """);
+    var query = entryWithCategoryGeneralSelect +
+        "WHERE e.$columnEntryVaultId = '$vaultId'";
 
-    if (maps.isNotEmpty) {
-      for (var map in maps) {
-        entries.add(Entry.fromMap(map, categoryPrefix: "c_"));
-      }
+    // Filter on category if selected
+    if (categoryId != null) {
+      query += """
+      AND $columnEntryCategoryId = '$categoryId'
+      """;
     }
 
-    return entries;
-  }
+    // Filter on tag if selected
+    if (tagId != null) {
+      query += """
+      AND t.$columnId = '$tagId'
+      """;
+    }
 
-  /// Retrieve all the entries linked to a vault and a category
-  static Future<List<Entry>> getAllByVaultAndCategory(
-      String vaultId, String categoryId) async {
-    List<Entry> entries = [];
-    var maps = await db.rawQuery(entryWithCategoryGeneralSelect +
-        """
-    WHERE e.$columnEntryVaultId = '$vaultId'
-    AND $columnEntryCategoryId = '$categoryId'
-    """);
-
+    var maps = await db.rawQuery(query);
     if (maps.isNotEmpty) {
       for (var map in maps) {
         entries.add(Entry.fromMap(map, categoryPrefix: "c_"));
@@ -67,38 +64,34 @@ class EntryService {
 
   /// Search all the entries linked to a vault.
   /// The text filter by everything that defines a password
-  static Future<List<Entry>> searchByVault(String vaultId, String text) async {
+  static Future<List<Entry>> search(String vaultId, String text,
+      {String? categoryId, String? tagId}) async {
     List<Entry> entries = [];
 
-    var maps = await db.rawQuery(entryWithCategoryGeneralSelect +
-        """
-    WHERE e.$columnEntryVaultId = '$vaultId'
-    AND (e.$columnEntryName LIKE '%$text%' OR e.$columnEntryUsername LIKE '%$text%' 
-    OR c.$columnCategoryName LIKE '%$text%')
-    """);
+    var query = entryWithCategoryGeneralSelect +
+        "WHERE e.$columnEntryVaultId = '$vaultId'";
 
-    if (maps.isNotEmpty) {
-      for (var map in maps) {
-        entries.add(Entry.fromMap(map, categoryPrefix: "c_"));
-      }
+    // Filter on category if selected
+    if (categoryId != null) {
+      query += """
+      AND $columnEntryCategoryId = '$categoryId'
+      """;
     }
 
-    return entries;
-  }
+    // Filter on tag if selected
+    if (tagId != null) {
+      query += """
+      AND t.$columnId = '$tagId'
+      """;
+    }
 
-  /// Search all the entries linked to a vault and a category.
-  /// The text filter by everything that defines a password
-  static Future<List<Entry>> searchByVaultAndCategory(
-      String vaultId, String categoryId, String text) async {
-    List<Entry> entries = [];
-
-    var maps = await db.rawQuery(entryWithCategoryGeneralSelect +
-        """
-    WHERE e.$columnEntryVaultId = '$vaultId'
-    AND $columnEntryCategoryId = '$categoryId'
+    // Add search
+    query += """
     AND (e.$columnEntryName LIKE '%$text%' OR e.$columnEntryUsername LIKE '%$text%' 
-    OR c.$columnCategoryName LIKE '%$text%')
-    """);
+    OR c.$columnCategoryName LIKE '%$text%' OR t.$columnTagName LIKE '%$text%')
+    """;
+
+    var maps = await db.rawQuery(query);
 
     if (maps.isNotEmpty) {
       for (var map in maps) {

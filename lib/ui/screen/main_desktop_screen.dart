@@ -37,6 +37,15 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     setState(() {});
   }
 
+  /// Ask to reload the passwords from the [PasswordsScreen] when the tag change
+  _reloadPasswordScreenOnTagChange() {
+    if (_entryScreenController.reloadPasswords != null) {
+      _entryScreenController.reloadPasswords!();
+    }
+
+    setState(() {});
+  }
+
   /// Ask to reload the categories from the [VaultsScreen]
   _reloadCategories() {
     if (_vaultScreenController.reloadCategories != null) {
@@ -60,6 +69,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
         view1: VaultsScreen(
           onVaultChange: _reloadPasswordScreenOnVaultChange,
           onCategoryChange: _reloadPasswordScreenOnCategoryChange,
+          onTagChange: _reloadPasswordScreenOnTagChange,
           vaultScreenController: _vaultScreenController,
         ),
         view2: SplitView(

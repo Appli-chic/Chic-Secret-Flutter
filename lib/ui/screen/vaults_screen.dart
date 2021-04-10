@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
-import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
@@ -26,6 +25,7 @@ Vault? selectedVault;
 String? currentPassword;
 
 Category? selectedCategory;
+Tag? selectedTag;
 
 class VaultScreenController {
   void Function()? reloadCategories;
@@ -40,11 +40,13 @@ class VaultScreenController {
 class VaultsScreen extends StatefulWidget {
   final Function() onVaultChange;
   final Function()? onCategoryChange;
+  final Function()? onTagChange;
   final VaultScreenController? vaultScreenController;
 
   VaultsScreen({
     required this.onVaultChange,
     this.onCategoryChange,
+    this.onTagChange,
     this.vaultScreenController,
   });
 
@@ -53,8 +55,6 @@ class VaultsScreen extends StatefulWidget {
 }
 
 class _VaultsScreenState extends State<VaultsScreen> {
-  Tag? _selectedTag;
-
   List<Vault> _vaults = [];
   List<Category> _categories = [];
   List<Tag> _tags = [];
@@ -292,23 +292,31 @@ class _VaultsScreenState extends State<VaultsScreen> {
             if (index == 0) {
               // Displays a "no tag" to stop the filter on tags
               return TagItem(
-                isSelected: _selectedTag == null,
+                isSelected: selectedTag == null,
                 onTap: (Tag? tag) {
-                  setState(() {
-                    _selectedTag = null;
-                  });
+                  selectedTag = null;
+
+                  if (widget.onTagChange != null) {
+                    widget.onTagChange!();
+                  }
+
+                  setState(() {});
                 },
               );
             } else {
               // Display a tag
               return TagItem(
                 tag: _tags[index - 1],
-                isSelected: _selectedTag != null &&
-                    _selectedTag!.id == _tags[index - 1].id,
+                isSelected: selectedTag != null &&
+                    selectedTag!.id == _tags[index - 1].id,
                 onTap: (Tag? tag) {
-                  setState(() {
-                    _selectedTag = tag;
-                  });
+                  selectedTag = tag;
+
+                  if (widget.onTagChange != null) {
+                    widget.onTagChange!();
+                  }
+
+                  setState(() {});
                 },
               );
             }
