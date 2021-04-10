@@ -4,6 +4,7 @@ import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
+import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/entry_item.dart';
 import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
@@ -142,6 +143,26 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
             onPressed: _onAddEntryClicked,
           )
         ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(60.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: _displaySearchBar(themeProvider),
+              ),
+              _searchController.text.isNotEmpty
+                  ? ChicTextButton(
+                      child: Text(AppTranslations.of(context).text("cancel")),
+                      onPressed: () {
+                        _searchController.clear();
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        _searchPassword("");
+                      },
+                    )
+                  : SizedBox.shrink(),
+            ],
+          ),
+        ),
       );
     } else {
       return null;
@@ -162,23 +183,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
               Expanded(
                 child: Container(
                   margin: EdgeInsets.only(left: 16, top: 16),
-                  child: ChicTextField(
-                    controller: _searchController,
-                    hint: AppTranslations.of(context).text("search_passwords"),
-                    desktopFocus: _desktopSearchFocusNode,
-                    focus: _searchFocusNode,
-                    type: ChicTextFieldType.filledRounded,
-                    prefix: Container(
-                      margin: EdgeInsets.only(left: 8, right: 8),
-                      child: Icon(
-                        Icons.search,
-                        color: themeProvider.placeholder,
-                      ),
-                    ),
-                    ontextChanged: (String text) {
-                      _searchPassword(text);
-                    },
-                  ),
+                  child: _displaySearchBar(themeProvider),
                 ),
               ),
               Container(
@@ -217,6 +222,26 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
           isSelected: false,
           onTap: _onEntrySelected,
         );
+      },
+    );
+  }
+
+  Widget _displaySearchBar(ThemeProvider themeProvider) {
+    return ChicTextField(
+      controller: _searchController,
+      hint: AppTranslations.of(context).text("search_passwords"),
+      desktopFocus: _desktopSearchFocusNode,
+      focus: _searchFocusNode,
+      type: ChicTextFieldType.filledRounded,
+      prefix: Container(
+        margin: EdgeInsets.only(left: 8, right: 8),
+        child: Icon(
+          Icons.search,
+          color: themeProvider.placeholder,
+        ),
+      ),
+      ontextChanged: (String text) {
+        _searchPassword(text);
       },
     );
   }

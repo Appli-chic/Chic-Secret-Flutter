@@ -135,6 +135,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: ConstrainedBox(
+
             constraints: BoxConstraints.tightFor(
               height: MediaQuery.of(context).size.height - kToolbarHeight,
             ),
