@@ -1,4 +1,5 @@
 import 'package:chic_secret/model/database/category.dart';
+import 'package:chic_secret/model/database/tag.dart';
 import 'package:intl/intl.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 
@@ -21,6 +22,7 @@ class Entry {
   DateTime? deletedAt;
 
   Category? category;
+  List<Tag> tags = [];
 
   Entry({
     required this.id,

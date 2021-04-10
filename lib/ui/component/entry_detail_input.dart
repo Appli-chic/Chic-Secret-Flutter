@@ -8,13 +8,15 @@ import 'package:provider/provider.dart';
 
 class EntryDetailInput extends StatefulWidget {
   final String label;
-  final String text;
+  final Widget? child;
+  final String? text;
   final bool canCopy;
   final bool isPassword;
 
   EntryDetailInput({
     required this.label,
-    required this.text,
+    this.text,
+    this.child,
     this.canCopy = false,
     this.isPassword = false,
   });
@@ -48,7 +50,10 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
         ),
         Row(
           children: [
-            _displaysText(themeProvider),
+            widget.text != null
+                ? _displaysText(themeProvider)
+                : SizedBox.shrink(),
+            widget.child != null ? widget.child! : SizedBox.shrink(),
             widget.isPassword
                 ? _displaysHidingIcon(themeProvider)
                 : SizedBox.shrink(),
@@ -96,7 +101,7 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
             size: 20,
           ),
           onPressed: () {
-            FlutterClipboard.copy(widget.text);
+            FlutterClipboard.copy(widget.text!);
             _displaysTextCopiedToast(themeProvider);
           },
         ),
@@ -137,7 +142,7 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
         child: Container(
           margin: EdgeInsets.only(top: 4),
           child: Text(
-            widget.text,
+            widget.text!,
             style: TextStyle(color: themeProvider.textColor),
           ),
         ),
@@ -150,7 +155,7 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
         child: Container(
           margin: EdgeInsets.only(top: 4),
           child: Text(
-            widget.text.replaceAll(RegExp(r'.'), "*"),
+            widget.text!.replaceAll(RegExp(r'.'), "*"),
             style: TextStyle(color: themeProvider.textColor),
           ),
         ),
@@ -160,7 +165,7 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
         child: Container(
           margin: EdgeInsets.only(top: 4),
           child: RichText(
-            text: RichTextEditingController.textToSpan(widget.text.characters),
+            text: RichTextEditingController.textToSpan(widget.text!.characters),
           ),
         ),
       );

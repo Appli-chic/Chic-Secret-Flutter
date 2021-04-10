@@ -1,7 +1,10 @@
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/entry.dart';
+import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/ui/component/entry_detail_input.dart';
+import 'package:chic_secret/ui/component/tag_chip.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/security.dart';
@@ -20,10 +23,32 @@ class EntryDetailScreen extends StatefulWidget {
 }
 
 class _EntryDetailScreenState extends State<EntryDetailScreen> {
+  late Entry _oldEntry;
+  List<Tag> _tags = [];
+
+  @override
+  void initState() {
+    _oldEntry = widget.entry;
+
+    _loadTags();
+    super.initState();
+  }
+
+  /// Load the tags related to the entry
+  _loadTags() async {
+    _tags = await TagService.getAllByEntry(widget.entry.id);
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+
+    // Reload tags if the entry changed (mainly for desktop usage)
+    if (widget.entry.id != _oldEntry.id) {
+      _oldEntry = widget.entry;
+      _loadTags();
+    }
 
     return Scaffold(
       backgroundColor: themeProvider.backgroundColor,
@@ -89,9 +114,35 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                   ? widget.entry.category!.name
                   : "",
             ),
+            SizedBox(height: 24),
+            EntryDetailInput(
+              label: AppTranslations.of(context).text("tags"),
+              child: Container(
+                margin: EdgeInsets.only(top: 8),
+                child: Wrap(
+                  children: _createChipsList(themeProvider),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  /// Displays the list of tags
+  List<Widget> _createChipsList(ThemeProvider themeProvider) {
+    List<Widget> chips = [];
+
+    for (var tagIndex = 0; tagIndex < _tags.length; tagIndex++) {
+      chips.add(
+        TagChip(
+          name: _tags[tagIndex].name,
+          index: tagIndex,
+        ),
+      );
+    }
+
+    return chips;
   }
 }

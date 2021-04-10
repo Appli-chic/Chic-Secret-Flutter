@@ -26,4 +26,19 @@ class TagService {
 
     return tags;
   }
+
+  /// Retrieve all the tags linked to an entry
+  static Future<List<Tag>> getAllByEntry(String entryId) async {
+    List<Tag> tags = [];
+    List<Map<String, dynamic>> maps =
+    await db.query(tagTable, where: "$columnTagEntryId = '$entryId'");
+
+    if (maps.isNotEmpty) {
+      for (var map in maps) {
+        tags.add(Tag.fromMap(map));
+      }
+    }
+
+    return tags;
+  }
 }
