@@ -1,4 +1,5 @@
 import 'package:chic_secret/model/database/category.dart';
+import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/utils/database.dart';
@@ -18,6 +19,7 @@ c.$columnDeletedAt as c_$columnDeletedAt
 FROM $entryTable as e
 LEFT JOIN $categoryTable as c ON c.$columnId = e.$columnEntryCategoryId
 LEFT JOIN $tagTable as t ON t.$columnTagEntryId = e.$columnId 
+LEFT JOIN $customFieldTable as cf ON cf.$columnCustomFieldEntryId = e.$columnId 
 """;
 
 class EntryService {
@@ -88,7 +90,8 @@ class EntryService {
     // Add search
     query += """
     AND (e.$columnEntryName LIKE '%$text%' OR e.$columnEntryUsername LIKE '%$text%' 
-    OR c.$columnCategoryName LIKE '%$text%' OR t.$columnTagName LIKE '%$text%')
+    OR c.$columnCategoryName LIKE '%$text%' OR t.$columnTagName LIKE '%$text%' 
+    OR cf.$columnCustomFieldName LIKE '%$text%' OR cf.$columnCustomFieldValue LIKE '%$text%' )
     """;
 
     var maps = await db.rawQuery(query);

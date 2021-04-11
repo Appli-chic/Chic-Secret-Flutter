@@ -5,6 +5,7 @@ import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
+import 'package:chic_secret/service/custom_field_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/ui/component/common/chic_ahead_text_field.dart';
@@ -577,12 +578,29 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         await TagService.save(tag);
       }
 
+      // Save all the custom fields
+      for (var customFieldIndex = 0;
+          customFieldIndex < _customFieldsNameControllers.length;
+          customFieldIndex++) {
+        var customField = CustomField(
+          id: Uuid().v4(),
+          name: _customFieldsNameControllers[customFieldIndex].text,
+          value: _customFieldsValueControllers[customFieldIndex].text,
+          entryId: entry.id,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+
+        await CustomFieldService.save(customField);
+      }
+
       Navigator.pop(context, entry);
     }
   }
 
   @override
   void dispose() {
+    // Dispose controllers
     _nameController.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
@@ -597,6 +615,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       customFieldsValueController.dispose();
     }
 
+    // Dispose node focus
     _nameFocusNode.dispose();
     _usernameFocusNode.dispose();
     _passwordFocusNode.dispose();
@@ -611,6 +630,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       customFieldsValueFocusNode.dispose();
     }
 
+    // Dispose node focus for desktop
     _desktopNameFocusNode.dispose();
     _desktopUsernameFocusNode.dispose();
     _desktopPasswordFocusNode.dispose();

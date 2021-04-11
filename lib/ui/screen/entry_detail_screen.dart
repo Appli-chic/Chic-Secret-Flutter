@@ -1,7 +1,9 @@
 import 'package:chic_secret/localization/app_translations.dart';
+import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/custom_field_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/ui/component/entry_detail_input.dart';
 import 'package:chic_secret/ui/component/tag_chip.dart';
@@ -25,12 +27,14 @@ class EntryDetailScreen extends StatefulWidget {
 class _EntryDetailScreenState extends State<EntryDetailScreen> {
   late Entry _oldEntry;
   List<Tag> _tags = [];
+  List<CustomField> _customFields = [];
 
   @override
   void initState() {
     _oldEntry = widget.entry;
 
     _loadTags();
+    _loadCustomFields();
     super.initState();
   }
 
@@ -40,14 +44,21 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     setState(() {});
   }
 
+  /// Load the custom fields related to the entry
+  _loadCustomFields() async {
+    _customFields = await CustomFieldService.getAllByEntry(widget.entry.id);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    // Reload tags if the entry changed (mainly for desktop usage)
+    // Reload tags and custom fields if the entry changed (mainly for desktop usage)
     if (widget.entry.id != _oldEntry.id) {
       _oldEntry = widget.entry;
       _loadTags();
+      _loadCustomFields();
     }
 
     return Scaffold(
@@ -124,9 +135,36 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                 ),
               ),
             ),
+            SizedBox(height: 24),
+            EntryDetailInput(
+              label: AppTranslations.of(context).text("custom_fields"),
+            ),
+            SizedBox(height: 24),
+            _displaysCustomFields(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _displaysCustomFields() {
+    List<Widget> customFields = [];
+
+    for (var customField in _customFields) {
+      customFields.add(
+        EntryDetailInput(
+          label: customField.name,
+          text: customField.value,
+        ),
+      );
+
+      if (customField != _customFields.last) {
+        customFields.add(SizedBox(height: 24));
+      }
+    }
+
+    return Column(
+      children: customFields,
     );
   }
 
