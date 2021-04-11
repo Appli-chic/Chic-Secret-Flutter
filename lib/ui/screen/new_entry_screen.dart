@@ -2,11 +2,13 @@ import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/model/database/entry.dart';
+import 'package:chic_secret/model/database/entry_tag.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/custom_field_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
+import 'package:chic_secret/service/entry_tag_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/ui/component/common/chic_ahead_text_field.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
@@ -586,7 +588,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       );
 
       // Save the entry
-      entry = await EntryService.save(entry);
+      await EntryService.save(entry);
 
       // Save all the tags linked to the password
       for (var tagLabel in _tagLabelList) {
@@ -594,12 +596,21 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
           id: Uuid().v4(),
           name: tagLabel,
           vaultId: selectedVault!.id,
-          entryId: entry.id,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         );
 
         await TagService.save(tag);
+
+        // Save the Entry Tag
+        var entryTag = EntryTag(
+          entryId: entry.id,
+          tagId: tag.id,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+
+        await EntryTagService.save(entryTag);
       }
 
       // Save all the custom fields

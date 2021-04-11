@@ -203,7 +203,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
         updatedAt: DateTime.now(),
       );
 
-      vault = await VaultService.save(vault);
+      await VaultService.save(vault);
 
       // Select the vault and keep the password in memory
       selectedVault = vault;

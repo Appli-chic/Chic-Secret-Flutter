@@ -1,6 +1,7 @@
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/model/database/entry.dart';
+import 'package:chic_secret/model/database/entry_tag.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/model/database/vault.dart';
 
@@ -56,12 +57,23 @@ CREATE TABLE $tagTable(
 $columnId TEXT PRIMARY KEY NOT NULL, 
 $columnTagName TEXT NOT NULL, 
 $columnTagVaultId TEXT NOT NULL, 
-$columnTagEntryId TEXT NOT NULL, 
 $columnCreatedAt DATETIME NOT NULL, 
 $columnUpdatedAt DATETIME NOT NULL, 
 $columnDeletedAt DATETIME,
 FOREIGN KEY($columnTagVaultId) REFERENCES $vaultTable($columnId)
-FOREIGN KEY($columnTagEntryId) REFERENCES $entryTable($columnId)
+)
+''';
+
+const String createEntryTagTable = '''
+CREATE TABLE $entryTagTable(
+$columnEntryTagEntryId TEXT NOT NULL, 
+$columnEntryTagTagId TEXT NOT NULL, 
+$columnCreatedAt DATETIME NOT NULL, 
+$columnUpdatedAt DATETIME NOT NULL, 
+$columnDeletedAt DATETIME,
+FOREIGN KEY($columnEntryTagEntryId) REFERENCES $entryTable($columnId)
+FOREIGN KEY($columnEntryTagTagId) REFERENCES $tagTable($columnId)
+PRIMARY KEY($columnEntryTagEntryId, $columnEntryTagTagId)
 )
 ''';
 

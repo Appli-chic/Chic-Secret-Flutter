@@ -53,6 +53,13 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     }
   }
 
+  /// Ask to reload the tags from the [VaultsScreen]
+  _reloadTags() {
+    if (_vaultScreenController.reloadTags != null) {
+      _vaultScreenController.reloadTags!();
+    }
+  }
+
   /// Reload the [EntryDetailScreen] with the new selected entry
   _onEntrySelected(Entry entry) {
     _selectedEntry = entry;
@@ -77,6 +84,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
           view1: PasswordsScreen(
             passwordScreenController: _entryScreenController,
             reloadCategories: _reloadCategories,
+            reloadTags: _reloadTags,
             onEntrySelected: _onEntrySelected,
           ),
           view2: _selectedEntry != null

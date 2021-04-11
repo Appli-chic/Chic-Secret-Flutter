@@ -1,6 +1,7 @@
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/model/database/entry.dart';
+import 'package:chic_secret/model/database/entry_tag.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
@@ -17,20 +18,19 @@ c.$columnCreatedAt as c_$columnCreatedAt, c.$columnUpdatedAt as c_$columnUpdated
 c.$columnDeletedAt as c_$columnDeletedAt
 
 FROM $entryTable as e
-LEFT JOIN $categoryTable as c ON c.$columnId = e.$columnEntryCategoryId
-LEFT JOIN $tagTable as t ON t.$columnTagEntryId = e.$columnId 
+LEFT JOIN $categoryTable as c ON c.$columnId = e.$columnEntryCategoryId 
+LEFT JOIN $entryTagTable as et ON et.$columnEntryTagEntryId = e.$columnId 
+LEFT JOIN $tagTable as t ON t.$columnId = et.$columnEntryTagTagId 
 LEFT JOIN $customFieldTable as cf ON cf.$columnCustomFieldEntryId = e.$columnId 
 """;
 
 class EntryService {
   /// Save an [entry] into the local database
-  static Future<Entry> save(Entry entry) async {
+  static Future<void> save(Entry entry) async {
     await db.insert(
       entryTable,
       entry.toMap(),
     );
-
-    return entry;
   }
 
   /// Retrieve all the entries linked to a vault

@@ -2,10 +2,10 @@ import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/entry_service.dart';
-import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
+import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/entry_item.dart';
 import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
@@ -25,11 +25,13 @@ class EntryScreenController {
 class PasswordsScreen extends StatefulWidget {
   final EntryScreenController? passwordScreenController;
   final Function()? reloadCategories;
+  final Function()? reloadTags;
   final Function(Entry entry)? onEntrySelected;
 
   const PasswordsScreen({
     this.passwordScreenController,
     this.reloadCategories,
+    this.reloadTags,
     this.onEntrySelected,
   });
 
@@ -178,23 +180,9 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
     if (ChicPlatform.isDesktop()) {
       return Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.only(left: 16, top: 16),
-                  child: _displaySearchBar(themeProvider),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-                child: ChicIconButton(
-                  onPressed: _onAddEntryClicked,
-                  icon: Icons.add,
-                  type: ChicIconButtonType.filledRectangle,
-                ),
-              ),
-            ],
+          Container(
+            margin: EdgeInsets.only(left: 16, top: 16, right: 16),
+            child: _displaySearchBar(themeProvider),
           ),
           Expanded(
             child: ListView.builder(
@@ -207,6 +195,24 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
                   onTap: _onEntrySelected,
                 );
               },
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            margin: EdgeInsets.only(bottom: 8, top: 8, left: 16, right: 16),
+            child: ChicTextIconButton(
+              onPressed: _onAddEntryClicked,
+              icon: Icon(
+                Icons.add,
+                color: themeProvider.textColor,
+                size: 20,
+              ),
+              label: Text(
+                AppTranslations.of(context).text("new_password"),
+                style: TextStyle(color: themeProvider.textColor),
+              ),
+              backgroundColor: themeProvider.primaryColor,
+              padding: EdgeInsets.only(top: 8, bottom: 8),
             ),
           ),
         ],
@@ -271,6 +277,10 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
 
     if (widget.reloadCategories != null) {
       widget.reloadCategories!();
+    }
+
+    if (widget.reloadTags != null) {
+      widget.reloadTags!();
     }
 
     if (data != null) {

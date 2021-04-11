@@ -175,7 +175,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         updatedAt: DateTime.now(),
       );
 
-      category = await CategoryService.save(category);
+      await CategoryService.save(category);
       Navigator.pop(context, category);
     }
   }

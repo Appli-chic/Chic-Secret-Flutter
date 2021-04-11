@@ -4,12 +4,11 @@ import 'package:chic_secret/utils/database_structure.dart';
 
 class CategoryService {
   /// Save a [category] into the local database
-  static Future<Category> save(Category category) async {
+  static Future<void> save(Category category) async {
     await db.insert(
       categoryTable,
       category.toMap(),
     );
-    return category;
   }
 
   /// Retrieve the first category linked to a vault

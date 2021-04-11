@@ -3,13 +3,11 @@ import 'package:chic_secret/utils/database.dart';
 
 class CustomFieldService {
   /// Save a [customField] into the local database
-  static Future<CustomField> save(CustomField customField) async {
+  static Future<void> save(CustomField customField) async {
     await db.insert(
       customFieldTable,
       customField.toMap(),
     );
-
-    return customField;
   }
 
   /// Retrieve all the custom fields linked to an entry

@@ -2,14 +2,12 @@ import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/utils/database.dart';
 
 class VaultService {
-
   /// Save a [vault] into the local database
-  static Future<Vault> save(Vault vault) async {
+  static Future<void> save(Vault vault) async {
     await db.insert(
       vaultTable,
       vault.toMap(),
     );
-    return vault;
   }
 
   /// Retrieve all the vaults
