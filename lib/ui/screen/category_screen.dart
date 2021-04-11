@@ -4,6 +4,7 @@ import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/ui/component/category_item.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
+import 'package:chic_secret/ui/screen/entry_category_screen.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:flutter/material.dart';
@@ -75,9 +76,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         itemBuilder: (context, index) {
           return CategoryItem(
             category: _categories[index],
-            onTap: (Category? category) {
-              selectedCategory = category;
-              setState(() {});
+            onTap: (Category? category) async {
+              if (category != null) {
+                await ChicNavigator.push(
+                  context,
+                  EntryCategoryScreen(category: category),
+                  isModal: true,
+                );
+              }
             },
           );
         },

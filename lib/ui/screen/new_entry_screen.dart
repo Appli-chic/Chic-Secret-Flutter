@@ -183,7 +183,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
               desktopFocus: _desktopUsernameFocusNode,
               nextFocus: _desktopPasswordFocusNode,
               autoFocus: false,
-              textCapitalization: TextCapitalization.sentences,
+              textCapitalization: TextCapitalization.none,
               hint: AppTranslations.of(context).text("username_email"),
               errorMessage:
                   AppTranslations.of(context).text("error_username_empty"),
