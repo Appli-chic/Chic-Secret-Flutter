@@ -1,14 +1,15 @@
 import 'package:chic_secret/model/theme.dart';
+import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 const int DEFAULT_THEME_DARK = 0;
 
 ChicTheme defaultDarkTheme = ChicTheme(
   id: DEFAULT_THEME_DARK,
   backgroundColor: Color(0xFF000000),
+  backgroundDesktopColor: Color(0xFF222026),
   secondBackgroundColor: Color(0xFF1C1C1E),
   primaryColor: Color(0xFF0A84FF),
   secondaryColor: Color(0xFF1976d2),
@@ -43,7 +44,7 @@ class ThemeProvider with ChangeNotifier {
     if (_themeString != null) {
       // Load the theme if it exists
       _theme =
-      _themeList.where((theme) => theme.id == _themeString).toList()[0];
+          _themeList.where((theme) => theme.id == _themeString).toList()[0];
     }
 
     notifyListeners();
@@ -72,7 +73,9 @@ class ThemeProvider with ChangeNotifier {
   ChicTheme get theme => _theme;
 
   /// Retrieve the background color corresponding to the [_theme]
-  Color get backgroundColor => _theme.backgroundColor;
+  Color get backgroundColor => ChicPlatform.isDesktop()
+      ? _theme.backgroundDesktopColor
+      : _theme.backgroundColor;
 
   // Retrieve the second background color corresponding to the [_theme]
   Color get secondBackgroundColor => _theme.secondBackgroundColor;
