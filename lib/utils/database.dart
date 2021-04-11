@@ -42,5 +42,6 @@ _onCreate(db, version) async {
   batch.execute(createCategoryTable);
   batch.execute(createPasswordTable);
   batch.execute(createTagTable);
+  batch.execute(createCustomFieldTable);
   await batch.commit();
 }

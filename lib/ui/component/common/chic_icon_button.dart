@@ -14,6 +14,9 @@ class ChicIconButtonType {
 
   /// Represents a button with a filled background shaped into a rectangle
   static const ChicIconButtonType filledRectangle = ChicIconButtonType._(1);
+
+  /// Represents a button with a filled background shaped into a circle
+  static const ChicIconButtonType filledCircle = ChicIconButtonType._(2);
 }
 
 class ChicIconButton extends StatelessWidget {
@@ -44,6 +47,28 @@ class ChicIconButton extends StatelessWidget {
           color: color != null ? color! : themeProvider.textColor,
         ),
         onPressed: onPressed,
+      );
+    }
+    if (type == ChicIconButtonType.filledCircle) {
+      return Container(
+        width: 35,
+        height: 35,
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: IconButton(
+          splashColor: ChicPlatform.isDesktop() ? Colors.transparent : null,
+          focusColor: ChicPlatform.isDesktop() ? Colors.transparent : null,
+          highlightColor: ChicPlatform.isDesktop() ? Colors.transparent : null,
+          hoverColor: ChicPlatform.isDesktop() ? Colors.transparent : null,
+          icon: Icon(
+            icon,
+            color: color != null ? color! : themeProvider.textColor,
+          ),
+          iconSize: 18,
+          onPressed: onPressed,
+        ),
       );
     } else {
       return Container(

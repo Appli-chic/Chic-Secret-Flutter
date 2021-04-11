@@ -1,5 +1,6 @@
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
+import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
@@ -8,6 +9,7 @@ import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/ui/component/common/chic_ahead_text_field.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
+import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
@@ -52,6 +54,12 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
 
   Category? _category;
   List<String> _tagLabelList = [];
+  List<TextEditingController> _customFieldsNameControllers = [];
+  List<FocusNode> _customFieldsNameFocusNode = [];
+  List<FocusNode> _customFieldsNameDesktopFocusNode = [];
+  List<TextEditingController> _customFieldsValueControllers = [];
+  List<FocusNode> _customFieldsValueFocusNode = [];
+  List<FocusNode> _customFieldsValueDesktopFocusNode = [];
 
   @override
   void initState() {
@@ -134,13 +142,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         },
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
-          child: ConstrainedBox(
-
-            constraints: BoxConstraints.tightFor(
-              height: MediaQuery.of(context).size.height - kToolbarHeight,
-            ),
-            child: _displaysBody(themeProvider),
-          ),
+          child: _displaysBody(themeProvider),
         ),
       ),
     );
@@ -317,9 +319,159 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
             Wrap(
               children: _createChipsList(themeProvider),
             ),
+            SizedBox(height: 32.0),
+            Text(
+              AppTranslations.of(context).text("custom_fields"),
+              style: TextStyle(
+                color: themeProvider.textColor,
+                fontWeight: FontWeight.w600,
+                fontSize: 17,
+              ),
+            ),
+            SizedBox(height: 16.0),
+            _displaysCustomFields(themeProvider),
+            SizedBox(height: 16.0),
+            ChicTextIconButton(
+              onPressed: _onAddCustomField,
+              icon: Icon(
+                Icons.add_circle,
+                color: themeProvider.primaryColor,
+                size: 20,
+              ),
+              label: Text(
+                AppTranslations.of(context).text("add_custom_fields"),
+                style: TextStyle(color: themeProvider.primaryColor),
+              ),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  /// Triggered when we add a new custom field to the list
+  _onAddCustomField() {
+    _customFieldsNameControllers.add(TextEditingController());
+    _customFieldsNameFocusNode.add(FocusNode());
+    _customFieldsNameDesktopFocusNode.add(FocusNode());
+
+    _customFieldsValueControllers.add(TextEditingController());
+    _customFieldsValueFocusNode.add(FocusNode());
+    _customFieldsValueDesktopFocusNode.add(FocusNode());
+    setState(() {});
+  }
+
+  /// Displays the customs fields in the form
+  Widget _displaysCustomFields(ThemeProvider themeProvider) {
+    List<Widget> customFields = [];
+
+    for (var customFieldIndex = 0;
+        customFieldIndex < _customFieldsNameControllers.length;
+        customFieldIndex++) {
+      var isLast = customFieldIndex == _customFieldsNameControllers.length - 1;
+
+      var customFieldDivider = Column(
+        children: [
+          SizedBox(height: 16.0),
+          Divider(
+            color: themeProvider.divider,
+            endIndent: 70,
+          ),
+          SizedBox(height: 16.0),
+        ],
+      );
+
+      var customFieldWidget = Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  children: [
+                    ChicTextField(
+                      controller:
+                          _customFieldsNameControllers[customFieldIndex],
+                      focus: _customFieldsNameFocusNode[customFieldIndex],
+                      desktopFocus:
+                          _customFieldsNameDesktopFocusNode[customFieldIndex],
+                      nextFocus:
+                          _customFieldsValueDesktopFocusNode[customFieldIndex],
+                      autoFocus: false,
+                      textCapitalization: TextCapitalization.sentences,
+                      hint: AppTranslations.of(context).text("name"),
+                      errorMessage:
+                          AppTranslations.of(context).text("error_text_empty"),
+                      validating: (String text) {
+                        if (_customFieldsNameControllers[customFieldIndex]
+                            .text
+                            .isEmpty) {
+                          return false;
+                        }
+
+                        return true;
+                      },
+                      onSubmitted: (String text) {
+                        _customFieldsValueFocusNode[customFieldIndex]
+                            .requestFocus();
+                      },
+                    ),
+                    SizedBox(height: 16.0),
+                    ChicTextField(
+                      controller:
+                          _customFieldsValueControllers[customFieldIndex],
+                      focus: _customFieldsValueFocusNode[customFieldIndex],
+                      desktopFocus:
+                          _customFieldsValueDesktopFocusNode[customFieldIndex],
+                      autoFocus: false,
+                      textCapitalization: TextCapitalization.sentences,
+                      hint: AppTranslations.of(context).text("value"),
+                      errorMessage:
+                          AppTranslations.of(context).text("error_text_empty"),
+                      validating: (String text) {
+                        if (_customFieldsValueControllers[customFieldIndex]
+                            .text
+                            .isEmpty) {
+                          return false;
+                        }
+
+                        return true;
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(right: 16, left: 16),
+                child: ChicIconButton(
+                  type: ChicIconButtonType.filledCircle,
+                  icon: Icons.remove,
+                  onPressed: () {
+                    _customFieldsNameControllers.removeAt(customFieldIndex);
+                    _customFieldsNameFocusNode.removeAt(customFieldIndex);
+                    _customFieldsNameDesktopFocusNode
+                        .removeAt(customFieldIndex);
+
+                    _customFieldsValueControllers.removeAt(customFieldIndex);
+                    _customFieldsValueFocusNode.removeAt(customFieldIndex);
+                    _customFieldsValueDesktopFocusNode
+                        .removeAt(customFieldIndex);
+
+                    setState(() {});
+                  },
+                ),
+              ),
+            ],
+          ),
+          !isLast ? customFieldDivider : SizedBox.shrink(),
+        ],
+      );
+
+      customFields.add(customFieldWidget);
+    }
+
+    return Column(
+      children: customFields,
     );
   }
 
@@ -437,16 +589,42 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     _categoryController.dispose();
     _tagController.dispose();
 
+    for (var customFieldsNameController in _customFieldsNameControllers) {
+      customFieldsNameController.dispose();
+    }
+
+    for (var customFieldsValueController in _customFieldsValueControllers) {
+      customFieldsValueController.dispose();
+    }
+
     _nameFocusNode.dispose();
     _usernameFocusNode.dispose();
     _passwordFocusNode.dispose();
     _categoryFocusNode.dispose();
     _tagFocusNode.dispose();
 
+    for (var customFieldsNameFocusNode in _customFieldsNameFocusNode) {
+      customFieldsNameFocusNode.dispose();
+    }
+
+    for (var customFieldsValueFocusNode in _customFieldsValueFocusNode) {
+      customFieldsValueFocusNode.dispose();
+    }
+
     _desktopNameFocusNode.dispose();
     _desktopUsernameFocusNode.dispose();
     _desktopPasswordFocusNode.dispose();
     _desktopCategoryFocusNode.dispose();
+
+    for (var customFieldsNameDesktopFocusNode
+        in _customFieldsNameDesktopFocusNode) {
+      customFieldsNameDesktopFocusNode.dispose();
+    }
+
+    for (var customFieldsValueDesktopFocusNode
+        in _customFieldsValueDesktopFocusNode) {
+      customFieldsValueDesktopFocusNode.dispose();
+    }
 
     super.dispose();
   }

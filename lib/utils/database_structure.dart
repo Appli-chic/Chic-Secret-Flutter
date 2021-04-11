@@ -1,4 +1,5 @@
 import 'package:chic_secret/model/database/category.dart';
+import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/model/database/vault.dart';
@@ -58,7 +59,20 @@ $columnTagEntryId TEXT,
 $columnCreatedAt DATETIME, 
 $columnUpdatedAt DATETIME, 
 $columnDeletedAt DATETIME,
-FOREIGN KEY($columnEntryVaultId) REFERENCES $vaultTable($columnId)
+FOREIGN KEY($columnTagVaultId) REFERENCES $vaultTable($columnId)
 FOREIGN KEY($columnTagEntryId) REFERENCES $entryTable($columnId)
+)
+''';
+
+const String createCustomFieldTable = '''
+CREATE TABLE $customFieldTable(
+$columnId TEXT PRIMARY KEY, 
+$columnCustomFieldName TEXT,
+$columnCustomFieldValue TEXT,  
+$columnCustomFieldEntryId TEXT, 
+$columnCreatedAt DATETIME, 
+$columnUpdatedAt DATETIME, 
+$columnDeletedAt DATETIME,
+FOREIGN KEY($columnCustomFieldEntryId) REFERENCES $entryTable($columnId)
 )
 ''';
