@@ -1,7 +1,7 @@
 import 'package:chic_secret/utils/database_structure.dart';
 import 'package:intl/intl.dart';
 
-const String customFieldTable = "CustomField";
+const String customFieldTable = "custom_field";
 const String columnCustomFieldName = "name";
 const String columnCustomFieldValue = "value";
 const String columnCustomFieldEntryId = "entry_id";

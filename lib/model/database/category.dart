@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 
-const String categoryTable = "Category";
+const String categoryTable = "category";
 const String columnCategoryName = "name";
 const String columnCategoryColor = "color";
 const String columnCategoryIcon = "icon";

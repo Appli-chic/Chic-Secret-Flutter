@@ -5,9 +5,9 @@ import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 
-const entryWithCategoryGeneralSelect = """
+const entryGeneralSelect = """
 SELECT DISTINCT e.$columnId, e.$columnEntryName, e.$columnEntryUsername, e.$columnEntryHash,
-e.$columnEntryVaultId, e.$columnEntryCategoryId, e.$columnCreatedAt, 
+e.$columnEntryComment, e.$columnEntryVaultId, e.$columnEntryCategoryId, e.$columnCreatedAt, 
 e.$columnUpdatedAt, e.$columnDeletedAt, 
 
 c.$columnId as c_$columnId, 
@@ -37,8 +37,7 @@ class EntryService {
   static Future<List<Entry>> getAllByVault(String vaultId,
       {String? categoryId, String? tagId}) async {
     List<Entry> entries = [];
-    var query = entryWithCategoryGeneralSelect +
-        "WHERE e.$columnEntryVaultId = '$vaultId'";
+    var query = entryGeneralSelect + "WHERE e.$columnEntryVaultId = '$vaultId'";
 
     // Filter on category if selected
     if (categoryId != null) {
@@ -70,8 +69,7 @@ class EntryService {
       {String? categoryId, String? tagId}) async {
     List<Entry> entries = [];
 
-    var query = entryWithCategoryGeneralSelect +
-        "WHERE e.$columnEntryVaultId = '$vaultId'";
+    var query = entryGeneralSelect + "WHERE e.$columnEntryVaultId = '$vaultId'";
 
     // Filter on category if selected
     if (categoryId != null) {
@@ -91,7 +89,8 @@ class EntryService {
     query += """
     AND (e.$columnEntryName LIKE '%$text%' OR e.$columnEntryUsername LIKE '%$text%' 
     OR c.$columnCategoryName LIKE '%$text%' OR t.$columnTagName LIKE '%$text%' 
-    OR cf.$columnCustomFieldName LIKE '%$text%' OR cf.$columnCustomFieldValue LIKE '%$text%' )
+    OR cf.$columnCustomFieldName LIKE '%$text%' OR cf.$columnCustomFieldValue LIKE '%$text%' 
+    OR e.$columnEntryComment LIKE '%$text%')
     """;
 
     var maps = await db.rawQuery(query);

@@ -41,17 +41,20 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   final _passwordController = RichTextEditingController();
   final _categoryController = TextEditingController();
   final _tagController = TextEditingController();
+  final _commentController = TextEditingController();
 
   var _nameFocusNode = FocusNode();
   var _usernameFocusNode = FocusNode();
   var _passwordFocusNode = FocusNode();
   var _categoryFocusNode = FocusNode();
   var _tagFocusNode = FocusNode();
+  var _commentFocusNode = FocusNode();
 
   var _desktopNameFocusNode = FocusNode();
   var _desktopUsernameFocusNode = FocusNode();
   var _desktopPasswordFocusNode = FocusNode();
   var _desktopCategoryFocusNode = FocusNode();
+  var _desktopCommentFocusNode = FocusNode();
 
   Category? _category;
   List<String> _tagLabelList = [];
@@ -344,6 +347,26 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                 style: TextStyle(color: themeProvider.primaryColor),
               ),
             ),
+            SizedBox(height: 32.0),
+            Text(
+              AppTranslations.of(context).text("comment"),
+              style: TextStyle(
+                color: themeProvider.textColor,
+                fontWeight: FontWeight.w600,
+                fontSize: 17,
+              ),
+            ),
+            SizedBox(height: 16.0),
+            ChicTextField(
+              controller: _commentController,
+              focus: _commentFocusNode,
+              desktopFocus: _desktopCommentFocusNode,
+              autoFocus: false,
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              textCapitalization: TextCapitalization.sentences,
+              hint: AppTranslations.of(context).text("comment"),
+            ),
           ],
         ),
       ),
@@ -555,6 +578,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         name: _nameController.text,
         username: _usernameController.text,
         hash: Security.encrypt(currentPassword!, _passwordController.text),
+        comment: _commentController.text,
         vaultId: selectedVault!.id,
         categoryId: _category!.id,
         createdAt: DateTime.now(),
@@ -606,6 +630,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     _passwordController.dispose();
     _categoryController.dispose();
     _tagController.dispose();
+    _commentController.dispose();
 
     for (var customFieldsNameController in _customFieldsNameControllers) {
       customFieldsNameController.dispose();
@@ -621,6 +646,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     _passwordFocusNode.dispose();
     _categoryFocusNode.dispose();
     _tagFocusNode.dispose();
+    _commentFocusNode.dispose();
 
     for (var customFieldsNameFocusNode in _customFieldsNameFocusNode) {
       customFieldsNameFocusNode.dispose();
@@ -635,6 +661,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     _desktopUsernameFocusNode.dispose();
     _desktopPasswordFocusNode.dispose();
     _desktopCategoryFocusNode.dispose();
+    _desktopCommentFocusNode.dispose();
 
     for (var customFieldsNameDesktopFocusNode
         in _customFieldsNameDesktopFocusNode) {

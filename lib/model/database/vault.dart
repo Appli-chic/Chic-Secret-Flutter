@@ -1,7 +1,7 @@
 import 'package:chic_secret/utils/database_structure.dart';
 import 'package:intl/intl.dart';
 
-const String vaultTable = "Vault";
+const String vaultTable = "vault";
 const String columnVaultName = "name";
 const String columnVaultSignature = "signature";
 

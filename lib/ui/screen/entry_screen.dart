@@ -240,7 +240,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
           color: themeProvider.placeholder,
         ),
       ),
-      ontextChanged: (String text) {
+      onTextChanged: (String text) {
         _searchPassword(text);
       },
     );

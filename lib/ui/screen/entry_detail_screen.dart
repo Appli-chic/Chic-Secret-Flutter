@@ -88,66 +88,81 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
   Widget _displaysBody(ThemeProvider themeProvider) {
     return Container(
       margin: EdgeInsets.all(20),
-      child: Container(
-        width: double.maxFinite,
-        decoration: BoxDecoration(
-          color: themeProvider.secondBackgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        ),
-        padding: EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ChicPlatform.isDesktop()
-                ? EntryDetailInput(
-                    label: AppTranslations.of(context).text("name"),
-                    text: widget.entry.name,
-                  )
-                : SizedBox.shrink(),
-            ChicPlatform.isDesktop() ? SizedBox(height: 24) : SizedBox.shrink(),
-            EntryDetailInput(
-              label: AppTranslations.of(context).text("username"),
-              text: widget.entry.username,
-              canCopy: true,
+      child: Scrollbar(
+        child: SingleChildScrollView(
+          child: Container(
+            width: double.maxFinite,
+            decoration: BoxDecoration(
+              color: themeProvider.secondBackgroundColor,
+              borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
-            SizedBox(height: 24),
-            EntryDetailInput(
-              label: AppTranslations.of(context).text("password"),
-              text: Security.decrypt(currentPassword!, widget.entry.hash),
-              canCopy: true,
-              isPassword: true,
-            ),
-            SizedBox(height: 24),
-            EntryDetailInput(
-              label: AppTranslations.of(context).text("category"),
-              text: widget.entry.category != null
-                  ? widget.entry.category!.name
-                  : "",
-            ),
-            SizedBox(height: 24),
-            EntryDetailInput(
-              label: AppTranslations.of(context).text("tags"),
-              child: Container(
-                margin: EdgeInsets.only(top: 8),
-                child: Wrap(
-                  children: _createChipsList(themeProvider),
+            padding: EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ChicPlatform.isDesktop()
+                    ? EntryDetailInput(
+                        label: AppTranslations.of(context).text("name"),
+                        text: widget.entry.name,
+                      )
+                    : SizedBox.shrink(),
+                ChicPlatform.isDesktop()
+                    ? SizedBox(height: 24)
+                    : SizedBox.shrink(),
+                EntryDetailInput(
+                  label: AppTranslations.of(context).text("username"),
+                  text: widget.entry.username,
+                  canCopy: true,
                 ),
-              ),
+                SizedBox(height: 24),
+                EntryDetailInput(
+                  label: AppTranslations.of(context).text("password"),
+                  text: Security.decrypt(currentPassword!, widget.entry.hash),
+                  canCopy: true,
+                  isPassword: true,
+                ),
+                SizedBox(height: 24),
+                EntryDetailInput(
+                  label: AppTranslations.of(context).text("category"),
+                  text: widget.entry.category != null
+                      ? widget.entry.category!.name
+                      : "",
+                ),
+                _displaysTags(themeProvider),
+                _displaysCustomFields(),
+                _displaysComment(),
+              ],
             ),
-            SizedBox(height: 24),
-            EntryDetailInput(
-              label: AppTranslations.of(context).text("custom_fields"),
-            ),
-            SizedBox(height: 24),
-            _displaysCustomFields(),
-          ],
+          ),
         ),
       ),
     );
   }
 
+  /// Displays a comment if it exists
+  Widget _displaysComment() {
+    if (widget.entry.comment != null && widget.entry.comment!.isNotEmpty) {
+      return Column(
+        children: [
+          SizedBox(height: 24),
+          EntryDetailInput(
+            label: AppTranslations.of(context).text("comment"),
+            text: widget.entry.comment,
+          ),
+        ],
+      );
+    }
+
+    return SizedBox.shrink();
+  }
+
+  /// Displays the custom fields if they exist
   Widget _displaysCustomFields() {
+    if (_customFields.isEmpty) {
+      return SizedBox.shrink();
+    }
+
     List<Widget> customFields = [];
 
     for (var customField in _customFields) {
@@ -164,7 +179,38 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     }
 
     return Column(
-      children: customFields,
+      children: [
+        SizedBox(height: 16),
+        EntryDetailInput(
+          label: AppTranslations.of(context).text("custom_fields"),
+        ),
+        SizedBox(height: 24),
+        Column(
+          children: customFields,
+        ),
+      ],
+    );
+  }
+
+  /// Displays tags if they exist
+  Widget _displaysTags(ThemeProvider themeProvider) {
+    if (_tags.isEmpty) {
+      return SizedBox.shrink();
+    }
+
+    return Column(
+      children: [
+        SizedBox(height: 24),
+        EntryDetailInput(
+          label: AppTranslations.of(context).text("tags"),
+          child: Container(
+            margin: EdgeInsets.only(top: 8),
+            child: Wrap(
+              children: _createChipsList(themeProvider),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

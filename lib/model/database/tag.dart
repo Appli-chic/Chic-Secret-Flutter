@@ -1,7 +1,7 @@
 import 'package:chic_secret/utils/database_structure.dart';
 import 'package:intl/intl.dart';
 
-const String tagTable = "Tag";
+const String tagTable = "tag";
 const String columnTagName = "name";
 const String columnTagVaultId = "vault_id";
 const String columnTagEntryId = "entry_id";

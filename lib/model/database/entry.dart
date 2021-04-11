@@ -3,10 +3,11 @@ import 'package:chic_secret/model/database/tag.dart';
 import 'package:intl/intl.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 
-const String entryTable = "Entry";
+const String entryTable = "entry";
 const String columnEntryName = "name";
 const String columnEntryUsername = "username";
 const String columnEntryHash = "hash";
+const String columnEntryComment = "comment";
 const String columnEntryVaultId = "vault_id";
 const String columnEntryCategoryId = "category_id";
 
@@ -15,6 +16,7 @@ class Entry {
   String name;
   String username;
   String hash;
+  String? comment;
   String vaultId;
   String categoryId;
   DateTime createdAt;
@@ -29,6 +31,7 @@ class Entry {
     required this.name,
     required this.username,
     required this.hash,
+    this.comment,
     required this.vaultId,
     required this.categoryId,
     required this.createdAt,
@@ -52,6 +55,7 @@ class Entry {
       name: data[columnEntryName],
       username: data[columnEntryUsername],
       hash: data[columnEntryHash],
+      comment: data[columnEntryComment],
       vaultId: data[columnEntryVaultId],
       categoryId: data[columnEntryCategoryId],
       createdAt: createdAtString,
@@ -79,6 +83,7 @@ class Entry {
       columnEntryName: name,
       columnEntryUsername: username,
       columnEntryHash: hash,
+      columnEntryComment: comment,
       columnEntryVaultId: vaultId,
       columnEntryCategoryId: categoryId,
       columnCreatedAt: createdAtString,

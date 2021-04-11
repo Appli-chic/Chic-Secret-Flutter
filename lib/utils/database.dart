@@ -40,7 +40,7 @@ _onCreate(db, version) async {
   var batch = db.batch();
   batch.execute(createVaultTable);
   batch.execute(createCategoryTable);
-  batch.execute(createPasswordTable);
+  batch.execute(createEntryTable);
   batch.execute(createTagTable);
   batch.execute(createCustomFieldTable);
   await batch.commit();

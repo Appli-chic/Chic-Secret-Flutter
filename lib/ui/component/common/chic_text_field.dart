@@ -36,7 +36,8 @@ class ChicTextField extends StatefulWidget {
   final Function()? onTap;
   final bool hasStrengthIndicator;
   final int? maxLines;
-  final Function(String)? ontextChanged;
+  final Function(String)? onTextChanged;
+  final TextInputType? keyboardType;
 
   ChicTextField({
     required this.controller,
@@ -59,7 +60,8 @@ class ChicTextField extends StatefulWidget {
     this.onTap,
     this.hasStrengthIndicator = false,
     this.maxLines = 1,
-    this.ontextChanged,
+    this.onTextChanged,
+    this.keyboardType,
   });
 
   @override
@@ -108,6 +110,7 @@ class _ChicTextFieldState extends State<ChicTextField> {
         obscureText: _isHidden,
         textCapitalization: widget.textCapitalization,
         textInputAction: widget.textInputAction,
+        keyboardType: widget.keyboardType,
         maxLines: widget.maxLines,
         validator: (text) {
           if (widget.validating != null && text != null) {
@@ -129,8 +132,8 @@ class _ChicTextFieldState extends State<ChicTextField> {
           widget.focus.requestFocus();
         },
         onChanged: (String text) {
-          if (widget.ontextChanged != null) {
-            widget.ontextChanged!(text);
+          if (widget.onTextChanged != null) {
+            widget.onTextChanged!(text);
           }
 
           if (widget.hasStrengthIndicator) {
@@ -257,6 +260,7 @@ class _ChicTextFieldState extends State<ChicTextField> {
         return null;
     }
 
+    // Focus the next input on desktop
     if (isKeyDown &&
         keyCode == LogicalKeyboardKey.tab &&
         widget.nextFocus != null) {
