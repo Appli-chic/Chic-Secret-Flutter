@@ -97,7 +97,9 @@ class _VaultsScreenState extends State<VaultsScreen> {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
     return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
+      backgroundColor: ChicPlatform.isDesktop()
+          ? themeProvider.sidebarBackgroundColor
+          : themeProvider.backgroundColor,
       appBar: _displaysAppbar(themeProvider),
       body: ChicPlatform.isDesktop()
           ? _displaysDesktopBody(themeProvider)
@@ -128,17 +130,20 @@ class _VaultsScreenState extends State<VaultsScreen> {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(left: 16, bottom: 8),
+            margin: EdgeInsets.only(left: 16, bottom: 8, top: 6),
             child: ChicTextIconButton(
               onPressed: _onAddVaultClicked,
               icon: Icon(
-                Icons.add,
+                Icons.settings,
                 color: themeProvider.textColor,
-                size: 20,
+                size: 18,
               ),
               label: Text(
-                AppTranslations.of(context).text("new_vault"),
-                style: TextStyle(color: themeProvider.textColor),
+                AppTranslations.of(context).text("settings"),
+                style: TextStyle(
+                  color: themeProvider.textColor,
+                  fontSize: 13,
+                ),
               ),
             ),
           ),
@@ -157,8 +162,9 @@ class _VaultsScreenState extends State<VaultsScreen> {
           child: Text(
             AppTranslations.of(context).text("vaults"),
             style: TextStyle(
-              color: themeProvider.secondTextColor,
+              color: themeProvider.labelColor,
               fontWeight: FontWeight.w500,
+              fontSize: 13,
             ),
           ),
         ),
@@ -196,6 +202,24 @@ class _VaultsScreenState extends State<VaultsScreen> {
             );
           },
         ),
+        Container(
+          margin: EdgeInsets.only(left: 22, bottom: 8, top: 6),
+          child: ChicTextIconButton(
+            onPressed: _onAddVaultClicked,
+            icon: Icon(
+              Icons.add,
+              color: themeProvider.textColor,
+              size: 18,
+            ),
+            label: Text(
+              AppTranslations.of(context).text("new_vault"),
+              style: TextStyle(
+                color: themeProvider.textColor,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -210,8 +234,9 @@ class _VaultsScreenState extends State<VaultsScreen> {
           child: Text(
             AppTranslations.of(context).text("categories"),
             style: TextStyle(
-              color: themeProvider.secondTextColor,
+              color: themeProvider.labelColor,
               fontWeight: FontWeight.w500,
+              fontSize: 13,
             ),
           ),
         ),
@@ -252,7 +277,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
           },
         ),
         Container(
-          margin: EdgeInsets.only(left: 16, bottom: 8, top: 8),
+          margin: EdgeInsets.only(left: 22, bottom: 8, top: 6),
           child: ChicTextIconButton(
             onPressed: _onAddCategoryClicked,
             icon: Icon(
@@ -262,7 +287,10 @@ class _VaultsScreenState extends State<VaultsScreen> {
             ),
             label: Text(
               AppTranslations.of(context).text("new_category"),
-              style: TextStyle(color: themeProvider.textColor),
+              style: TextStyle(
+                color: themeProvider.textColor,
+                fontSize: 13,
+              ),
             ),
           ),
         ),
@@ -280,8 +308,9 @@ class _VaultsScreenState extends State<VaultsScreen> {
           child: Text(
             AppTranslations.of(context).text("tags"),
             style: TextStyle(
-              color: themeProvider.secondTextColor,
+              color: themeProvider.labelColor,
               fontWeight: FontWeight.w500,
+              fontSize: 13,
             ),
           ),
         ),

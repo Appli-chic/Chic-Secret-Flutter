@@ -20,11 +20,14 @@ class EntryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
+    var backgroundColor = !ChicPlatform.isDesktop()
+        ? themeProvider.secondBackgroundColor
+        : Colors.transparent;
+
     return Card(
+      elevation: ChicPlatform.isDesktop() ? 0 : null,
       margin: EdgeInsets.only(left: 16, right: 16, top: 8),
-      color: isSelected
-          ? themeProvider.primaryColor
-          : themeProvider.secondBackgroundColor,
+      color: isSelected ? themeProvider.primaryColor : backgroundColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(6.0),
       ),

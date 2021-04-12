@@ -11,12 +11,17 @@ ChicTheme defaultDarkTheme = ChicTheme(
   backgroundColor: Color(0xFF000000),
   backgroundDesktopColor: Color(0xFF222026),
   secondBackgroundColor: Color(0xFF1C1C1E),
+  secondBackgroundDesktopColor: Color(0xFF29262b),
+  sidebarBackgroundColor: Color(0xFF29262b),
+  modalBackgroundColor: Color(0xFF2a2a2d),
+  selectionBackground: Color(0xFF403d41),
   primaryColor: Color(0xFF0A84FF),
   secondaryColor: Color(0xFF1976d2),
   textColor: Color(0xFFFFFFFF),
   secondTextColor: Color(0x99EBEBF5),
   thirdTextColor: Color(0x4DEBEBF5),
   placeholder: Color(0x4DEBEBF5),
+  labelColor: Color(0xFF646265),
   divider: Color(0x99545458),
   isLight: false,
 );
@@ -77,8 +82,19 @@ class ThemeProvider with ChangeNotifier {
       ? _theme.backgroundDesktopColor
       : _theme.backgroundColor;
 
+  // Retrieve the sidebar color corresponding to the [_theme]
+  Color get sidebarBackgroundColor => _theme.sidebarBackgroundColor;
+
   // Retrieve the second background color corresponding to the [_theme]
-  Color get secondBackgroundColor => _theme.secondBackgroundColor;
+  Color get secondBackgroundColor => ChicPlatform.isDesktop()
+      ? _theme.secondBackgroundDesktopColor
+      : _theme.secondBackgroundColor;
+
+  // Retrieve the modal background color corresponding to the [_theme]
+  Color get modalBackgroundColor => _theme.modalBackgroundColor;
+
+  // Retrieve the selection background color corresponding to the [_theme]
+  Color get selectionBackground => _theme.selectionBackground;
 
   /// Retrieve the first color corresponding to the [_theme]
   Color get primaryColor => _theme.primaryColor;
@@ -100,6 +116,9 @@ class ThemeProvider with ChangeNotifier {
 
   /// Retrieve the divider color corresponding to the [_theme]
   Color get divider => _theme.divider;
+
+  /// Retrieve the label color corresponding to the [_theme]
+  Color get labelColor => _theme.labelColor;
 
   /// Retrieve if the theme is a light [_theme]
   bool get isLight => _theme.isLight;

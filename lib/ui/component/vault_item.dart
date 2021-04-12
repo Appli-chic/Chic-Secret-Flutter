@@ -68,7 +68,7 @@ class VaultItem extends StatelessWidget {
           }
         },
         child: Container(
-          margin: EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 4),
+          margin: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
           child: ClipPath(
             clipper: ShapeBorderClipper(
               shape:
@@ -76,7 +76,7 @@ class VaultItem extends StatelessWidget {
             ),
             child: Container(
               color: isSelected ? themeProvider.primaryColor : null,
-              padding: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
+              padding: EdgeInsets.only(left: 16, right: 16, top: 6, bottom: 6),
               child: Row(
                 children: [
                   Icon(
