@@ -9,6 +9,7 @@ import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
 import 'package:chic_secret/ui/component/category_item.dart';
+import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/tag_item.dart';
@@ -111,7 +112,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
   /// Displays the body corresponding only to the desktop version
   Widget _displaysDesktopBody(ThemeProvider themeProvider) {
     return Container(
-      margin: EdgeInsets.only(top: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -157,16 +157,28 @@ class _VaultsScreenState extends State<VaultsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          margin: EdgeInsets.only(left: 8, bottom: 8),
-          child: Text(
-            AppTranslations.of(context).text("vaults"),
-            style: TextStyle(
-              color: themeProvider.labelColor,
-              fontWeight: FontWeight.w500,
-              fontSize: 13,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              margin: EdgeInsets.only(left: 8),
+              child: Text(
+                AppTranslations.of(context).text("vaults"),
+                style: TextStyle(
+                  color: themeProvider.labelColor,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13,
+                ),
+              ),
             ),
-          ),
+            ChicIconButton(
+              icon: Icons.settings,
+              size: 15,
+              color: themeProvider.secondTextColor,
+              onPressed: () {},
+            ),
+          ],
         ),
         ListView.builder(
           shrinkWrap: true,
@@ -229,16 +241,28 @@ class _VaultsScreenState extends State<VaultsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          margin: EdgeInsets.only(left: 8, bottom: 8, top: 16),
-          child: Text(
-            AppTranslations.of(context).text("categories"),
-            style: TextStyle(
-              color: themeProvider.labelColor,
-              fontWeight: FontWeight.w500,
-              fontSize: 13,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              margin: EdgeInsets.only(left: 8),
+              child: Text(
+                AppTranslations.of(context).text("categories"),
+                style: TextStyle(
+                  color: themeProvider.labelColor,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13,
+                ),
+              ),
             ),
-          ),
+            ChicIconButton(
+              icon: Icons.settings,
+              size: 15,
+              color: themeProvider.secondTextColor,
+              onPressed: () {},
+            ),
+          ],
         ),
         ListView.builder(
           shrinkWrap: true,
@@ -303,16 +327,28 @@ class _VaultsScreenState extends State<VaultsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          margin: EdgeInsets.only(left: 8, bottom: 8, top: 16),
-          child: Text(
-            AppTranslations.of(context).text("tags"),
-            style: TextStyle(
-              color: themeProvider.labelColor,
-              fontWeight: FontWeight.w500,
-              fontSize: 13,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              margin: EdgeInsets.only(left: 8),
+              child: Text(
+                AppTranslations.of(context).text("tags"),
+                style: TextStyle(
+                  color: themeProvider.labelColor,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13,
+                ),
+              ),
             ),
-          ),
+            ChicIconButton(
+              icon: Icons.settings,
+              size: 15,
+              color: themeProvider.secondTextColor,
+              onPressed: () {},
+            ),
+          ],
         ),
         ListView.builder(
           shrinkWrap: true,

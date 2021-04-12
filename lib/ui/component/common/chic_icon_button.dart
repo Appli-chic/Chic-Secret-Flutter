@@ -24,12 +24,14 @@ class ChicIconButton extends StatelessWidget {
   final Function() onPressed;
   final Color? color;
   final ChicIconButtonType type;
+  final double? size;
 
   ChicIconButton({
     required this.icon,
     required this.onPressed,
     this.color,
     this.type = ChicIconButtonType.noBackground,
+    this.size,
   });
 
   @override
@@ -45,6 +47,7 @@ class ChicIconButton extends StatelessWidget {
         icon: Icon(
           icon,
           color: color != null ? color! : themeProvider.textColor,
+          size: size,
         ),
         onPressed: onPressed,
       );

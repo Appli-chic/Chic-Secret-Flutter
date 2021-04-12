@@ -181,7 +181,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
       return Column(
         children: [
           Container(
-            margin: EdgeInsets.only(left: 16, top: 16, right: 16),
+            margin: EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 8),
             child: _displaySearchBar(themeProvider),
           ),
           Expanded(
@@ -199,7 +199,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
           ),
           Container(
             width: double.infinity,
-            margin: EdgeInsets.only(bottom: 8, top: 8, left: 16, right: 16),
+            margin: EdgeInsets.only(bottom: 8, top: 10, left: 16, right: 16),
             child: ChicTextIconButton(
               onPressed: _onAddEntryClicked,
               icon: Icon(
