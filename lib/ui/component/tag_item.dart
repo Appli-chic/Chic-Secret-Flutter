@@ -1,7 +1,6 @@
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -21,10 +20,6 @@ class TagItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    var backgroundColor = tag == null
-        ? themeProvider.selectionBackground
-        : themeProvider.primaryColor;
-
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
@@ -43,13 +38,15 @@ class TagItem extends StatelessWidget {
               ),
             ),
             child: Container(
-              color: isSelected ? backgroundColor : null,
+              color: isSelected ? themeProvider.selectionBackground : null,
               padding: EdgeInsets.only(left: 16, right: 16, top: 6, bottom: 6),
               child: Row(
                 children: [
                   Icon(
                     tag != null ? Icons.tag : Icons.apps,
-                    color: isSelected ? Colors.white : themeProvider.textColor,
+                    color: isSelected
+                        ? themeProvider.textColor
+                        : themeProvider.secondTextColor,
                     size: 13,
                   ),
                   Padding(
@@ -59,8 +56,9 @@ class TagItem extends StatelessWidget {
                           ? tag!.name
                           : AppTranslations.of(context).text("none"),
                       style: TextStyle(
-                        color:
-                            isSelected ? Colors.white : themeProvider.textColor,
+                        color: isSelected
+                            ? themeProvider.textColor
+                            : themeProvider.secondTextColor,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),

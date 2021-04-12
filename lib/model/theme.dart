@@ -9,6 +9,7 @@ class ChicTheme {
   final Color sidebarBackgroundColor;
   final Color modalBackgroundColor;
   final Color selectionBackground;
+  final Color inputBackgroundColor;
   final Color primaryColor;
   final Color secondaryColor;
   final Color textColor;
@@ -28,6 +29,7 @@ class ChicTheme {
     required this.sidebarBackgroundColor,
     required this.modalBackgroundColor,
     required this.selectionBackground,
+    required this.inputBackgroundColor,
     required this.primaryColor,
     required this.secondaryColor,
     required this.textColor,

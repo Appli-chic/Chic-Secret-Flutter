@@ -211,8 +211,8 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
                 AppTranslations.of(context).text("new_password"),
                 style: TextStyle(color: themeProvider.textColor),
               ),
-              backgroundColor: themeProvider.primaryColor,
-              padding: EdgeInsets.only(top: 8, bottom: 8),
+              backgroundColor: themeProvider.selectionBackground,
+              padding: EdgeInsets.only(top: 10, bottom: 10),
             ),
           ),
         ],
@@ -232,6 +232,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
     );
   }
 
+  /// Displays the search bar for both mobile and desktop
   Widget _displaySearchBar(ThemeProvider themeProvider) {
     return ChicTextField(
       controller: _searchController,

@@ -113,7 +113,9 @@ class CategoryItem extends StatelessWidget {
                     category != null
                         ? IconData(category!.icon, fontFamily: 'MaterialIcons')
                         : Icons.apps,
-                    color: isSelected! ? Colors.white : themeProvider.textColor,
+                    color: isSelected!
+                        ? themeProvider.textColor
+                        : themeProvider.secondTextColor,
                     size: 13,
                   ),
                   Flexible(
@@ -127,8 +129,8 @@ class CategoryItem extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: isSelected!
-                              ? Colors.white
-                              : themeProvider.textColor,
+                              ? themeProvider.textColor
+                              : themeProvider.secondTextColor,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),

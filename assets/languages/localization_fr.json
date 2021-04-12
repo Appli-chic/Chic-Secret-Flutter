@@ -50,5 +50,7 @@
   "add_custom_fields": "Ajouter un Champ Personalisé",
   "error_text_empty": "Le texte ne doit pas être vide",
   "value": "Valeur",
-  "comment": "Commentaire"
+  "comment": "Commentaire",
+  "edit": "Modifier",
+  "delete": "Supprimer"
 }

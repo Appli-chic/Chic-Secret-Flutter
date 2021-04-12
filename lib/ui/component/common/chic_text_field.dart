@@ -143,9 +143,9 @@ class _ChicTextFieldState extends State<ChicTextField> {
         decoration: InputDecoration(
           isDense: ChicPlatform.isDesktop(),
           filled: widget.type == ChicTextFieldType.filledRounded,
-          fillColor: widget.type == ChicTextFieldType.filledRounded
-              ? themeProvider.secondBackgroundColor
-              : null,
+          fillColor: ChicPlatform.isDesktop()
+              ? themeProvider.inputBackgroundColor
+              : themeProvider.secondBackgroundColor,
           border: _getInputBorder(themeProvider.placeholder),
           focusedBorder: _getInputBorder(themeProvider.primaryColor),
           errorBorder: _getInputBorder(Colors.red),

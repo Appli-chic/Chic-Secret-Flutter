@@ -11,10 +11,11 @@ ChicTheme defaultDarkTheme = ChicTheme(
   backgroundColor: Color(0xFF000000),
   backgroundDesktopColor: Color(0xFF222026),
   secondBackgroundColor: Color(0xFF1C1C1E),
-  secondBackgroundDesktopColor: Color(0xFF29262b),
+  secondBackgroundDesktopColor: Color(0xFF292829),
   sidebarBackgroundColor: Color(0xFF29262b),
   modalBackgroundColor: Color(0xFF2a2a2d),
   selectionBackground: Color(0xFF403d41),
+  inputBackgroundColor: Color(0xFF292829),
   primaryColor: Color(0xFF0A84FF),
   secondaryColor: Color(0xFF1976d2),
   textColor: Color(0xFFFFFFFF),
@@ -95,6 +96,9 @@ class ThemeProvider with ChangeNotifier {
 
   // Retrieve the selection background color corresponding to the [_theme]
   Color get selectionBackground => _theme.selectionBackground;
+
+  // Retrieve the input background color corresponding to the [_theme]
+  Color get inputBackgroundColor => _theme.inputBackgroundColor;
 
   /// Retrieve the first color corresponding to the [_theme]
   Color get primaryColor => _theme.primaryColor;

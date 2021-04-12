@@ -173,10 +173,10 @@ class _VaultsScreenState extends State<VaultsScreen> {
               ),
             ),
             ChicIconButton(
-              icon: Icons.settings,
-              size: 15,
-              color: themeProvider.secondTextColor,
-              onPressed: () {},
+              icon: Icons.add,
+              size: 17,
+              color: themeProvider.textColor,
+              onPressed: _onAddVaultClicked,
             ),
           ],
         ),
@@ -214,24 +214,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
             );
           },
         ),
-        Container(
-          margin: EdgeInsets.only(left: 22, bottom: 8, top: 6),
-          child: ChicTextIconButton(
-            onPressed: _onAddVaultClicked,
-            icon: Icon(
-              Icons.add,
-              color: themeProvider.textColor,
-              size: 18,
-            ),
-            label: Text(
-              AppTranslations.of(context).text("new_vault"),
-              style: TextStyle(
-                color: themeProvider.textColor,
-                fontSize: 13,
-              ),
-            ),
-          ),
-        ),
       ],
     );
   }
@@ -257,10 +239,10 @@ class _VaultsScreenState extends State<VaultsScreen> {
               ),
             ),
             ChicIconButton(
-              icon: Icons.settings,
-              size: 15,
-              color: themeProvider.secondTextColor,
-              onPressed: () {},
+              icon: Icons.add,
+              size: 17,
+              color: themeProvider.textColor,
+              onPressed: _onAddCategoryClicked,
             ),
           ],
         ),
@@ -300,24 +282,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
             }
           },
         ),
-        Container(
-          margin: EdgeInsets.only(left: 22, bottom: 8, top: 6),
-          child: ChicTextIconButton(
-            onPressed: _onAddCategoryClicked,
-            icon: Icon(
-              Icons.add,
-              color: themeProvider.textColor,
-              size: 20,
-            ),
-            label: Text(
-              AppTranslations.of(context).text("new_category"),
-              style: TextStyle(
-                color: themeProvider.textColor,
-                fontSize: 13,
-              ),
-            ),
-          ),
-        ),
       ],
     );
   }
@@ -327,28 +291,16 @@ class _VaultsScreenState extends State<VaultsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              margin: EdgeInsets.only(left: 8),
-              child: Text(
-                AppTranslations.of(context).text("tags"),
-                style: TextStyle(
-                  color: themeProvider.labelColor,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 13,
-                ),
-              ),
+        Container(
+          margin: EdgeInsets.only(left: 8, bottom: 12, top: 8),
+          child: Text(
+            AppTranslations.of(context).text("tags"),
+            style: TextStyle(
+              color: themeProvider.labelColor,
+              fontWeight: FontWeight.w500,
+              fontSize: 13,
             ),
-            ChicIconButton(
-              icon: Icons.settings,
-              size: 15,
-              color: themeProvider.secondTextColor,
-              onPressed: () {},
-            ),
-          ],
+          ),
         ),
         ListView.builder(
           shrinkWrap: true,

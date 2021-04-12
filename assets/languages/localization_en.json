@@ -50,5 +50,7 @@
   "add_custom_fields": "Add a custom field",
   "error_text_empty": "The text must be not empty",
   "value": "Value",
-  "comment": "Comment"
+  "comment": "Comment",
+  "edit": "Edit",
+  "delete": "Delete"
 }

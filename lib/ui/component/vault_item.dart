@@ -63,7 +63,7 @@ class VaultItem extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          if(!isSelected) {
+          if (!isSelected) {
             onTap(vault);
           }
         },
@@ -71,17 +71,19 @@ class VaultItem extends StatelessWidget {
           margin: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
           child: ClipPath(
             clipper: ShapeBorderClipper(
-              shape:
-                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4)),
             ),
             child: Container(
-              color: isSelected ? themeProvider.primaryColor : null,
+              color: isSelected ? themeProvider.selectionBackground : null,
               padding: EdgeInsets.only(left: 16, right: 16, top: 6, bottom: 6),
               child: Row(
                 children: [
                   Icon(
                     Icons.lock,
-                    color: isSelected ? Colors.white : themeProvider.textColor,
+                    color: isSelected
+                        ? themeProvider.textColor
+                        : themeProvider.secondTextColor,
                     size: 13,
                   ),
                   Padding(
@@ -89,8 +91,9 @@ class VaultItem extends StatelessWidget {
                     child: Text(
                       vault.name,
                       style: TextStyle(
-                        color:
-                            isSelected ? Colors.white : themeProvider.textColor,
+                        color: isSelected
+                            ? themeProvider.textColor
+                            : themeProvider.secondTextColor,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),

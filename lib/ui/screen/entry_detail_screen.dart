@@ -5,6 +5,7 @@ import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/custom_field_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
+import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/entry_detail_input.dart';
 import 'package:chic_secret/ui/component/tag_chip.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
@@ -90,53 +91,112 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
       margin: EdgeInsets.all(20),
       child: Scrollbar(
         child: SingleChildScrollView(
-          child: Container(
-            width: double.maxFinite,
-            decoration: BoxDecoration(
-              color: themeProvider.secondBackgroundColor,
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-            padding: EdgeInsets.all(32),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ChicPlatform.isDesktop()
-                    ? EntryDetailInput(
-                        label: AppTranslations.of(context).text("name"),
-                        text: widget.entry.name,
-                      )
-                    : SizedBox.shrink(),
-                ChicPlatform.isDesktop()
-                    ? SizedBox(height: 24)
-                    : SizedBox.shrink(),
-                EntryDetailInput(
-                  label: AppTranslations.of(context).text("username"),
-                  text: widget.entry.username,
-                  canCopy: true,
+          child: Column(
+            children: [
+              _displaysDesktopToolbar(themeProvider),
+              Container(
+                width: double.maxFinite,
+                decoration: BoxDecoration(
+                  color: themeProvider.secondBackgroundColor,
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
-                SizedBox(height: 24),
-                EntryDetailInput(
-                  label: AppTranslations.of(context).text("password"),
-                  text: Security.decrypt(currentPassword!, widget.entry.hash),
-                  canCopy: true,
-                  isPassword: true,
+                padding: EdgeInsets.all(32),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ChicPlatform.isDesktop()
+                        ? EntryDetailInput(
+                            label: AppTranslations.of(context).text("name"),
+                            text: widget.entry.name,
+                          )
+                        : SizedBox.shrink(),
+                    ChicPlatform.isDesktop()
+                        ? SizedBox(height: 24)
+                        : SizedBox.shrink(),
+                    EntryDetailInput(
+                      label: AppTranslations.of(context).text("username"),
+                      text: widget.entry.username,
+                      canCopy: true,
+                    ),
+                    SizedBox(height: 24),
+                    EntryDetailInput(
+                      label: AppTranslations.of(context).text("password"),
+                      text:
+                          Security.decrypt(currentPassword!, widget.entry.hash),
+                      canCopy: true,
+                      isPassword: true,
+                    ),
+                    SizedBox(height: 24),
+                    EntryDetailInput(
+                      label: AppTranslations.of(context).text("category"),
+                      text: widget.entry.category != null
+                          ? widget.entry.category!.name
+                          : "",
+                    ),
+                    _displaysTags(themeProvider),
+                    _displaysCustomFields(),
+                    _displaysComment(),
+                  ],
                 ),
-                SizedBox(height: 24),
-                EntryDetailInput(
-                  label: AppTranslations.of(context).text("category"),
-                  text: widget.entry.category != null
-                      ? widget.entry.category!.name
-                      : "",
-                ),
-                _displaysTags(themeProvider),
-                _displaysCustomFields(),
-                _displaysComment(),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  /// Displays the buttons to delete and edit an entry, only for Desktop
+  Widget _displaysDesktopToolbar(ThemeProvider themeProvider) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: 8, bottom: 8),
+          child: ChicTextIconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.edit,
+              color: themeProvider.textColor,
+              size: 20,
+            ),
+            label: Text(
+              AppTranslations.of(context).text("edit"),
+              style: TextStyle(color: themeProvider.textColor),
+            ),
+            backgroundColor: themeProvider.selectionBackground,
+            padding: EdgeInsets.only(
+              top: 13,
+              bottom: 13,
+              right: 24,
+              left: 24,
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(left: 8, bottom: 8),
+          child: ChicTextIconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.delete,
+              color: themeProvider.textColor,
+              size: 20,
+            ),
+            label: Text(
+              AppTranslations.of(context).text("delete"),
+              style: TextStyle(color: themeProvider.textColor),
+            ),
+            backgroundColor: themeProvider.selectionBackground,
+            padding: EdgeInsets.only(
+              top: 13,
+              bottom: 13,
+              right: 24,
+              left: 24,
+            ),
+          ),
+        ),
+      ],
     );
   }
 

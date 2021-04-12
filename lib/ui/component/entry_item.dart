@@ -33,7 +33,7 @@ class EntryItem extends StatelessWidget {
       ),
       child: ListTile(
         dense: true,
-        contentPadding: EdgeInsets.only(top: 4, bottom: 4, left: 10, right: 10),
+        contentPadding: EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
         onTap: () {
           onTap(entry);
         },
