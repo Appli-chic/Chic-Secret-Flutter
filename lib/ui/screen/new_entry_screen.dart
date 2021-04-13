@@ -88,7 +88,20 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
     if (ChicPlatform.isDesktop()) {
-      return _displaysDesktopInModal(themeProvider);
+      return Container(
+        color: themeProvider.backgroundColor,
+        child: Scrollbar(
+          child: SingleChildScrollView(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
+              child: _displaysBody(themeProvider),
+            ),
+          ),
+        ),
+      );
     } else {
       return _displaysMobile(themeProvider);
     }

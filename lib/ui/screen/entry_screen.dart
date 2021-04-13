@@ -27,12 +27,14 @@ class PasswordsScreen extends StatefulWidget {
   final Function()? reloadCategories;
   final Function()? reloadTags;
   final Function(Entry entry)? onEntrySelected;
+  final Function()? onCreateNewEntry;
 
   const PasswordsScreen({
     this.passwordScreenController,
     this.reloadCategories,
     this.reloadTags,
     this.onEntrySelected,
+    this.onCreateNewEntry,
   });
 
   @override
@@ -270,18 +272,27 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
 
   /// Call the [NewEntryScreen] screen to create a new entry
   _onAddEntryClicked() async {
-    var data = await ChicNavigator.push(
-      context,
-      NewEntryScreen(),
-      isModal: true,
-    );
+    var data;
 
-    if (widget.reloadCategories != null) {
-      widget.reloadCategories!();
-    }
+    if (ChicPlatform.isDesktop()) {
+      // Display the NewEntryScreen in the entry detail
+      if (widget.onCreateNewEntry != null) {
+        widget.onCreateNewEntry!();
+      }
 
-    if (widget.reloadTags != null) {
-      widget.reloadTags!();
+      // if (widget.reloadCategories != null) {
+      //   widget.reloadCategories!();
+      // }
+      //
+      // if (widget.reloadTags != null) {
+      //   widget.reloadTags!();
+      // }
+    } else {
+      // Push a new screen if it's on mobile
+      data = await ChicNavigator.push(
+        context,
+        NewEntryScreen(),
+      );
     }
 
     if (data != null) {

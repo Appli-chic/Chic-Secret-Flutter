@@ -3,6 +3,7 @@ import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/split_view.dart';
 import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
 import 'package:chic_secret/ui/screen/entry_screen.dart';
+import 'package:chic_secret/ui/screen/new_entry_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,7 @@ class MainDesktopScreen extends StatefulWidget {
 
 class _MainDesktopScreenState extends State<MainDesktopScreen> {
   Entry? _selectedEntry;
+  bool _isCreatingNewEntry = true;
   VaultScreenController _vaultScreenController = VaultScreenController();
   EntryScreenController _entryScreenController = EntryScreenController();
 
@@ -63,6 +65,14 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
   /// Reload the [EntryDetailScreen] with the new selected entry
   _onEntrySelected(Entry entry) {
     _selectedEntry = entry;
+    _isCreatingNewEntry = false;
+    setState(() {});
+  }
+
+  /// Displays [NewEntryScreen] instead of the entry detail
+  _onCreateNewEntry() {
+    _selectedEntry = null;
+    _isCreatingNewEntry = true;
     setState(() {});
   }
 
@@ -86,17 +96,25 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
             reloadCategories: _reloadCategories,
             reloadTags: _reloadTags,
             onEntrySelected: _onEntrySelected,
+            onCreateNewEntry: _onCreateNewEntry,
           ),
-          view2: _selectedEntry != null
-              ? EntryDetailScreen(entry: _selectedEntry!)
-              : Container(
-                  color: themeProvider.backgroundColor,
-                ),
+          view2: _displaysThirdSplitScreen(themeProvider),
           initialWeight: 0.4,
           onWeightChanged: (double value) {},
         ),
         onWeightChanged: (double value) {},
       ),
     );
+  }
+
+  /// Displays the third split screen with blank/[EntryDetailScreen]/[NewEntryScreen]
+  Widget _displaysThirdSplitScreen(ThemeProvider themeProvider) {
+    if (_isCreatingNewEntry) {
+      return NewEntryScreen();
+    } else if (_selectedEntry != null) {
+      return EntryDetailScreen(entry: _selectedEntry!);
+    } else {
+      return Container(color: themeProvider.backgroundColor);
+    }
   }
 }
