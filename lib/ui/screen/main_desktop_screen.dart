@@ -15,7 +15,7 @@ class MainDesktopScreen extends StatefulWidget {
 
 class _MainDesktopScreenState extends State<MainDesktopScreen> {
   Entry? _selectedEntry;
-  bool _isCreatingNewEntry = true;
+  bool _isCreatingNewEntry = false;
   VaultScreenController _vaultScreenController = VaultScreenController();
   EntryScreenController _entryScreenController = EntryScreenController();
 
@@ -76,6 +76,22 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     setState(() {});
   }
 
+  /// Cancels the display of creation of a new entry
+  _onNewEntryFinished(bool hasCreatedNewEntry) {
+    _isCreatingNewEntry = false;
+
+    if (hasCreatedNewEntry) {
+      _reloadCategories();
+      _reloadTags();
+
+      if (_entryScreenController.reloadPasswords != null) {
+        _entryScreenController.reloadPasswords!();
+      }
+    }
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
@@ -110,7 +126,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
   /// Displays the third split screen with blank/[EntryDetailScreen]/[NewEntryScreen]
   Widget _displaysThirdSplitScreen(ThemeProvider themeProvider) {
     if (_isCreatingNewEntry) {
-      return NewEntryScreen();
+      return NewEntryScreen(onFinish: _onNewEntryFinished);
     } else if (_selectedEntry != null) {
       return EntryDetailScreen(entry: _selectedEntry!);
     } else {

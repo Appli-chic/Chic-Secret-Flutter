@@ -279,14 +279,6 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
       if (widget.onCreateNewEntry != null) {
         widget.onCreateNewEntry!();
       }
-
-      // if (widget.reloadCategories != null) {
-      //   widget.reloadCategories!();
-      // }
-      //
-      // if (widget.reloadTags != null) {
-      //   widget.reloadTags!();
-      // }
     } else {
       // Push a new screen if it's on mobile
       data = await ChicNavigator.push(

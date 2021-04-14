@@ -87,14 +87,13 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
 
   /// Displays the body of the screen
   Widget _displaysBody(ThemeProvider themeProvider) {
-    return Container(
-      margin: EdgeInsets.all(20),
-      child: Scrollbar(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _displaysDesktopToolbar(themeProvider),
-              Container(
+    return Column(
+      children: [
+        Expanded(
+          child: Scrollbar(
+            child: SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.only(left: 20, right: 20, top: 20),
                 width: double.maxFinite,
                 decoration: BoxDecoration(
                   color: themeProvider.secondBackgroundColor,
@@ -107,9 +106,9 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                   children: [
                     ChicPlatform.isDesktop()
                         ? EntryDetailInput(
-                            label: AppTranslations.of(context).text("name"),
-                            text: widget.entry.name,
-                          )
+                      label: AppTranslations.of(context).text("name"),
+                      text: widget.entry.name,
+                    )
                         : SizedBox.shrink(),
                     ChicPlatform.isDesktop()
                         ? SizedBox(height: 24)
@@ -123,7 +122,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                     EntryDetailInput(
                       label: AppTranslations.of(context).text("password"),
                       text:
-                          Security.decrypt(currentPassword!, widget.entry.hash),
+                      Security.decrypt(currentPassword!, widget.entry.hash),
                       canCopy: true,
                       isPassword: true,
                     ),
@@ -140,10 +139,14 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                   ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
-      ),
+        Container(
+          margin: EdgeInsets.only(right: 8, top: 16),
+          child: _displaysDesktopToolbar(themeProvider),
+        ),
+      ],
     );
   }
 

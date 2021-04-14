@@ -11,13 +11,11 @@ import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/service/entry_tag_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/ui/component/common/chic_ahead_text_field.dart';
-import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
-import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/component/tag_chip.dart';
 import 'package:chic_secret/ui/screen/generate_password_screen.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
@@ -31,6 +29,12 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class NewEntryScreen extends StatefulWidget {
+  final Function(bool)? onFinish;
+
+  NewEntryScreen({
+    this.onFinish,
+  });
+
   @override
   _NewEntryScreenState createState() => _NewEntryScreenState();
 }
@@ -90,16 +94,29 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     if (ChicPlatform.isDesktop()) {
       return Container(
         color: themeProvider.backgroundColor,
-        child: Scrollbar(
-          child: SingleChildScrollView(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                FocusScope.of(context).requestFocus(FocusNode());
-              },
-              child: _displaysBody(themeProvider),
+        child: Column(
+          children: [
+            Expanded(
+              child: Scrollbar(
+                child: SingleChildScrollView(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    },
+                    child: Container(
+                      margin: EdgeInsets.all(16),
+                      child: _displaysBody(themeProvider),
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
+            Container(
+              margin: EdgeInsets.only(right: 8, top: 16),
+              child: _displaysDesktopToolbar(themeProvider),
+            ),
+          ],
         ),
       );
     } else {
@@ -107,32 +124,57 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     }
   }
 
-  /// Displays the screen in a modal for the desktop version
-  Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
-    return DesktopModal(
-      title: AppTranslations.of(context).text("new_password"),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: _displaysBody(themeProvider),
-      ),
-      actions: [
+  /// Displays the buttons to cancel or save only for Desktop
+  Widget _displaysDesktopToolbar(ThemeProvider themeProvider) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
         Container(
-          margin: EdgeInsets.only(right: 8, bottom: 8),
-          child: ChicTextButton(
-            child: Text(AppTranslations.of(context).text("cancel")),
+          margin: EdgeInsets.only(left: 8, bottom: 8),
+          child: ChicTextIconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              if (widget.onFinish != null) {
+                widget.onFinish!(false);
+              }
             },
+            icon: Icon(
+              Icons.close,
+              color: themeProvider.textColor,
+              size: 20,
+            ),
+            label: Text(
+              AppTranslations.of(context).text("cancel"),
+              style: TextStyle(color: themeProvider.textColor),
+            ),
+            backgroundColor: themeProvider.selectionBackground,
+            padding: EdgeInsets.only(
+              top: 13,
+              bottom: 13,
+              right: 24,
+              left: 24,
+            ),
           ),
         ),
         Container(
-          margin: EdgeInsets.only(right: 8, bottom: 8),
-          child: ChicElevatedButton(
-            child: Text(AppTranslations.of(context).text("save")),
+          margin: EdgeInsets.only(left: 8, bottom: 8),
+          child: ChicTextIconButton(
             onPressed: _addEntry,
+            icon: Icon(
+              Icons.save,
+              color: themeProvider.textColor,
+              size: 20,
+            ),
+            label: Text(
+              AppTranslations.of(context).text("save"),
+              style: TextStyle(color: themeProvider.textColor),
+            ),
+            backgroundColor: themeProvider.selectionBackground,
+            padding: EdgeInsets.only(
+              top: 13,
+              bottom: 13,
+              right: 24,
+              left: 24,
+            ),
           ),
         ),
       ],
@@ -642,7 +684,13 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         await CustomFieldService.save(customField);
       }
 
-      Navigator.pop(context, entry);
+      // Return to the previous screen
+      if (widget.onFinish != null && ChicPlatform.isDesktop()) {
+        widget.onFinish!(true);
+
+      } else {
+        Navigator.pop(context, entry);
+      }
     }
   }
 
