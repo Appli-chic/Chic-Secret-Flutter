@@ -73,6 +73,11 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
   _onCreateNewEntry() {
     _selectedEntry = null;
     _isCreatingNewEntry = true;
+
+    if (_entryScreenController.selectEntry != null) {
+      _entryScreenController.selectEntry!(null);
+    }
+
     setState(() {});
   }
 

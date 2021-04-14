@@ -1,5 +1,6 @@
 import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -80,7 +81,9 @@ class VaultItem extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(
-                    Icons.lock,
+                    vaultPasswordMap[vault.id] != null
+                        ? Icons.lock_open
+                        : Icons.lock,
                     color: isSelected
                         ? themeProvider.textColor
                         : themeProvider.secondTextColor,

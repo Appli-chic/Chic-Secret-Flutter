@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 
 class EntryScreenController {
   void Function()? reloadPasswords;
-  void Function(Entry)? selectEntry;
+  void Function(Entry?)? selectEntry;
 
   EntryScreenController({
     this.reloadPasswords,
@@ -64,7 +64,7 @@ class _EntryScreenState extends State<EntryScreen> {
   }
 
   /// Triggered when we ask to select an entry
-  _selectEntry(Entry entry) {
+  _selectEntry(Entry? entry) {
     _selectedEntry = entry;
     setState(() {});
   }

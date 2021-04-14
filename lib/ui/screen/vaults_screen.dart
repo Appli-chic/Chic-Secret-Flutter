@@ -25,6 +25,9 @@ import 'package:provider/provider.dart';
 Vault? selectedVault;
 String? currentPassword;
 
+/// The map is composed of the vault ID as a key and the password as the value
+Map<String, String> vaultPasswordMap = Map();
+
 Category? selectedCategory;
 Tag? selectedTag;
 
@@ -191,25 +194,35 @@ class _VaultsScreenState extends State<VaultsScreen> {
               isSelected: isSelected,
               vault: _vaults[index],
               onTap: (vault) async {
-                var unlockingPassword = await _isVaultUnlocking(vault);
+                var unlockingPassword;
 
-                if (unlockingPassword != null) {
-                  // Set the selected category back to "null"
-                  selectedCategory = null;
+                if (vaultPasswordMap[vault.id] != null) {
+                  // The vault is already unlocked
+                  unlockingPassword = vaultPasswordMap[vault.id];
+                } else {
+                  // The vault need to be unlocked
+                  unlockingPassword = await _isVaultUnlocking(vault);
 
-                  selectedVault = vault;
-                  currentPassword = unlockingPassword;
-                  widget.onVaultChange();
-
-                  // Only load categories and tags if it's the desktop version
-                  if (ChicPlatform.isDesktop()) {
-                    // Reload the categories from the selected vault
-                    _loadCategories();
-                    _loadTags();
+                  // If the vault haven't been unlocked then we stop it there
+                  if (unlockingPassword == null) {
+                    return;
                   }
 
-                  setState(() {});
+                  // We just unlocked the vault so we save this information
+                  vaultPasswordMap[vault.id] = unlockingPassword;
                 }
+
+                // Set the selected category back to null
+                selectedCategory = null;
+                selectedVault = vault;
+                currentPassword = unlockingPassword;
+
+                // Reload the data for this vault
+                widget.onVaultChange();
+                _loadCategories();
+                _loadTags();
+
+                setState(() {});
               },
             );
           },
@@ -414,6 +427,12 @@ class _VaultsScreenState extends State<VaultsScreen> {
 
       // Select the vault and start working on it
       widget.onVaultChange();
+
+      // Only load categories and tags if it's the desktop version
+      if (ChicPlatform.isDesktop()) {
+        _loadCategories();
+        _loadTags();
+      }
 
       if (!ChicPlatform.isDesktop()) {
         await ChicNavigator.push(context, MainMobileScreen());
