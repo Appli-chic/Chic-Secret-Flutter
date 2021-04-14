@@ -16,20 +16,22 @@ import 'package:provider/provider.dart';
 
 class EntryScreenController {
   void Function()? reloadPasswords;
+  void Function(Entry)? selectEntry;
 
   EntryScreenController({
     this.reloadPasswords,
+    this.selectEntry,
   });
 }
 
-class PasswordsScreen extends StatefulWidget {
+class EntryScreen extends StatefulWidget {
   final EntryScreenController? passwordScreenController;
   final Function()? reloadCategories;
   final Function()? reloadTags;
   final Function(Entry entry)? onEntrySelected;
   final Function()? onCreateNewEntry;
 
-  const PasswordsScreen({
+  const EntryScreen({
     this.passwordScreenController,
     this.reloadCategories,
     this.reloadTags,
@@ -38,10 +40,10 @@ class PasswordsScreen extends StatefulWidget {
   });
 
   @override
-  _PasswordsScreenState createState() => _PasswordsScreenState();
+  _EntryScreenState createState() => _EntryScreenState();
 }
 
-class _PasswordsScreenState extends State<PasswordsScreen> {
+class _EntryScreenState extends State<EntryScreen> {
   List<Entry> _entries = [];
   Entry? _selectedEntry;
 
@@ -53,11 +55,18 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
   void initState() {
     if (widget.passwordScreenController != null) {
       widget.passwordScreenController!.reloadPasswords = _loadPassword;
+      widget.passwordScreenController!.selectEntry = _selectEntry;
     }
 
     _loadPassword();
 
     super.initState();
+  }
+
+  /// Triggered when we ask to select an entry
+  _selectEntry(Entry entry) {
+    _selectedEntry = entry;
+    setState(() {});
   }
 
   /// Load the list of passwords linked to the current vault
@@ -193,7 +202,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
                 return EntryItem(
                   entry: _entries[index],
                   isSelected: _selectedEntry != null &&
-                      _selectedEntry == _entries[index],
+                      _selectedEntry!.id == _entries[index].id,
                   onTap: _onEntrySelected,
                 );
               },

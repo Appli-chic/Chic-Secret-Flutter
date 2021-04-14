@@ -29,7 +29,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class NewEntryScreen extends StatefulWidget {
-  final Function(bool)? onFinish;
+  final Function(Entry?)? onFinish;
 
   NewEntryScreen({
     this.onFinish,
@@ -134,7 +134,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
           child: ChicTextIconButton(
             onPressed: () {
               if (widget.onFinish != null) {
-                widget.onFinish!(false);
+                widget.onFinish!(null);
               }
             },
             icon: Icon(
@@ -686,7 +686,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
 
       // Return to the previous screen
       if (widget.onFinish != null && ChicPlatform.isDesktop()) {
-        widget.onFinish!(true);
+        widget.onFinish!(entry);
 
       } else {
         Navigator.pop(context, entry);

@@ -30,7 +30,7 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
         controller: _pageController,
         physics: NeverScrollableScrollPhysics(),
         children: [
-          PasswordsScreen(
+          EntryScreen(
             passwordScreenController: _passwordScreenController,
           ),
           CategoriesScreen(

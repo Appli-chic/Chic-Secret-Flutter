@@ -19,7 +19,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
   VaultScreenController _vaultScreenController = VaultScreenController();
   EntryScreenController _entryScreenController = EntryScreenController();
 
-  /// Ask to reload the passwords from the [PasswordsScreen] when the vault change
+  /// Ask to reload the passwords from the [EntryScreen] when the vault change
   _reloadPasswordScreenOnVaultChange() {
     _selectedEntry = null;
 
@@ -30,7 +30,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     setState(() {});
   }
 
-  /// Ask to reload the passwords from the [PasswordsScreen] when the category change
+  /// Ask to reload the passwords from the [EntryScreen] when the category change
   _reloadPasswordScreenOnCategoryChange() {
     if (_entryScreenController.reloadPasswords != null) {
       _entryScreenController.reloadPasswords!();
@@ -39,7 +39,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     setState(() {});
   }
 
-  /// Ask to reload the passwords from the [PasswordsScreen] when the tag change
+  /// Ask to reload the passwords from the [EntryScreen] when the tag change
   _reloadPasswordScreenOnTagChange() {
     if (_entryScreenController.reloadPasswords != null) {
       _entryScreenController.reloadPasswords!();
@@ -77,15 +77,21 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
   }
 
   /// Cancels the display of creation of a new entry
-  _onNewEntryFinished(bool hasCreatedNewEntry) {
+  _onNewEntryFinished(Entry? entry) {
     _isCreatingNewEntry = false;
 
-    if (hasCreatedNewEntry) {
+    if (entry != null) {
       _reloadCategories();
       _reloadTags();
 
       if (_entryScreenController.reloadPasswords != null) {
         _entryScreenController.reloadPasswords!();
+      }
+
+      _onEntrySelected(entry);
+
+      if (_entryScreenController.selectEntry != null) {
+        _entryScreenController.selectEntry!(entry);
       }
     }
 
@@ -107,7 +113,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
         ),
         view2: SplitView(
           gripColor: themeProvider.divider,
-          view1: PasswordsScreen(
+          view1: EntryScreen(
             passwordScreenController: _entryScreenController,
             reloadCategories: _reloadCategories,
             reloadTags: _reloadTags,
