@@ -134,7 +134,13 @@ LRESULT CALLBACK Win32Window::WndProc(HWND const window,
                                       UINT const message,
                                       WPARAM const wparam,
                                       LPARAM const lparam) noexcept {
-  if (message == WM_NCCREATE) {
+
+  if(message == WM_GETMINMAXINFO) {
+    LPMINMAXINFO lpMMI = (LPMINMAXINFO)lparam;
+    lpMMI->ptMinTrackSize.x = 1000;
+    lpMMI->ptMinTrackSize.y = 800;
+    return 0;
+  } else if (message == WM_NCCREATE) {
     auto window_struct = reinterpret_cast<CREATESTRUCT*>(lparam);
     SetWindowLongPtr(window, GWLP_USERDATA,
                      reinterpret_cast<LONG_PTR>(window_struct->lpCreateParams));

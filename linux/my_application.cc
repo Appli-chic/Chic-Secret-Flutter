@@ -45,10 +45,10 @@ static void my_application_activate(GApplication* application) {
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
   }
   else {
-    gtk_window_set_title(window, "chic_secret");
+    gtk_window_set_title(window, "Chic Secret");
   }
 
-  gtk_window_set_default_size(window, 1280, 720);
+  gtk_window_set_default_size(window, 1200, 800);
   gtk_widget_show(GTK_WIDGET(window));
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
