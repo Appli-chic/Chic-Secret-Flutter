@@ -12,6 +12,8 @@ class RichTextEditingController extends TextEditingController {
     fontWeight: FontWeight.bold,
   );
 
+  RichTextEditingController({String? text}) : super(text: text);
+
   @override
   TextSpan buildTextSpan({TextStyle? style, required bool withComposing}) {
     return textToSpan(text.characters);
@@ -26,10 +28,10 @@ class RichTextEditingController extends TextEditingController {
       if (numbers.contains(character.toString())) {
         // Display number
         textSpanList.add(TextSpan(style: numberStyle, text: '$character'));
-      } else if(uppercase.contains(character.toString())) {
+      } else if (uppercase.contains(character.toString())) {
         // Display uppercase
         textSpanList.add(TextSpan(style: uppercaseStyle, text: '$character'));
-      }else {
+      } else {
         // Display the rest normally
         textSpanList.add(TextSpan(text: '$character'));
       }

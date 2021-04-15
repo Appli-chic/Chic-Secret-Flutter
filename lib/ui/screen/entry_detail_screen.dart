@@ -16,9 +16,11 @@ import 'package:provider/provider.dart';
 
 class EntryDetailScreen extends StatefulWidget {
   final Entry entry;
+  final Function(Entry)? onEntryEdit;
 
   EntryDetailScreen({
     required this.entry,
+    this.onEntryEdit,
   });
 
   @override
@@ -65,9 +67,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     return Scaffold(
       backgroundColor: themeProvider.backgroundColor,
       appBar: _displaysAppbar(themeProvider),
-      body: ChicPlatform.isDesktop()
-          ? _displaysBody(themeProvider)
-          : _displaysBody(themeProvider),
+      body: _displaysBody(themeProvider),
     );
   }
 
@@ -106,9 +106,9 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                   children: [
                     ChicPlatform.isDesktop()
                         ? EntryDetailInput(
-                      label: AppTranslations.of(context).text("name"),
-                      text: widget.entry.name,
-                    )
+                            label: AppTranslations.of(context).text("name"),
+                            text: widget.entry.name,
+                          )
                         : SizedBox.shrink(),
                     ChicPlatform.isDesktop()
                         ? SizedBox(height: 24)
@@ -122,7 +122,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                     EntryDetailInput(
                       label: AppTranslations.of(context).text("password"),
                       text:
-                      Security.decrypt(currentPassword!, widget.entry.hash),
+                          Security.decrypt(currentPassword!, widget.entry.hash),
                       canCopy: true,
                       isPassword: true,
                     ),
@@ -158,7 +158,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
         Container(
           margin: EdgeInsets.only(left: 8, bottom: 8),
           child: ChicTextIconButton(
-            onPressed: () {},
+            onPressed: _onEditButtonClicked,
             icon: Icon(
               Icons.edit,
               color: themeProvider.textColor,
@@ -291,5 +291,12 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     }
 
     return chips;
+  }
+
+  /// Triggered when the edit button is clicked
+  _onEditButtonClicked() {
+    if (ChicPlatform.isDesktop() && widget.onEntryEdit != null) {
+      widget.onEntryEdit!(widget.entry);
+    }
   }
 }

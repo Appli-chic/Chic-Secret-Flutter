@@ -29,9 +29,11 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class NewEntryScreen extends StatefulWidget {
+  final Entry? entry;
   final Function(Entry?)? onFinish;
 
   NewEntryScreen({
+    this.entry,
     this.onFinish,
   });
 
@@ -42,12 +44,12 @@ class NewEntryScreen extends StatefulWidget {
 class _NewEntryScreenState extends State<NewEntryScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final _nameController = TextEditingController();
-  final _usernameController = TextEditingController();
-  final _passwordController = RichTextEditingController();
-  final _categoryController = TextEditingController();
-  final _tagController = TextEditingController();
-  final _commentController = TextEditingController();
+  var _nameController = TextEditingController();
+  var _usernameController = TextEditingController();
+  var _passwordController = RichTextEditingController();
+  var _categoryController = TextEditingController();
+  var _tagController = TextEditingController();
+  var _commentController = TextEditingController();
 
   var _nameFocusNode = FocusNode();
   var _usernameFocusNode = FocusNode();
@@ -73,7 +75,20 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
 
   @override
   void initState() {
-    _loadFirstCategory();
+    if (widget.entry != null) {
+      _nameController = TextEditingController(text: widget.entry!.name);
+      _usernameController = TextEditingController(text: widget.entry!.username);
+      _passwordController = RichTextEditingController(
+          text: Security.decrypt(currentPassword!, widget.entry!.hash));
+      _categoryController =
+          TextEditingController(text: widget.entry!.category!.name);
+      _commentController = TextEditingController(text: widget.entry!.comment);
+
+      _category = widget.entry!.category!;
+    } else {
+      _loadFirstCategory();
+    }
+
     super.initState();
   }
 
@@ -630,20 +645,41 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         return;
       }
 
-      var entry = Entry(
-        id: Uuid().v4(),
-        name: _nameController.text,
-        username: _usernameController.text,
-        hash: Security.encrypt(currentPassword!, _passwordController.text),
-        comment: _commentController.text,
-        vaultId: selectedVault!.id,
-        categoryId: _category!.id,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
+      Entry entry;
 
-      // Save the entry
-      await EntryService.save(entry);
+      if (widget.entry != null) {
+        // We are updating an entry that already exist
+        entry = Entry(
+          id: widget.entry!.id,
+          name: _nameController.text,
+          username: _usernameController.text,
+          hash: Security.encrypt(currentPassword!, _passwordController.text),
+          comment: _commentController.text,
+          vaultId: selectedVault!.id,
+          categoryId: _category!.id,
+          createdAt: widget.entry!.createdAt,
+          updatedAt: DateTime.now(),
+        );
+
+        // Update the entry
+        await EntryService.update(entry);
+      } else {
+        // We are creating a new entry
+        entry = Entry(
+          id: Uuid().v4(),
+          name: _nameController.text,
+          username: _usernameController.text,
+          hash: Security.encrypt(currentPassword!, _passwordController.text),
+          comment: _commentController.text,
+          vaultId: selectedVault!.id,
+          categoryId: _category!.id,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+
+        // Save the entry
+        await EntryService.save(entry);
+      }
 
       // Save all the tags linked to the password
       for (var tagLabel in _tagLabelList) {

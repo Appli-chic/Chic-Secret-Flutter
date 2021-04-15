@@ -15,7 +15,7 @@ class MainDesktopScreen extends StatefulWidget {
 
 class _MainDesktopScreenState extends State<MainDesktopScreen> {
   Entry? _selectedEntry;
-  bool _isCreatingNewEntry = false;
+  bool _isCreatingOrModifyingEntry = false;
   VaultScreenController _vaultScreenController = VaultScreenController();
   EntryScreenController _entryScreenController = EntryScreenController();
 
@@ -65,14 +65,14 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
   /// Reload the [EntryDetailScreen] with the new selected entry
   _onEntrySelected(Entry entry) {
     _selectedEntry = entry;
-    _isCreatingNewEntry = false;
+    _isCreatingOrModifyingEntry = false;
     setState(() {});
   }
 
   /// Displays [NewEntryScreen] instead of the entry detail
   _onCreateNewEntry() {
     _selectedEntry = null;
-    _isCreatingNewEntry = true;
+    _isCreatingOrModifyingEntry = true;
 
     if (_entryScreenController.selectEntry != null) {
       _entryScreenController.selectEntry!(null);
@@ -83,7 +83,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
 
   /// Cancels the display of creation of a new entry
   _onNewEntryFinished(Entry? entry) {
-    _isCreatingNewEntry = false;
+    _isCreatingOrModifyingEntry = false;
 
     if (entry != null) {
       _reloadCategories();
@@ -100,6 +100,13 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
       }
     }
 
+    setState(() {});
+  }
+
+  /// Triggered when then the user click on the edit button of a created entry
+  _onEditEntry(Entry entry) {
+    _isCreatingOrModifyingEntry = true;
+    _selectedEntry = entry;
     setState(() {});
   }
 
@@ -136,10 +143,16 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
 
   /// Displays the third split screen with blank/[EntryDetailScreen]/[NewEntryScreen]
   Widget _displaysThirdSplitScreen(ThemeProvider themeProvider) {
-    if (_isCreatingNewEntry) {
-      return NewEntryScreen(onFinish: _onNewEntryFinished);
+    if (_isCreatingOrModifyingEntry) {
+      return NewEntryScreen(
+        entry: _selectedEntry,
+        onFinish: _onNewEntryFinished,
+      );
     } else if (_selectedEntry != null) {
-      return EntryDetailScreen(entry: _selectedEntry!);
+      return EntryDetailScreen(
+        entry: _selectedEntry!,
+        onEntryEdit: _onEditEntry,
+      );
     } else {
       return Container(color: themeProvider.backgroundColor);
     }

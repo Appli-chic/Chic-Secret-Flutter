@@ -25,6 +25,15 @@ LEFT JOIN $customFieldTable as cf ON cf.$columnCustomFieldEntryId = e.$columnId
 """;
 
 class EntryService {
+  /// Update an [entry] into the local database
+  static Future<void> update(Entry entry) async {
+    await db.update(
+      entryTable,
+      entry.toMap(),
+      where: "$columnId = '${entry.id}'",
+    );
+  }
+
   /// Save an [entry] into the local database
   static Future<void> save(Entry entry) async {
     await db.insert(
