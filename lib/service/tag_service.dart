@@ -12,6 +12,20 @@ class TagService {
     );
   }
 
+  /// Retrieve a tag that has this exact name in the specified vault
+  static Future<Tag?> getTagByVaultByName(String vaultId, String name) async {
+    List<Map<String, dynamic>> maps = await db.query(
+      tagTable,
+      where: "$columnTagVaultId = '$vaultId' and $columnTagName = '$name'",
+    );
+
+    if (maps.isNotEmpty) {
+      return Tag.fromMap(maps[0]);
+    }
+
+    return null;
+  }
+
   /// Retrieve all the tags linked to a vault
   static Future<List<Tag>> getAllByVault(String vaultId) async {
     List<Tag> tags = [];

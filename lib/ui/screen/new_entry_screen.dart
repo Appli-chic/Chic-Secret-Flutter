@@ -647,15 +647,21 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
 
       // Save all the tags linked to the password
       for (var tagLabel in _tagLabelList) {
-        var tag = Tag(
-          id: Uuid().v4(),
-          name: tagLabel,
-          vaultId: selectedVault!.id,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
+        // Check if the tag already exist in the database
+        var tag =
+            await TagService.getTagByVaultByName(selectedVault!.id, tagLabel);
 
-        await TagService.save(tag);
+        if (tag == null) {
+          tag = Tag(
+            id: Uuid().v4(),
+            name: tagLabel,
+            vaultId: selectedVault!.id,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          );
+
+          await TagService.save(tag);
+        }
 
         // Save the Entry Tag
         var entryTag = EntryTag(
@@ -687,7 +693,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       // Return to the previous screen
       if (widget.onFinish != null && ChicPlatform.isDesktop()) {
         widget.onFinish!(entry);
-
       } else {
         Navigator.pop(context, entry);
       }

@@ -55,7 +55,7 @@ FOREIGN KEY($columnEntryCategoryId) REFERENCES $categoryTable($columnId)
 const String createTagTable = '''
 CREATE TABLE $tagTable(
 $columnId TEXT PRIMARY KEY NOT NULL, 
-$columnTagName TEXT NOT NULL, 
+$columnTagName TEXT NOT NULL UNIQUE, 
 $columnTagVaultId TEXT NOT NULL, 
 $columnCreatedAt DATETIME NOT NULL, 
 $columnUpdatedAt DATETIME NOT NULL, 
