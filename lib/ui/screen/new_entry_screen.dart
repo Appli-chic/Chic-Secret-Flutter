@@ -72,6 +72,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   List<TextEditingController> _customFieldsValueControllers = [];
   List<FocusNode> _customFieldsValueFocusNode = [];
   List<FocusNode> _customFieldsValueDesktopFocusNode = [];
+  List<Tag> _tags = [];
 
   @override
   void initState() {
@@ -85,11 +86,23 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       _commentController = TextEditingController(text: widget.entry!.comment);
 
       _category = widget.entry!.category!;
+      _loadTags();
     } else {
       _loadFirstCategory();
     }
 
     super.initState();
+  }
+
+  /// Load the tags related to the entry if it exists
+  _loadTags() async {
+    _tags = await TagService.getAllByEntry(widget.entry!.id);
+
+    for (var tag in _tags) {
+      _tagLabelList.add(tag.name);
+    }
+
+    setState(() {});
   }
 
   /// Load the first category if it exists
@@ -699,15 +712,24 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
           await TagService.save(tag);
         }
 
-        // Save the Entry Tag
-        var entryTag = EntryTag(
-          entryId: entry.id,
-          tagId: tag.id,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
+        // Save the Entry Tag if the tag isn't already linked to it
+        if (_tags.where((t) => t.name == tag!.name).isEmpty) {
+          var entryTag = EntryTag(
+            entryId: entry.id,
+            tagId: tag.id,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          );
 
-        await EntryTagService.save(entryTag);
+          await EntryTagService.save(entryTag);
+        }
+      }
+
+      // Delete the tags if they are not linked to the entry anymore
+      for (var tag in _tags) {
+        if (_tagLabelList.where((t) => t == tag.name).isEmpty) {
+          await EntryTagService.delete(entry.id, tag.id);
+        }
       }
 
       // Save all the custom fields
