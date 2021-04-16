@@ -52,5 +52,6 @@
   "value": "Valeur",
   "comment": "Commentaire",
   "edit": "Modifier",
-  "delete": "Supprimer"
+  "delete": "Supprimer",
+  "trash": "Poubelle"
 }

@@ -13,9 +13,9 @@ e.$columnUpdatedAt, e.$columnDeletedAt,
 
 c.$columnId as c_$columnId, 
 c.$columnCategoryName as c_$columnCategoryName, c.$columnCategoryColor as c_$columnCategoryColor, 
-c.$columnCategoryIcon as c_$columnCategoryIcon, c.$columnCategoryVaultId as c_$columnCategoryVaultId, 
-c.$columnCreatedAt as c_$columnCreatedAt, c.$columnUpdatedAt as c_$columnUpdatedAt, 
-c.$columnDeletedAt as c_$columnDeletedAt
+c.$columnCategoryIcon as c_$columnCategoryIcon, c.$columnCategoryIsTrash as c_$columnCategoryIsTrash, 
+c.$columnCategoryVaultId as c_$columnCategoryVaultId, c.$columnCreatedAt as c_$columnCreatedAt, 
+c.$columnUpdatedAt as c_$columnUpdatedAt, c.$columnDeletedAt as c_$columnDeletedAt
 
 FROM $entryTable as e
 LEFT JOIN $categoryTable as c ON c.$columnId = e.$columnEntryCategoryId 

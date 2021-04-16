@@ -10,6 +10,8 @@ const String columnCreatedAt = "created_at";
 const String columnUpdatedAt = "updated_at";
 const String columnDeletedAt = "deleted_at";
 
+/// Database Structure
+
 const String createVaultTable = '''
 CREATE TABLE $vaultTable(
 $columnId TEXT PRIMARY KEY NOT NULL, 
@@ -27,6 +29,7 @@ $columnId TEXT PRIMARY KEY NOT NULL,
 $columnCategoryName TEXT NOT NULL, 
 $columnCategoryColor TEXT NOT NULL, 
 $columnCategoryIcon INTEGER NOT NULL, 
+$columnCategoryIsTrash INTEGER NOT NULL, 
 $columnCategoryVaultId TEXT NOT NULL, 
 $columnCreatedAt DATETIME NOT NULL, 
 $columnUpdatedAt DATETIME NOT NULL, 

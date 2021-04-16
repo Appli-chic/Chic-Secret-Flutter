@@ -1,3 +1,4 @@
+import 'package:chic_secret/utils/database.dart';
 import 'package:intl/intl.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 
@@ -5,6 +6,7 @@ const String categoryTable = "category";
 const String columnCategoryName = "name";
 const String columnCategoryColor = "color";
 const String columnCategoryIcon = "icon";
+const String columnCategoryIsTrash = "is_trash";
 const String columnCategoryVaultId = "vault_id";
 
 class Category {
@@ -12,6 +14,7 @@ class Category {
   String name;
   String color;
   int icon;
+  bool isTrash;
   String vaultId;
   DateTime createdAt;
   DateTime updatedAt;
@@ -22,6 +25,7 @@ class Category {
     required this.name,
     required this.color,
     required this.icon,
+    required this.isTrash,
     required this.vaultId,
     required this.createdAt,
     required this.updatedAt,
@@ -58,6 +62,9 @@ class Category {
       icon: prefix != null
           ? data[prefix + columnCategoryIcon]
           : data[columnCategoryIcon],
+      isTrash: prefix != null
+          ? transformIntToBool(data[prefix + columnCategoryIsTrash])
+          : transformIntToBool(data[columnCategoryIsTrash]),
       vaultId: prefix != null
           ? data[prefix + columnCategoryVaultId]
           : data[columnCategoryVaultId],
@@ -83,6 +90,7 @@ class Category {
       columnCategoryName: name,
       columnCategoryColor: color,
       columnCategoryIcon: icon,
+      columnCategoryIsTrash: isTrash ? 1 : 0,
       columnCategoryVaultId: vaultId,
       columnCreatedAt: createdAtString,
       columnUpdatedAt: updatedAtString,

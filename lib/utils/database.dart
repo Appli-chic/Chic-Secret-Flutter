@@ -46,3 +46,7 @@ _onCreate(db, version) async {
   batch.execute(createCustomFieldTable);
   await batch.commit();
 }
+
+bool transformIntToBool(int value) {
+  return value == 1 ? true : false;
+}

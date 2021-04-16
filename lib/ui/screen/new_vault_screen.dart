@@ -1,6 +1,8 @@
 import 'package:chic_secret/localization/app_translations.dart';
+import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
@@ -204,6 +206,20 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
       );
 
       await VaultService.save(vault);
+
+      // Create the trash category
+      var category = Category(
+        id: Uuid().v4(),
+        name: AppTranslations.of(context).text("trash"),
+        color: "#fff44336",
+        icon: 59041,
+        isTrash: true,
+        vaultId: vault.id,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      await CategoryService.save(category);
 
       // Select the vault and keep the password in memory
       selectedVault = vault;

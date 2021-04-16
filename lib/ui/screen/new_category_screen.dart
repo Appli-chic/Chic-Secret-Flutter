@@ -170,6 +170,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         name: _nameController.text,
         color: '#${_color.value.toRadixString(16)}',
         icon: _icon.codePoint,
+        isTrash: false,
         vaultId: selectedVault!.id,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
