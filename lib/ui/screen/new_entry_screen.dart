@@ -73,6 +73,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   List<FocusNode> _customFieldsValueFocusNode = [];
   List<FocusNode> _customFieldsValueDesktopFocusNode = [];
   List<Tag> _tags = [];
+  List<CustomField> _customFields = [];
 
   @override
   void initState() {
@@ -87,6 +88,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
 
       _category = widget.entry!.category!;
       _loadTags();
+      _loadCustomFields();
     } else {
       _loadFirstCategory();
     }
@@ -100,6 +102,23 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
 
     for (var tag in _tags) {
       _tagLabelList.add(tag.name);
+    }
+
+    setState(() {});
+  }
+
+  /// Load the custom fields related to the entry if it exists
+  _loadCustomFields() async {
+    _customFields = await CustomFieldService.getAllByEntry(widget.entry!.id);
+
+    for(var customField in _customFields) {
+      _customFieldsNameControllers.add(TextEditingController(text: customField.name));
+      _customFieldsNameFocusNode.add(FocusNode());
+      _customFieldsNameDesktopFocusNode.add(FocusNode());
+
+      _customFieldsValueControllers.add(TextEditingController(text: customField.value));
+      _customFieldsValueFocusNode.add(FocusNode());
+      _customFieldsValueDesktopFocusNode.add(FocusNode());
     }
 
     setState(() {});
@@ -730,6 +749,11 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         if (_tagLabelList.where((t) => t == tag.name).isEmpty) {
           await EntryTagService.delete(entry.id, tag.id);
         }
+      }
+
+      // Clear the previous custom fields before to add the new ones
+      for(var customField in _customFields) {
+        await CustomFieldService.delete(customField.id);
       }
 
       // Save all the custom fields

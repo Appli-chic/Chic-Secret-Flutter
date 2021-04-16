@@ -1,5 +1,6 @@
 import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/utils/database.dart';
+import 'package:chic_secret/utils/database_structure.dart';
 
 class CustomFieldService {
   /// Save a [customField] into the local database
@@ -7,6 +8,15 @@ class CustomFieldService {
     await db.insert(
       customFieldTable,
       customField.toMap(),
+    );
+  }
+
+  /// Delete a [customField] from the local database
+  static Future<void> delete(String customFieldId) async {
+    await db.delete(
+      customFieldTable,
+      where:
+      "$columnId = '$customFieldId'",
     );
   }
 

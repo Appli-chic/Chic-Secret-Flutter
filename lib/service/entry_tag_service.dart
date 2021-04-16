@@ -10,7 +10,7 @@ class EntryTagService {
     );
   }
 
-  /// Delete a [entryTag] into the local database
+  /// Delete a [entryTag] from the local database
   static Future<void> delete(String entryId, String tagId) async {
     await db.delete(
       entryTagTable,
