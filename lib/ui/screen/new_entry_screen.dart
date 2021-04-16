@@ -749,6 +749,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       }
 
       // Return to the previous screen
+      entry.category = _category;
       if (widget.onFinish != null && ChicPlatform.isDesktop()) {
         widget.onFinish!(entry);
       } else {

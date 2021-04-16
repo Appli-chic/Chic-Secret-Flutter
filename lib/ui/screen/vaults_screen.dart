@@ -119,17 +119,21 @@ class _VaultsScreenState extends State<VaultsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _displaysVaults(themeProvider),
-                selectedVault != null
-                    ? _displaysCategories(themeProvider)
-                    : SizedBox.shrink(),
-                selectedVault != null
-                    ? _displaysTags(themeProvider)
-                    : SizedBox.shrink(),
-              ],
+            child: Scrollbar(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _displaysVaults(themeProvider),
+                    selectedVault != null
+                        ? _displaysCategories(themeProvider)
+                        : SizedBox.shrink(),
+                    selectedVault != null
+                        ? _displaysTags(themeProvider)
+                        : SizedBox.shrink(),
+                  ],
+                ),
+              ),
             ),
           ),
           Container(
