@@ -93,7 +93,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
               Icons.delete,
               color: themeProvider.textColor,
             ),
-            onPressed: () {},
+            onPressed: _onDeleteButtonClicked,
           ),
         ],
       );
@@ -199,7 +199,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
         Container(
           margin: EdgeInsets.only(left: 8, bottom: 8),
           child: ChicTextIconButton(
-            onPressed: () {},
+            onPressed: _onDeleteButtonClicked,
             icon: Icon(
               Icons.delete,
               color: themeProvider.textColor,
@@ -324,5 +324,18 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
         ChicNavigator.pushReplacement(context, EntryDetailScreen(entry: entry));
       }
     }
+  }
+
+  /// Triggered when the delete button is clicked
+  _onDeleteButtonClicked() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error"),
+          content: Text(""),
+        );
+      },
+    );
   }
 }
