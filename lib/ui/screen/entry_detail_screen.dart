@@ -5,9 +5,11 @@ import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/custom_field_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
+import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/entry_detail_input.dart';
 import 'package:chic_secret/ui/component/tag_chip.dart';
+import 'package:chic_secret/ui/screen/new_entry_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/security.dart';
@@ -78,7 +80,22 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
         backgroundColor: themeProvider.secondBackgroundColor,
         brightness: themeProvider.getBrightness(),
         title: Text(widget.entry.name),
-        actions: [],
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.edit,
+              color: themeProvider.textColor,
+            ),
+            onPressed: _onEditButtonClicked,
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.delete,
+              color: themeProvider.textColor,
+            ),
+            onPressed: () {},
+          ),
+        ],
       );
     } else {
       return null;
@@ -142,10 +159,12 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
             ),
           ),
         ),
-        Container(
-          margin: EdgeInsets.only(right: 8, top: 16),
-          child: _displaysDesktopToolbar(themeProvider),
-        ),
+        ChicPlatform.isDesktop()
+            ? Container(
+                margin: EdgeInsets.only(right: 8, top: 16),
+                child: _displaysDesktopToolbar(themeProvider),
+              )
+            : SizedBox.shrink(),
       ],
     );
   }
@@ -294,9 +313,16 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
   }
 
   /// Triggered when the edit button is clicked
-  _onEditButtonClicked() {
+  _onEditButtonClicked() async {
     if (ChicPlatform.isDesktop() && widget.onEntryEdit != null) {
       widget.onEntryEdit!(widget.entry);
+    } else {
+      var entry = await ChicNavigator.push(
+          context, NewEntryScreen(entry: widget.entry));
+
+      if (entry is Entry) {
+        ChicNavigator.pushReplacement(context, EntryDetailScreen(entry: entry));
+      }
     }
   }
 }

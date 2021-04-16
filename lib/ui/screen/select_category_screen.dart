@@ -39,7 +39,8 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   /// Load the categories linked to the current vault
   _loadCategories() async {
     if (selectedVault != null) {
-      _categories = await CategoryService.getAllByVault(selectedVault!.id);
+      _categories =
+          await CategoryService.getAllByVaultWithoutTrash(selectedVault!.id);
       setState(() {});
     }
   }

@@ -274,6 +274,7 @@ class _EntryScreenState extends State<EntryScreen> {
       }
     } else {
       await ChicNavigator.push(context, EntryDetailScreen(entry: entry));
+      _loadPassword();
     }
 
     setState(() {});
@@ -297,8 +298,7 @@ class _EntryScreenState extends State<EntryScreen> {
     }
 
     if (data != null) {
-      _entries = await EntryService.getAllByVault(selectedVault!.id);
-      setState(() {});
+      _loadPassword();
     }
   }
 

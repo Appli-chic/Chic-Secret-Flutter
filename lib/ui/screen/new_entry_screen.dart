@@ -111,12 +111,14 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   _loadCustomFields() async {
     _customFields = await CustomFieldService.getAllByEntry(widget.entry!.id);
 
-    for(var customField in _customFields) {
-      _customFieldsNameControllers.add(TextEditingController(text: customField.name));
+    for (var customField in _customFields) {
+      _customFieldsNameControllers
+          .add(TextEditingController(text: customField.name));
       _customFieldsNameFocusNode.add(FocusNode());
       _customFieldsNameDesktopFocusNode.add(FocusNode());
 
-      _customFieldsValueControllers.add(TextEditingController(text: customField.value));
+      _customFieldsValueControllers
+          .add(TextEditingController(text: customField.value));
       _customFieldsValueFocusNode.add(FocusNode());
       _customFieldsValueDesktopFocusNode.add(FocusNode());
     }
@@ -752,7 +754,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       }
 
       // Clear the previous custom fields before to add the new ones
-      for(var customField in _customFields) {
+      for (var customField in _customFields) {
         await CustomFieldService.delete(customField.id);
       }
 
