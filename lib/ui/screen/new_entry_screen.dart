@@ -31,10 +31,12 @@ import 'package:uuid/uuid.dart';
 class NewEntryScreen extends StatefulWidget {
   final Entry? entry;
   final Function(Entry?)? onFinish;
+  final Function()? onReloadCategories;
 
   NewEntryScreen({
     this.entry,
     this.onFinish,
+    this.onReloadCategories,
   });
 
   @override
@@ -651,6 +653,10 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     );
 
     if (category != null && category is Category) {
+      if (ChicPlatform.isDesktop() && widget.onReloadCategories != null) {
+        widget.onReloadCategories!();
+      }
+
       _categoryController.text = category.name;
       _category = category;
       setState(() {});

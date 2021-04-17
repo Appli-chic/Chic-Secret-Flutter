@@ -48,8 +48,7 @@ class CategoryService {
     List<Category> categories = [];
     List<Map<String, dynamic>> maps = await db.query(categoryTable,
         where: "$columnCategoryVaultId = '$vaultId'",
-        orderBy:
-            "$columnCategoryIsTrash ASC, LOWER($columnCategoryName) ASC");
+        orderBy: "$columnCategoryIsTrash ASC, LOWER($columnCategoryName) ASC");
 
     if (maps.isNotEmpty) {
       for (var map in maps) {

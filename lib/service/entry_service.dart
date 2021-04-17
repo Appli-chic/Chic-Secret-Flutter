@@ -91,7 +91,8 @@ class EntryService {
     }
 
     // Order the rows
-    query += "order by c.$columnCategoryIsTrash ASC, LOWER(e.$columnEntryName) ASC";
+    query +=
+        "order by c.$columnCategoryIsTrash ASC, LOWER(e.$columnEntryName) ASC";
 
     var maps = await db.rawQuery(query);
     if (maps.isNotEmpty) {
@@ -134,7 +135,8 @@ class EntryService {
     """;
 
     // Order the rows
-    query += "order by c.$columnCategoryIsTrash ASC, LOWER(e.$columnEntryName) ASC";
+    query +=
+        "order by c.$columnCategoryIsTrash ASC, LOWER(e.$columnEntryName) ASC";
 
     var maps = await db.rawQuery(query);
 

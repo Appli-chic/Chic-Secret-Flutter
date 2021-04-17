@@ -84,11 +84,9 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
   /// Cancels the display of creation of a new entry
   _onNewEntryFinished(Entry? entry) {
     _isCreatingOrModifyingEntry = false;
+    _reloadTags();
 
     if (entry != null) {
-      _reloadCategories();
-      _reloadTags();
-
       if (_entryScreenController.reloadPasswords != null) {
         _entryScreenController.reloadPasswords!();
       }
@@ -163,6 +161,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
       return NewEntryScreen(
         entry: _selectedEntry,
         onFinish: _onNewEntryFinished,
+        onReloadCategories: _reloadCategories,
       );
     } else if (_selectedEntry != null) {
       return EntryDetailScreen(
