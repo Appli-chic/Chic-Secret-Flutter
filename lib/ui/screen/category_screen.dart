@@ -78,11 +78,20 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             category: _categories[index],
             onTap: (Category? category) async {
               if (category != null) {
-                await ChicNavigator.push(
+                var isDeleted = await ChicNavigator.push(
                   context,
-                  EntryCategoryScreen(category: category),
+                  EntryCategoryScreen(
+                    category: category,
+                    onCategoryChanged: () {
+                      _loadCategories();
+                    },
+                  ),
                   isModal: true,
                 );
+
+                if (isDeleted != null && isDeleted) {
+                  _loadCategories();
+                }
               }
             },
           );

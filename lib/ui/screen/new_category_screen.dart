@@ -60,7 +60,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
-      title: AppTranslations.of(context).text("new_category"),
+      title: widget.category != null
+          ? widget.category!.name
+          : AppTranslations.of(context).text("new_category"),
       body: _displaysBody(themeProvider),
       actions: [
         Container(
@@ -90,7 +92,11 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       appBar: AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
         brightness: themeProvider.getBrightness(),
-        title: Text(AppTranslations.of(context).text("new_category")),
+        title: Text(
+          widget.category != null
+              ? widget.category!.name
+              : AppTranslations.of(context).text("new_category"),
+        ),
         actions: [
           ChicTextButton(
             child: Text(AppTranslations.of(context).text("save").toUpperCase()),

@@ -239,7 +239,9 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       appBar: AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
         brightness: themeProvider.getBrightness(),
-        title: Text(AppTranslations.of(context).text("new_password")),
+        title: widget.entry != null
+            ? Text(widget.entry!.name)
+            : Text(AppTranslations.of(context).text("new_password")),
         actions: [
           ChicTextButton(
             child: Text(AppTranslations.of(context).text("save").toUpperCase()),
