@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
@@ -12,6 +14,7 @@ import 'package:chic_secret/ui/screen/new_entry_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class EntryScreenController {
@@ -46,10 +49,12 @@ class EntryScreen extends StatefulWidget {
 class _EntryScreenState extends State<EntryScreen> {
   List<Entry> _entries = [];
   Entry? _selectedEntry;
+  List<Entry> _selectedEntries = [];
 
   final _searchController = TextEditingController();
   var _searchFocusNode = FocusNode();
   var _desktopSearchFocusNode = FocusNode();
+  var _isControlKeyDown = false;
 
   @override
   void initState() {
@@ -133,10 +138,15 @@ class _EntryScreenState extends State<EntryScreen> {
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      appBar: _displaysAppbar(themeProvider),
-      body: _displayBody(themeProvider),
+    return RawKeyboardListener(
+      autofocus: true,
+      focusNode: FocusNode(),
+      onKey: _onKeyChanged,
+      child: Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: _displayBody(themeProvider),
+      ),
     );
   }
 
@@ -201,8 +211,7 @@ class _EntryScreenState extends State<EntryScreen> {
               itemBuilder: (context, index) {
                 return EntryItem(
                   entry: _entries[index],
-                  isSelected: _selectedEntry != null &&
-                      _selectedEntry!.id == _entries[index].id,
+                  isSelected: _isDesktopEntrySelected(index),
                   onTap: _onEntrySelected,
                   onEntryChanged: () {
                     _loadPassword();
@@ -267,20 +276,41 @@ class _EntryScreenState extends State<EntryScreen> {
     );
   }
 
+  /// Returns for the desktop if the entry is selected or not
+  /// depending of the single or multi select
+  bool _isDesktopEntrySelected(int index) {
+    if (_selectedEntries.isNotEmpty) {
+      // Multi select
+      return _selectedEntries.contains(_entries[index]);
+    } else {
+      // Single select
+      return _selectedEntry != null && _selectedEntry!.id == _entries[index].id;
+    }
+  }
+
   /// When the entry is selected by the user, it will display the user screen
   _onEntrySelected(Entry entry) async {
-    _selectedEntry = entry;
-
-    if (ChicPlatform.isDesktop()) {
-      if (widget.onEntrySelected != null) {
-        widget.onEntrySelected!(entry);
-      }
+    if (_isControlKeyDown) {
+      // If it's a mutli select
+      _selectedEntry = null;
+      _selectedEntries.add(entry);
+      setState(() {});
     } else {
-      await ChicNavigator.push(context, EntryDetailScreen(entry: entry));
-      _loadPassword();
-    }
+      // If the user do a single select
+      _selectedEntry = entry;
+      _selectedEntries.clear();
 
-    setState(() {});
+      if (ChicPlatform.isDesktop()) {
+        if (widget.onEntrySelected != null) {
+          widget.onEntrySelected!(entry);
+        }
+      } else {
+        await ChicNavigator.push(context, EntryDetailScreen(entry: entry));
+        _loadPassword();
+      }
+
+      setState(() {});
+    }
   }
 
   /// Call the [NewEntryScreen] screen to create a new entry
@@ -312,5 +342,62 @@ class _EntryScreenState extends State<EntryScreen> {
     _desktopSearchFocusNode.dispose();
 
     super.dispose();
+  }
+
+  /// Check when a key is pressed and released to select different entries
+  _onKeyChanged(RawKeyEvent event) {
+    // Retrieve the code changing
+    LogicalKeyboardKey keyCode;
+    switch (event.data.runtimeType) {
+      case RawKeyEventData:
+        final RawKeyEventData data = event.data;
+        keyCode = data.logicalKey;
+        break;
+      case RawKeyEventDataWindows:
+        final RawKeyEventDataWindows data =
+            event.data as RawKeyEventDataWindows;
+        keyCode = data.logicalKey;
+        break;
+      case RawKeyEventDataLinux:
+        final RawKeyEventDataLinux data = event.data as RawKeyEventDataLinux;
+        keyCode = data.logicalKey;
+        break;
+      case RawKeyEventDataMacOs:
+        final RawKeyEventDataMacOs data = event.data as RawKeyEventDataMacOs;
+        keyCode = data.logicalKey;
+        break;
+      default:
+        return null;
+    }
+
+    // Check the key changed
+    var ctrlKeyIsConcerned = false;
+    if (Platform.isMacOS) {
+      if (keyCode == LogicalKeyboardKey.metaLeft ||
+          keyCode == LogicalKeyboardKey.metaRight) {
+        ctrlKeyIsConcerned = true;
+      }
+    } else {
+      if (keyCode == LogicalKeyboardKey.controlLeft ||
+          keyCode == LogicalKeyboardKey.controlRight) {
+        ctrlKeyIsConcerned = true;
+      }
+    }
+
+    // Check the pressing state
+    if (ctrlKeyIsConcerned) {
+      switch (event.runtimeType) {
+        case RawKeyDownEvent:
+          _isControlKeyDown = true;
+          setState(() {});
+          break;
+        case RawKeyUpEvent:
+          _isControlKeyDown = false;
+          setState(() {});
+          break;
+        default:
+          return null;
+      }
+    }
   }
 }
