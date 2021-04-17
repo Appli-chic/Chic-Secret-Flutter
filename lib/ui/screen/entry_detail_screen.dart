@@ -332,14 +332,20 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
   /// Triggered when the delete button is clicked, it will moves the entry
   /// to the trash category of it's vault if the user confirm the action
   _onDeleteButtonClicked() async {
+    var isAlreadyInTrash = widget.entry.category!.isTrash;
+
     var result = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(AppTranslations.of(context).text("warning")),
           content: Text(
-            AppTranslations.of(context).textWithArgument(
-                "warning_message_delete_entry", widget.entry.name),
+            isAlreadyInTrash
+                ? AppTranslations.of(context).textWithArgument(
+                    "warning_message_delete_entry_definitely",
+                    widget.entry.name)
+                : AppTranslations.of(context).textWithArgument(
+                    "warning_message_delete_entry", widget.entry.name),
           ),
           actions: [
             TextButton(
@@ -364,9 +370,14 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
       },
     );
 
-    if (result) {
-      // We move the entry to the trash bin
-      await EntryService.moveToTrash(widget.entry);
+    if (result != null && result) {
+      if (!isAlreadyInTrash) {
+        // We move the entry to the trash bin
+        await EntryService.moveToTrash(widget.entry);
+      } else {
+        // We delete it definitely
+        await EntryService.deleteDefinitively(widget.entry);
+      }
 
       if (ChicPlatform.isDesktop()) {
         if (widget.onEntryDeleted != null) {

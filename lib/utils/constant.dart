@@ -7,13 +7,13 @@ const String encryptionKey = "x!A%D*G-KaPdRgUkXp2s5v8y/B?E(H+M";
 
 const List<Color> colors = [
   Colors.blue,
-  Colors.red,
+  Colors.deepOrange,
   Colors.green,
   Colors.purple,
   Colors.amber,
   Colors.brown,
   Colors.cyan,
-  Colors.deepOrange,
+  Colors.orange,
   Colors.deepPurple,
   Colors.indigo,
   Colors.lime,

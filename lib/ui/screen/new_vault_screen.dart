@@ -212,7 +212,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
         id: Uuid().v4(),
         name: AppTranslations.of(context).text("trash"),
         color: "#fff44336",
-        icon: 59041,
+        icon: 57785,
         isTrash: true,
         vaultId: vault.id,
         createdAt: DateTime.now(),

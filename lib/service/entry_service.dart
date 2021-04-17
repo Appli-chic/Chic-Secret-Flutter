@@ -4,6 +4,8 @@ import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/entry_tag.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/service/category_service.dart';
+import 'package:chic_secret/service/custom_field_service.dart';
+import 'package:chic_secret/service/entry_tag_service.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 
@@ -43,6 +45,17 @@ class EntryService {
     );
   }
 
+  /// Hard delete of the entry
+  static Future<void> deleteDefinitively(Entry entry) async {
+    await EntryTagService.deleteAllFromEntry(entry.id);
+    await CustomFieldService.deleteAllFromEntry(entry.id);
+
+    await db.delete(
+      entryTable,
+      where: "$columnId = '${entry.id}'",
+    );
+  }
+
   /// Move an entry to the trash bin of it's vault
   static Future<void> moveToTrash(Entry entry) async {
     var category = await CategoryService.getTrashByVault(entry.vaultId);
@@ -73,9 +86,12 @@ class EntryService {
     // Filter on tag if selected
     if (tagId != null) {
       query += """
-      AND t.$columnId = '$tagId'
+      AND t.$columnId = '$tagId' 
       """;
     }
+
+    // Order the rows
+    query += "order by c.$columnCategoryIsTrash ASC, LOWER(e.$columnEntryName) ASC";
 
     var maps = await db.rawQuery(query);
     if (maps.isNotEmpty) {
@@ -114,8 +130,11 @@ class EntryService {
     AND (e.$columnEntryName LIKE '%$text%' OR e.$columnEntryUsername LIKE '%$text%' 
     OR c.$columnCategoryName LIKE '%$text%' OR t.$columnTagName LIKE '%$text%' 
     OR cf.$columnCustomFieldName LIKE '%$text%' OR cf.$columnCustomFieldValue LIKE '%$text%' 
-    OR e.$columnEntryComment LIKE '%$text%')
+    OR e.$columnEntryComment LIKE '%$text%') 
     """;
+
+    // Order the rows
+    query += "order by c.$columnCategoryIsTrash ASC, LOWER(e.$columnEntryName) ASC";
 
     var maps = await db.rawQuery(query);
 

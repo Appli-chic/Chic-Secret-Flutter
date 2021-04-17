@@ -55,5 +55,6 @@
   "delete": "Delete",
   "trash": "Trash",
   "warning": "Warning",
-  "warning_message_delete_entry": "Are you sure to delete the password {} ?"
+  "warning_message_delete_entry": "Are you sure to delete the password {} ?",
+  "warning_message_delete_entry_definitely": "Are you sure to delete definitely the password {} ? No restore will be possible."
 }

@@ -15,8 +15,7 @@ class CustomFieldService {
   static Future<void> delete(String customFieldId) async {
     await db.delete(
       customFieldTable,
-      where:
-      "$columnId = '$customFieldId'",
+      where: "$columnId = '$customFieldId'",
     );
   }
 
@@ -33,5 +32,13 @@ class CustomFieldService {
     }
 
     return customFields;
+  }
+
+  /// Delete all the custom fields of an entry
+  static Future<void> deleteAllFromEntry(String entryId) async {
+    await db.delete(
+      customFieldTable,
+      where: "$columnCustomFieldEntryId = '$entryId'",
+    );
   }
 }

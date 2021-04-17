@@ -18,4 +18,12 @@ class EntryTagService {
           "$columnEntryTagEntryId = '$entryId' and $columnEntryTagTagId = '$tagId'",
     );
   }
+
+  /// Delete all the links between tags and the entry
+  static Future<void> deleteAllFromEntry(String entryId) async {
+    await db.delete(
+      entryTagTable,
+      where: "$columnEntryTagEntryId = '$entryId'",
+    );
+  }
 }

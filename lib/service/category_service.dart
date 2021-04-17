@@ -33,7 +33,6 @@ class CategoryService {
       categoryTable,
       where:
           "$columnCategoryVaultId = '$vaultId' and $columnCategoryIsTrash = 0",
-      orderBy: "$columnCreatedAt ASC",
       limit: 1,
     );
 
@@ -49,7 +48,8 @@ class CategoryService {
     List<Category> categories = [];
     List<Map<String, dynamic>> maps = await db.query(categoryTable,
         where: "$columnCategoryVaultId = '$vaultId'",
-        orderBy: "$columnCategoryIsTrash ASC");
+        orderBy:
+            "$columnCategoryIsTrash ASC, LOWER($columnCategoryName) ASC");
 
     if (maps.isNotEmpty) {
       for (var map in maps) {
@@ -68,6 +68,7 @@ class CategoryService {
       categoryTable,
       where:
           "$columnCategoryVaultId = '$vaultId' and $columnCategoryIsTrash = 0",
+      orderBy: "$columnCreatedAt ASC, LOWER($columnCategoryName) ASC",
     );
 
     if (maps.isNotEmpty) {
