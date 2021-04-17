@@ -56,6 +56,18 @@ class EntryService {
     );
   }
 
+  /// Move an entry to another category
+  static Future<void> moveToAnotherCategory(
+      Entry entry, String categoryId) async {
+    entry.categoryId = categoryId;
+
+    await db.update(
+      entryTable,
+      entry.toMap(),
+      where: "$columnId = '${entry.id}'",
+    );
+  }
+
   /// Move an entry to the trash bin of it's vault
   static Future<void> moveToTrash(Entry entry) async {
     var category = await CategoryService.getTrashByVault(entry.vaultId);

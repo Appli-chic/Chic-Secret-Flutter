@@ -248,7 +248,7 @@ class _CategoryItemState extends State<CategoryItem> {
       await EntryService.moveToTrashAllEntriesFromCategory(widget.category!);
       await CategoryService.delete(widget.category!.id);
 
-      if (ChicPlatform.isDesktop() && widget.onCategoryChanged != null) {
+      if (widget.onCategoryChanged != null) {
         widget.onCategoryChanged!();
       }
     }
@@ -263,7 +263,7 @@ class _CategoryItemState extends State<CategoryItem> {
     );
 
     if (category != null && category is Category) {
-      if (ChicPlatform.isDesktop() && widget.onCategoryChanged != null) {
+      if (widget.onCategoryChanged != null) {
         widget.onCategoryChanged!();
       }
     }

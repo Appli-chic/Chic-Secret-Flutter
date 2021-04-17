@@ -204,6 +204,9 @@ class _EntryScreenState extends State<EntryScreen> {
                   isSelected: _selectedEntry != null &&
                       _selectedEntry!.id == _entries[index].id,
                   onTap: _onEntrySelected,
+                  onEntryChanged: () {
+                    _loadPassword();
+                  },
                 );
               },
             ),
