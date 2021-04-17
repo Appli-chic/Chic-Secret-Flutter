@@ -4,6 +4,7 @@ import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/custom_field_service.dart';
+import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
@@ -19,10 +20,12 @@ import 'package:provider/provider.dart';
 class EntryDetailScreen extends StatefulWidget {
   final Entry entry;
   final Function(Entry)? onEntryEdit;
+  final Function()? onEntryDeleted;
 
   EntryDetailScreen({
     required this.entry,
     this.onEntryEdit,
+    this.onEntryDeleted,
   });
 
   @override
@@ -326,16 +329,52 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     }
   }
 
-  /// Triggered when the delete button is clicked
+  /// Triggered when the delete button is clicked, it will moves the entry
+  /// to the trash category of it's vault if the user confirm the action
   _onDeleteButtonClicked() async {
-    showDialog(
+    var result = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Error"),
-          content: Text(""),
+          title: Text(AppTranslations.of(context).text("warning")),
+          content: Text(
+            AppTranslations.of(context).textWithArgument(
+                "warning_message_delete_entry", widget.entry.name),
+          ),
+          actions: [
+            TextButton(
+              child: Text(
+                AppTranslations.of(context).text("cancel"),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: Text(
+                AppTranslations.of(context).text("delete"),
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
         );
       },
     );
+
+    if (result) {
+      // We move the entry to the trash bin
+      await EntryService.moveToTrash(widget.entry);
+
+      if (ChicPlatform.isDesktop()) {
+        if (widget.onEntryDeleted != null) {
+          widget.onEntryDeleted!();
+        }
+      } else {
+        Navigator.pop(context);
+      }
+    }
   }
 }

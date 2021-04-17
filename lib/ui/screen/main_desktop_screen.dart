@@ -110,6 +110,22 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     setState(() {});
   }
 
+  /// Triggered when the user deleted a selected entry
+  _onEntryDeleted() {
+    _isCreatingOrModifyingEntry = false;
+    _selectedEntry = null;
+
+    if (_entryScreenController.reloadPasswords != null) {
+      _entryScreenController.reloadPasswords!();
+    }
+
+    if (_entryScreenController.selectEntry != null) {
+      _entryScreenController.selectEntry!(null);
+    }
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
@@ -152,6 +168,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
       return EntryDetailScreen(
         entry: _selectedEntry!,
         onEntryEdit: _onEditEntry,
+        onEntryDeleted: _onEntryDeleted,
       );
     } else {
       return Container(color: themeProvider.backgroundColor);

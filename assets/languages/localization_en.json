@@ -53,5 +53,7 @@
   "comment": "Comment",
   "edit": "Edit",
   "delete": "Delete",
-  "trash": "Trash"
+  "trash": "Trash",
+  "warning": "Warning",
+  "warning_message_delete_entry": "Are you sure to delete the password {} ?"
 }

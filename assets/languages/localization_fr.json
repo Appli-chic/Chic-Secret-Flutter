@@ -53,5 +53,7 @@
   "comment": "Commentaire",
   "edit": "Modifier",
   "delete": "Supprimer",
-  "trash": "Poubelle"
+  "trash": "Poubelle",
+  "warning": "Attention",
+  "warning_message_delete_entry": "Êtes-vous certains de vouloir supprimer le mot de passe {} ?"
 }

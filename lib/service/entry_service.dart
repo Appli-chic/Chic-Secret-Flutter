@@ -3,6 +3,7 @@ import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/entry_tag.dart';
 import 'package:chic_secret/model/database/tag.dart';
+import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 
@@ -40,6 +41,20 @@ class EntryService {
       entryTable,
       entry.toMap(),
     );
+  }
+
+  /// Move an entry to the trash bin of it's vault
+  static Future<void> moveToTrash(Entry entry) async {
+    var category = await CategoryService.getTrashByVault(entry.vaultId);
+
+    if (category != null) {
+      entry.categoryId = category.id;
+      await db.update(
+        entryTable,
+        entry.toMap(),
+        where: "$columnId = '${entry.id}'",
+      );
+    }
   }
 
   /// Retrieve all the entries linked to a vault

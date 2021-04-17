@@ -15,7 +15,11 @@ class RichTextEditingController extends TextEditingController {
   RichTextEditingController({String? text}) : super(text: text);
 
   @override
-  TextSpan buildTextSpan({TextStyle? style, required bool withComposing}) {
+  TextSpan buildTextSpan({
+    required BuildContext context,
+    TextStyle? style,
+    required bool withComposing,
+  }) {
     return textToSpan(text.characters);
   }
 

@@ -13,7 +13,7 @@ class ChicNavigator {
 
   /// Overrides the [Navigator.push] function to manage if the next screen
   /// is going to be a a modal or a full screen
-  static Future<dynamic?> push(BuildContext context, Widget screen,
+  static Future<dynamic> push(BuildContext context, Widget screen,
       {bool isModal = false}) async {
     if (isModal && ChicPlatform.isDesktop()) {
       return await showDialog(
