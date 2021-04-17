@@ -56,5 +56,6 @@
   "trash": "Poubelle",
   "warning": "Attention",
   "warning_message_delete_entry": "Êtes-vous certains de vouloir supprimer le mot de passe {} ?",
-  "warning_message_delete_entry_definitely": "Êtes-vous certains de vouloir supprimer le mot de passe {} définitivement ? Aucun restauration possible."
+  "warning_message_delete_entry_definitely": "Êtes-vous certains de vouloir supprimer le mot de passe {} définitivement ?\nAucun restauration possible.",
+  "warning_message_delete_category": "Êtes-vous certains de vouloir supprimer la catégorie {} ?\nTous les mots de passe de cette catégorie seront bougés vers la poubelle."
 }

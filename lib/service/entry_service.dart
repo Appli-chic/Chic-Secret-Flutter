@@ -70,6 +70,20 @@ class EntryService {
     }
   }
 
+  /// Move an entry to the trash bin of it's vault
+  static Future<void> moveToTrashAllEntriesFromCategory(
+      Category category) async {
+    var trashCategory = await CategoryService.getTrashByVault(category.vaultId);
+
+    if (trashCategory != null) {
+      await db.rawUpdate("""
+      UPDATE $entryTable 
+      SET $columnEntryCategoryId = '${trashCategory.id}' 
+      WHERE $columnEntryCategoryId = '${category.id}'
+      """);
+    }
+  }
+
   /// Retrieve all the entries linked to a vault
   static Future<List<Entry>> getAllByVault(String vaultId,
       {String? categoryId, String? tagId}) async {

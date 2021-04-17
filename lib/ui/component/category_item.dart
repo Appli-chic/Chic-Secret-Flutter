@@ -1,7 +1,10 @@
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/category_service.dart';
+import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
+import 'package:chic_secret/ui/component/common/chic_popup_menu_item.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/color.dart';
@@ -187,17 +190,13 @@ class _CategoryItemState extends State<CategoryItem> {
   /// Show a menu when the user do a right click on the category
   _onSecondaryClick(BuildContext context, ThemeProvider themeProvider) async {
     List<PopupMenuEntry> popupEntries = [
-      PopupMenuItem(
-        child: GestureDetector(
-          onTap: _onEditCategory,
-          child: Text(AppTranslations.of(context).text("edit")),
-        ),
+      ChicPopupMenuItem(
+        onTap: _onEditCategory,
+        title: AppTranslations.of(context).text("edit"),
       ),
-      PopupMenuItem(
-        child: GestureDetector(
-          onTap: () {},
-          child: Text(AppTranslations.of(context).text("delete")),
-        ),
+      ChicPopupMenuItem(
+        onTap: _onDeletingCategory,
+        title: AppTranslations.of(context).text("delete"),
       ),
     ];
 
@@ -210,6 +209,52 @@ class _CategoryItemState extends State<CategoryItem> {
     );
   }
 
+  /// Ask if the category should be deleted and delete it with it's entries
+  void _onDeletingCategory() async {
+    var result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppTranslations.of(context).text("warning")),
+          content: Text(
+            AppTranslations.of(context).textWithArgument(
+                "warning_message_delete_category", widget.category!.name),
+          ),
+          actions: [
+            TextButton(
+              child: Text(
+                AppTranslations.of(context).text("cancel"),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: Text(
+                AppTranslations.of(context).text("delete"),
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result != null && result) {
+      // Delete the category and put the linked entries into the trash category
+      await EntryService.moveToTrashAllEntriesFromCategory(widget.category!);
+      await CategoryService.delete(widget.category!.id);
+
+      if (ChicPlatform.isDesktop() && widget.onCategoryChanged != null) {
+        widget.onCategoryChanged!();
+      }
+    }
+  }
+
+  /// Call the [NewCategoryScreen] to edit the selected category
   void _onEditCategory() async {
     var category = await ChicNavigator.push(
       context,
@@ -222,8 +267,6 @@ class _CategoryItemState extends State<CategoryItem> {
         widget.onCategoryChanged!();
       }
     }
-
-    Navigator.pop(context);
   }
 
   /// Update the mouse location for the secondary click

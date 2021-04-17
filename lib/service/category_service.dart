@@ -3,7 +3,15 @@ import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 
 class CategoryService {
-  /// Update a [category] into the local database
+  /// Delete a [category] from the local database
+  static Future<void> delete(String categoryId) async {
+    await db.delete(
+      categoryTable,
+      where: "$columnId = '$categoryId'",
+    );
+  }
+
+  /// Update a [category] from the local database
   static Future<void> update(Category category) async {
     await db.update(
       categoryTable,
