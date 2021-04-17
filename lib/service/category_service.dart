@@ -3,6 +3,15 @@ import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 
 class CategoryService {
+  /// Update a [category] into the local database
+  static Future<void> update(Category category) async {
+    await db.update(
+      categoryTable,
+      category.toMap(),
+      where: "$columnId = '${category.id}'",
+    );
+  }
+
   /// Save a [category] into the local database
   static Future<void> save(Category category) async {
     await db.insert(

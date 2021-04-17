@@ -10,12 +10,17 @@ import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/component/icon_selector.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:chic_secret/utils/color.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class NewCategoryScreen extends StatefulWidget {
+  final Category? category;
+
+  NewCategoryScreen({this.category});
+
   @override
   _NewCategoryScreenState createState() => _NewCategoryScreenState();
 }
@@ -23,12 +28,23 @@ class NewCategoryScreen extends StatefulWidget {
 class _NewCategoryScreenState extends State<NewCategoryScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final _nameController = TextEditingController();
+  var _nameController = TextEditingController();
   var _nameFocusNode = FocusNode();
   var _desktopNameFocusNode = FocusNode();
 
   Color _color = Colors.blue;
   IconData _icon = icons[0];
+
+  @override
+  void initState() {
+    if (widget.category != null) {
+      _nameController = TextEditingController(text: widget.category!.name);
+      _color = getColorFromHex(widget.category!.color);
+      _icon = IconData(widget.category!.icon, fontFamily: 'MaterialIcons');
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,6 +148,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
             ),
             SizedBox(height: 16.0),
             ColorSelector(
+              color: _color,
               onColorSelected: (Color color) {
                 setState(() {
                   _color = color;
@@ -149,6 +166,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
             ),
             SizedBox(height: 16.0),
             IconSelector(
+              icon: _icon,
               color: _color,
               onIconSelected: (IconData icon) {
                 setState(() {
@@ -165,18 +183,37 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   /// Save a new category in the local database
   _onAddingCategory() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-      var category = Category(
-        id: Uuid().v4(),
-        name: _nameController.text,
-        color: '#${_color.value.toRadixString(16)}',
-        icon: _icon.codePoint,
-        isTrash: false,
-        vaultId: selectedVault!.id,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
+      var category;
 
-      await CategoryService.save(category);
+      if (widget.category != null) {
+        // We edit the category
+        category = Category(
+          id: widget.category!.id,
+          name: _nameController.text,
+          color: '#${_color.value.toRadixString(16)}',
+          icon: _icon.codePoint,
+          isTrash: false,
+          vaultId: selectedVault!.id,
+          createdAt: widget.category!.createdAt,
+          updatedAt: DateTime.now(),
+        );
+        await CategoryService.update(category);
+      } else {
+        // We create a new category
+        category = Category(
+          id: Uuid().v4(),
+          name: _nameController.text,
+          color: '#${_color.value.toRadixString(16)}',
+          icon: _icon.codePoint,
+          isTrash: false,
+          vaultId: selectedVault!.id,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+
+        await CategoryService.save(category);
+      }
+
       Navigator.pop(context, category);
     }
   }

@@ -9,9 +9,11 @@ import 'package:provider/provider.dart';
 
 class ColorSelector extends StatefulWidget {
   final Function(Color) onColorSelected;
+  final Color color;
 
   ColorSelector({
     required this.onColorSelected,
+    required this.color,
   });
 
   @override
@@ -21,6 +23,23 @@ class ColorSelector extends StatefulWidget {
 class _ColorSelectorState extends State<ColorSelector> {
   Color _selectedColor = Colors.blue;
   List<Color> _colors = colors.toList();
+
+  @override
+  void initState() {
+    _selectedColor = widget.color;
+    var colorsListed = _colors
+        .where((c) =>
+            c.value.toRadixString(16) == _selectedColor.value.toRadixString(16))
+        .toList();
+
+    if (colorsListed.isNotEmpty) {
+      _selectedColor = colorsListed[0];
+    } else {
+      _colors[0] = _selectedColor;
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,13 +164,12 @@ class _ColorSelectorState extends State<ColorSelector> {
 }
 
 class ColorPickerDialog {
-
   /// Show the color picker dialog to select a custom color
   static Future<bool> colorPickerDialog(
-      BuildContext context,
-      Color color,
-      Function(Color) onColorChange,
-      ) async {
+    BuildContext context,
+    Color color,
+    Function(Color) onColorChange,
+  ) async {
     return ColorPicker(
       color: color,
       onColorChanged: (Color color) {
@@ -190,8 +208,7 @@ class ColorPickerDialog {
     ).showPickerDialog(
       context,
       constraints:
-      const BoxConstraints(minHeight: 460, minWidth: 300, maxWidth: 320),
+          const BoxConstraints(minHeight: 460, minWidth: 300, maxWidth: 320),
     );
   }
 }
-

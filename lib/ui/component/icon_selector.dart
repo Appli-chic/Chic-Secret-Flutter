@@ -11,10 +11,12 @@ import 'common/chic_text_button.dart';
 class IconSelector extends StatefulWidget {
   final Color color;
   final Function(IconData) onIconSelected;
+  final IconData icon;
 
   IconSelector({
     required this.color,
     required this.onIconSelected,
+    required this.icon,
   });
 
   @override
@@ -24,20 +26,36 @@ class IconSelector extends StatefulWidget {
 class _IconSelectorState extends State<IconSelector> {
   IconData _icon = icons[0];
   List<IconData> _icons = icons.toList();
+  var _crossAxisSize = ChicPlatform.isDesktop() ? 9 : 6;
+  var _iconsListSize = ChicPlatform.isDesktop() ? 18 : 12;
+
+  @override
+  void initState() {
+    _icon = widget.icon;
+    var iconListed = _icons
+        .sublist(0, _iconsListSize)
+        .where((i) => i.codePoint == _icon.codePoint)
+        .toList();
+
+    if (iconListed.isNotEmpty) {
+      _icon = iconListed[0];
+    } else {
+      _icons[0] = _icon;
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    var crossAxisSize = ChicPlatform.isDesktop() ? 9 : 6;
-    var iconsListSize = ChicPlatform.isDesktop() ? 18 : 12;
-
     return GridView.count(
       physics: BouncingScrollPhysics(),
       shrinkWrap: true,
-      crossAxisCount: crossAxisSize,
-      children: List.generate(iconsListSize, (index) {
-        if (index != iconsListSize - 1) {
+      crossAxisCount: _crossAxisSize,
+      children: List.generate(_iconsListSize, (index) {
+        if (index != _iconsListSize - 1) {
           return _displayIcon(
             index,
             _icon,
@@ -64,7 +82,7 @@ class _IconSelectorState extends State<IconSelector> {
                       color: widget.color,
                       icon: _icon,
                       onIconChanged: (IconData icon) {
-                        if (_icons.indexOf(icon) > iconsListSize - 2 ||
+                        if (_icons.indexOf(icon) > _iconsListSize - 2 ||
                             _icons.indexOf(icon) == -1) {
                           _icons[0] = icon;
                         }

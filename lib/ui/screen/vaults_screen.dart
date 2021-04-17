@@ -267,8 +267,8 @@ class _VaultsScreenState extends State<VaultsScreen> {
           shrinkWrap: true,
           itemCount: _categories.length + 1,
           itemBuilder: (context, index) {
-            // Add a "Fake" category to display all the passwords
             if (index == 0) {
+              // Add a "Fake" category to display all the passwords
               return CategoryItem(
                 isSelected: selectedCategory == null,
                 onTap: (Category? category) {
@@ -294,6 +294,13 @@ class _VaultsScreenState extends State<VaultsScreen> {
                   }
 
                   setState(() {});
+                },
+                onCategoryChanged: () {
+                  _loadCategories();
+
+                  if (widget.onCategoryChange != null) {
+                    widget.onCategoryChange!();
+                  }
                 },
               );
             }
