@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chic_secret/localization/app_translations.dart';
+import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/entry_service.dart';
@@ -11,6 +12,7 @@ import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/entry_item.dart';
 import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
+import 'package:chic_secret/ui/screen/select_category_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
@@ -213,9 +215,8 @@ class _EntryScreenState extends State<EntryScreen> {
                   entry: _entries[index],
                   isSelected: _isDesktopEntrySelected(index),
                   onTap: _onEntrySelected,
-                  onEntryChanged: () {
-                    _loadPassword();
-                  },
+                  onMovingEntryToTrash: _onMovingEntryToTrash,
+                  onMovingToCategory: _onMovingToCategory,
                 );
               },
             ),
@@ -292,8 +293,19 @@ class _EntryScreenState extends State<EntryScreen> {
   _onEntrySelected(Entry entry) async {
     if (_isControlKeyDown) {
       // If it's a mutli select
-      _selectedEntry = null;
-      _selectedEntries.add(entry);
+      if (!_selectedEntries.contains(entry)) {
+        // Select one more item
+        if (_selectedEntry != null) {
+          _selectedEntries.add(_selectedEntry!);
+          _selectedEntry = null;
+        }
+
+        _selectedEntries.add(entry);
+      } else {
+        // Deselect an item
+        _selectedEntries.remove(entry);
+      }
+
       setState(() {});
     } else {
       // If the user do a single select
@@ -398,6 +410,128 @@ class _EntryScreenState extends State<EntryScreen> {
         default:
           return null;
       }
+    }
+  }
+
+  /// Ask if the entry should be move to the trash
+  /// Move to the trash a selection of entry if many or selected
+  _onMovingEntryToTrash(Entry entry) async {
+    var isAlreadyInTrash = entry.category!.isTrash;
+    var isMultiSelected = _selectedEntries.isNotEmpty;
+    var errorMessage = AppTranslations.of(context)
+        .textWithArgument("warning_message_delete_entry", entry.name);
+
+    if (isMultiSelected) {
+      // Move multiple entries to trash
+      if (isAlreadyInTrash) {
+        errorMessage = AppTranslations.of(context)
+            .text("warning_message_delete_multiple_entry_definitely");
+      } else {
+        errorMessage = AppTranslations.of(context)
+            .text("warning_message_delete_multiple_entry");
+      }
+    } else {
+      // Single entry to move to trash
+      if (isAlreadyInTrash) {
+        errorMessage = AppTranslations.of(context).textWithArgument(
+            "warning_message_delete_entry_definitely", entry.name);
+      }
+    }
+
+    var result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppTranslations.of(context).text("warning")),
+          content: Text(errorMessage),
+          actions: [
+            TextButton(
+              child: Text(
+                AppTranslations.of(context).text("cancel"),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: Text(
+                AppTranslations.of(context).text("delete"),
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result != null && result) {
+      if (isMultiSelected) {
+        // Delete many entries
+        if (!isAlreadyInTrash) {
+          // We move the entries to the trash bin
+          List<Future<void>> futureList = [];
+
+          for (var selectedEntry in _selectedEntries) {
+            futureList.add(EntryService.moveToTrash(selectedEntry));
+          }
+
+          await Future.wait(futureList);
+        } else {
+          // We delete them definitely
+          List<Future<void>> futureList = [];
+
+          for (var selectedEntry in _selectedEntries) {
+            futureList.add(EntryService.deleteDefinitively(selectedEntry));
+          }
+
+          await Future.wait(futureList);
+        }
+      } else {
+        // Delete one Entry
+        if (!isAlreadyInTrash) {
+          // We move the entry to the trash bin
+          await EntryService.moveToTrash(entry);
+        } else {
+          // We delete it definitely
+          await EntryService.deleteDefinitively(entry);
+        }
+      }
+
+      _loadPassword();
+    }
+  }
+
+  /// Call the [SelectCategoryScreen] to move to a new category
+  /// Move to a selection of entry if many or selected
+  _onMovingToCategory(Entry entry) async {
+    var isMultiSelected = _selectedEntries.isNotEmpty;
+
+    var category = await ChicNavigator.push(
+      context,
+      SelectCategoryScreen(),
+      isModal: true,
+    );
+
+    if (category != null && category is Category) {
+      if (isMultiSelected) {
+        // Move multiple entries
+        List<Future<void>> futureList = [];
+
+        for (var selectedEntry in _selectedEntries) {
+          futureList.add(
+              EntryService.moveToAnotherCategory(selectedEntry, category.id));
+        }
+
+        await Future.wait(futureList);
+      } else {
+        // Move one entry
+        await EntryService.moveToAnotherCategory(entry, category.id);
+      }
+
+      _loadPassword();
     }
   }
 }

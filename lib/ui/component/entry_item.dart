@@ -1,11 +1,7 @@
 import 'package:chic_secret/localization/app_translations.dart';
-import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/service/entry_service.dart';
-import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_popup_menu_item.dart';
-import 'package:chic_secret/ui/screen/select_category_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/color.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +11,15 @@ class EntryItem extends StatefulWidget {
   final Entry entry;
   final bool isSelected;
   final Function(Entry) onTap;
-  final Function()? onEntryChanged;
+  final Function(Entry)? onMovingEntryToTrash;
+  final Function(Entry)? onMovingToCategory;
 
   EntryItem({
     required this.entry,
     required this.isSelected,
     required this.onTap,
-    this.onEntryChanged,
+    this.onMovingEntryToTrash,
+    this.onMovingToCategory,
   });
 
   @override
@@ -105,11 +103,19 @@ class _EntryItemState extends State<EntryItem> {
   _onSecondaryClick(BuildContext context, ThemeProvider themeProvider) async {
     List<PopupMenuEntry> popupEntries = [
       ChicPopupMenuItem(
-        onTap: _onMovingToCategory,
+        onTap: () {
+          if (widget.onMovingToCategory != null) {
+            widget.onMovingToCategory!(widget.entry);
+          }
+        },
         title: AppTranslations.of(context).text("move_to"),
       ),
       ChicPopupMenuItem(
-        onTap: _onMovingEntryToTrash,
+        onTap: () {
+          if (widget.onMovingEntryToTrash != null) {
+            widget.onMovingEntryToTrash!(widget.entry);
+          }
+        },
         title: AppTranslations.of(context).text("move_to_trash"),
       ),
     ];
@@ -128,77 +134,5 @@ class _EntryItemState extends State<EntryItem> {
     setState(() {
       _mousePosition = details.position;
     });
-  }
-
-  /// Ask if the entry should be move to the trash
-  _onMovingEntryToTrash() async {
-    var isAlreadyInTrash = widget.entry.category!.isTrash;
-
-    var result = await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(AppTranslations.of(context).text("warning")),
-          content: Text(
-            isAlreadyInTrash
-                ? AppTranslations.of(context).textWithArgument(
-                    "warning_message_delete_entry_definitely",
-                    widget.entry.name)
-                : AppTranslations.of(context).textWithArgument(
-                    "warning_message_delete_entry", widget.entry.name),
-          ),
-          actions: [
-            TextButton(
-              child: Text(
-                AppTranslations.of(context).text("cancel"),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            ),
-            TextButton(
-              child: Text(
-                AppTranslations.of(context).text("delete"),
-                style: TextStyle(color: Colors.red),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        );
-      },
-    );
-
-    if (result != null && result) {
-      if (!isAlreadyInTrash) {
-        // We move the entry to the trash bin
-        await EntryService.moveToTrash(widget.entry);
-      } else {
-        // We delete it definitely
-        await EntryService.deleteDefinitively(widget.entry);
-      }
-
-      if (widget.onEntryChanged != null) {
-        widget.onEntryChanged!();
-      }
-    }
-  }
-
-  /// Call the [SelectCategoryScreen] to move to a new category
-  _onMovingToCategory() async {
-    var category = await ChicNavigator.push(
-      context,
-      SelectCategoryScreen(),
-      isModal: true,
-    );
-
-    if (category != null && category is Category) {
-      await EntryService.moveToAnotherCategory(widget.entry, category.id);
-
-      if (widget.onEntryChanged != null) {
-        widget.onEntryChanged!();
-      }
-    }
   }
 }
