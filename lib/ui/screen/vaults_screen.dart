@@ -17,6 +17,7 @@ import 'package:chic_secret/ui/component/vault_item.dart';
 import 'package:chic_secret/ui/screen/main_mobile_screen.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
 import 'package:chic_secret/ui/screen/new_vault_screen.dart';
+import 'package:chic_secret/ui/screen/settings_screen.dart';
 import 'package:chic_secret/ui/screen/unlock_vault_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
@@ -136,24 +137,41 @@ class _VaultsScreenState extends State<VaultsScreen> {
               ),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(left: 16, bottom: 8, top: 6),
-            child: ChicTextIconButton(
-              onPressed: _onAddVaultClicked,
-              icon: Icon(
-                Icons.settings,
-                color: themeProvider.textColor,
-                size: 18,
-              ),
-              label: Text(
-                AppTranslations.of(context).text("settings"),
-                style: TextStyle(
-                  color: themeProvider.textColor,
-                  fontSize: 13,
-                ),
-              ),
-            ),
-          ),
+          selectedVault != null
+              ? Container(
+                  margin: EdgeInsets.only(left: 16, bottom: 8, top: 6),
+                  child: ChicTextIconButton(
+                    onPressed: () async {
+                      var haveToReload = await ChicNavigator.push(
+                          context, SettingsScreen(),
+                          isModal: true);
+
+                      if (haveToReload != null && haveToReload) {
+                        // Select the vault and start working on it
+                        widget.onVaultChange();
+
+                        // Only load categories and tags if it's the desktop version
+                        if (ChicPlatform.isDesktop()) {
+                          _loadCategories();
+                          _loadTags();
+                        }
+                      }
+                    },
+                    icon: Icon(
+                      Icons.settings,
+                      color: themeProvider.textColor,
+                      size: 18,
+                    ),
+                    label: Text(
+                      AppTranslations.of(context).text("settings"),
+                      style: TextStyle(
+                        color: themeProvider.textColor,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                )
+              : SizedBox.shrink(),
         ],
       ),
     );

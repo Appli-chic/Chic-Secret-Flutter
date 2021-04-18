@@ -18,8 +18,12 @@ import 'package:uuid/uuid.dart';
 
 class NewCategoryScreen extends StatefulWidget {
   final Category? category;
+  final String? hint;
 
-  NewCategoryScreen({this.category});
+  NewCategoryScreen({
+    this.category,
+    this.hint,
+  });
 
   @override
   _NewCategoryScreenState createState() => _NewCategoryScreenState();
@@ -41,6 +45,10 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       _nameController = TextEditingController(text: widget.category!.name);
       _color = getColorFromHex(widget.category!.color);
       _icon = IconData(widget.category!.icon, fontFamily: 'MaterialIcons');
+    }
+
+    if (widget.hint != null) {
+      _nameController = TextEditingController(text: widget.hint);
     }
 
     super.initState();
