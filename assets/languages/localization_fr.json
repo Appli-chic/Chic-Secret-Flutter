@@ -67,5 +67,20 @@
   "category_imported": "Catégorie importée",
   "category_corresponding": "Catégorie correspondante",
   "next": "Suivant",
-  "help_define_categories": "Aide à la création de catégories"
+  "help_define_categories": "Aide à la création de catégories",
+  "predefined_categories": "Catégories prédéfinies",
+
+
+  "general": "Général",
+  "email": "Courriel",
+  "music": "Musique",
+  "shopping": "Shopping",
+  "business": "Travail",
+  "streaming": "Streaming",
+  "bank": "Banque",
+  "education": "Éducation",
+  "games": "Jeux",
+  "transportation": "Transports",
+  "social": "Social",
+  "health": "Santé"
 }

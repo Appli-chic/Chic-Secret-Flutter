@@ -4,10 +4,12 @@ import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/ui/component/color_selector.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
+import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/component/icon_selector.dart';
+import 'package:chic_secret/ui/screen/select_predefined_category.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/color.dart';
@@ -33,8 +35,13 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   final _formKey = GlobalKey<FormState>();
 
   var _nameController = TextEditingController();
+  var _predefinedCategoryController = TextEditingController();
+
   var _nameFocusNode = FocusNode();
+  var _predefinedCategoryFocusNode = FocusNode();
+
   var _desktopNameFocusNode = FocusNode();
+  var _desktopPredefinedCategoryFocusNode = FocusNode();
 
   Color _color = Colors.blue;
   IconData _icon = icons[0];
@@ -199,10 +206,38 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                 fontSize: 17,
               ),
             ),
+            SizedBox(height: 16.0),
+            ChicTextField(
+              controller: _predefinedCategoryController,
+              focus: _predefinedCategoryFocusNode,
+              desktopFocus: _desktopPredefinedCategoryFocusNode,
+              autoFocus: false,
+              isReadOnly: true,
+              textCapitalization: TextCapitalization.sentences,
+              hint: AppTranslations.of(context).text("predefined_categories"),
+              onTap: _selectPredefinedCategory,
+            ),
           ],
         ),
       ),
     );
+  }
+
+  /// Select from predefined categories to help the user to create it's categories
+  _selectPredefinedCategory() async {
+    var category = await ChicNavigator.push(
+      context,
+      SelectPredefinedCategory(),
+      isModal: true,
+    );
+
+    if (category != null && category is Category) {
+      _nameController.text = category.name;
+      _predefinedCategoryController.text = category.name;
+      _color = getColorFromHex(category.color);
+      _icon = IconData(category.icon, fontFamily: 'MaterialIcons');
+      setState(() {});
+    }
   }
 
   /// Save a new category in the local database
@@ -246,8 +281,13 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   @override
   void dispose() {
     _nameController.dispose();
+    _predefinedCategoryController.dispose();
+
     _nameFocusNode.dispose();
+    _predefinedCategoryFocusNode.dispose();
+
     _desktopNameFocusNode.dispose();
+    _desktopPredefinedCategoryFocusNode.dispose();
 
     super.dispose();
   }
