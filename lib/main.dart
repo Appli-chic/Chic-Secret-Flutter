@@ -7,9 +7,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'localization/app_translations_delegate.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  timeago.setLocaleMessages('fr', timeago.FrMessages());
   await initDatabase();
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(

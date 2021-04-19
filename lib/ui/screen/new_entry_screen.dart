@@ -271,6 +271,19 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            ChicPlatform.isDesktop()
+                ? Text(
+                    AppTranslations.of(context).text("new_password"),
+                    style: TextStyle(
+                      color: themeProvider.textColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 17,
+                    ),
+                  )
+                : SizedBox.shrink(),
+            ChicPlatform.isDesktop()
+                ? SizedBox(height: 16.0)
+                : SizedBox.shrink(),
             ChicTextField(
               controller: _nameController,
               focus: _nameFocusNode,
@@ -390,7 +403,9 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                 style: TextStyle(color: themeProvider.primaryColor),
               ),
             ),
-            SizedBox(height: 32.0),
+            SizedBox(height: 16.0),
+            Divider(color: themeProvider.divider),
+            SizedBox(height: 16.0),
             Text(
               AppTranslations.of(context).text("tags"),
               style: TextStyle(

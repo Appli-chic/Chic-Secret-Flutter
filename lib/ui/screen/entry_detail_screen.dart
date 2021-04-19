@@ -13,6 +13,7 @@ import 'package:chic_secret/ui/component/tag_chip.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:chic_secret/utils/date_render.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -124,6 +125,27 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(
+                          Icons.access_time_outlined,
+                          color: themeProvider.secondTextColor,
+                          size: 12,
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(left: 8),
+                          child: Text(
+                            DateRender.displaysDate(
+                                context, widget.entry.updatedAt),
+                            style: TextStyle(
+                              color: themeProvider.secondTextColor,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     ChicPlatform.isDesktop()
                         ? EntryDetailInput(
                             label: AppTranslations.of(context).text("name"),

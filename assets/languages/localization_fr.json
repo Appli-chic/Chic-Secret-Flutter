@@ -46,8 +46,8 @@
   "all": "Tous",
   "text_copied": "Texte copié",
   "none": "Aucun",
-  "custom_fields": "Champs Personalisés",
-  "add_custom_fields": "Ajouter un Champ Personalisé",
+  "custom_fields": "Champs Personnalisés",
+  "add_custom_fields": "Ajouter un Champ Personnalisé",
   "error_text_empty": "Le texte ne doit pas être vide",
   "value": "Valeur",
   "comment": "Commentaire",
@@ -66,5 +66,6 @@
   "migration": "Migration",
   "category_imported": "Catégorie importée",
   "category_corresponding": "Catégorie correspondante",
-  "next": "Suivant"
+  "next": "Suivant",
+  "help_define_categories": "Aide à la création de catégories"
 }

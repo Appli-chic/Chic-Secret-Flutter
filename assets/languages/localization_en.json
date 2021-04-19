@@ -66,5 +66,6 @@
   "migration": "Migration",
   "category_imported": "Category imported",
   "category_corresponding": "Corresponding Category",
-  "next": "Next"
+  "next": "Next",
+  "help_define_categories": "Help to define categories"
 }

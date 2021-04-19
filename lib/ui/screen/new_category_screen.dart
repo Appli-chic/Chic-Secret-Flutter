@@ -188,6 +188,17 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                 });
               },
             ),
+            SizedBox(height: 16.0),
+            Divider(color: themeProvider.divider),
+            SizedBox(height: 16.0),
+            Text(
+              AppTranslations.of(context).text("help_define_categories"),
+              style: TextStyle(
+                color: themeProvider.textColor,
+                fontWeight: FontWeight.w600,
+                fontSize: 17,
+              ),
+            ),
           ],
         ),
       ),
