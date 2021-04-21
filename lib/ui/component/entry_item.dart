@@ -13,6 +13,7 @@ class EntryItem extends StatefulWidget {
   final Function(Entry) onTap;
   final Function(Entry)? onMovingEntryToTrash;
   final Function(Entry)? onMovingToCategory;
+  final bool isControlKeyDown;
 
   EntryItem({
     required this.entry,
@@ -20,6 +21,7 @@ class EntryItem extends StatefulWidget {
     required this.onTap,
     this.onMovingEntryToTrash,
     this.onMovingToCategory,
+    this.isControlKeyDown = false,
   });
 
   @override
@@ -56,7 +58,11 @@ class _EntryItemState extends State<EntryItem> {
             contentPadding:
                 EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
             onTap: () {
-              widget.onTap(widget.entry);
+              if(widget.isControlKeyDown) {
+                _onSecondaryClick(context, themeProvider);
+              } else {
+                widget.onTap(widget.entry);
+              }
             },
             horizontalTitleGap: 0,
             leading: Container(

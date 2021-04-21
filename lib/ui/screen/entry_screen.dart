@@ -56,6 +56,7 @@ class _EntryScreenState extends State<EntryScreen> {
   final _searchController = TextEditingController();
   var _searchFocusNode = FocusNode();
   var _desktopSearchFocusNode = FocusNode();
+  var _isCommandKeyDown = false;
   var _isControlKeyDown = false;
 
   @override
@@ -166,7 +167,7 @@ class _EntryScreenState extends State<EntryScreen> {
               color: themeProvider.textColor,
             ),
             onPressed: _onAddEntryClicked,
-          )
+          ),
         ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(60.0),
@@ -217,6 +218,7 @@ class _EntryScreenState extends State<EntryScreen> {
                   onTap: _onEntrySelected,
                   onMovingEntryToTrash: _onMovingEntryToTrash,
                   onMovingToCategory: _onMovingToCategory,
+                  isControlKeyDown: _isControlKeyDown,
                 );
               },
             ),
@@ -291,7 +293,7 @@ class _EntryScreenState extends State<EntryScreen> {
 
   /// When the entry is selected by the user, it will display the user screen
   _onEntrySelected(Entry entry) async {
-    if (_isControlKeyDown) {
+    if (_isCommandKeyDown) {
       // If it's a mutli select
       if (!_selectedEntries.contains(entry)) {
         // Select one more item
@@ -383,33 +385,46 @@ class _EntryScreenState extends State<EntryScreen> {
     }
 
     // Check the key changed
-    var ctrlKeyIsConcerned = false;
+    var commandKeyIsConcerned = false;
+    var controlKeyIsConcerned = false;
     if (Platform.isMacOS) {
       if (keyCode == LogicalKeyboardKey.metaLeft ||
           keyCode == LogicalKeyboardKey.metaRight) {
-        ctrlKeyIsConcerned = true;
+        commandKeyIsConcerned = true;
+      }
+
+      if (keyCode == LogicalKeyboardKey.controlLeft ||
+          keyCode == LogicalKeyboardKey.controlRight) {
+        controlKeyIsConcerned = true;
       }
     } else {
       if (keyCode == LogicalKeyboardKey.controlLeft ||
           keyCode == LogicalKeyboardKey.controlRight) {
-        ctrlKeyIsConcerned = true;
+        commandKeyIsConcerned = true;
       }
     }
 
-    // Check the pressing state
-    if (ctrlKeyIsConcerned) {
-      switch (event.runtimeType) {
-        case RawKeyDownEvent:
+    switch (event.runtimeType) {
+      case RawKeyDownEvent:
+        if (commandKeyIsConcerned) {
+          _isCommandKeyDown = true;
+        } else if (controlKeyIsConcerned) {
           _isControlKeyDown = true;
-          setState(() {});
-          break;
-        case RawKeyUpEvent:
+        }
+
+        setState(() {});
+        break;
+      case RawKeyUpEvent:
+        if (commandKeyIsConcerned) {
+          _isCommandKeyDown = false;
+        } else if (controlKeyIsConcerned) {
           _isControlKeyDown = false;
-          setState(() {});
-          break;
-        default:
-          return null;
-      }
+        }
+
+        setState(() {});
+        break;
+      default:
+        return null;
     }
   }
 
