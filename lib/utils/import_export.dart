@@ -1,9 +1,12 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
+import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:uuid/uuid.dart';
 
@@ -25,15 +28,42 @@ enum ImportType {
 
 /// Import a file from the type of import
 Future<ImportData> importFromFile(ImportType importType) async {
-  final typeGroup = XTypeGroup(label: 'CSV', extensions: ['csv']);
-  final file = await openFile(acceptedTypeGroups: [typeGroup]);
+  if (ChicPlatform.isDesktop()) {
+    // Import on desktop
+    final typeGroup = XTypeGroup(label: 'CSV', extensions: ['csv']);
+    final file = await openFile(acceptedTypeGroups: [typeGroup]);
 
-  if (file != null) {
-    switch (importType) {
-      case ImportType.Buttercup:
-        return _importFromButtercup(file);
-      default:
-        break;
+    if (file != null) {
+      switch (importType) {
+        case ImportType.Buttercup:
+          var lines = await file
+              .openRead()
+              .map(utf8.decode)
+              .transform(LineSplitter())
+              .toList();
+          return _importFromButtercup(lines);
+        default:
+          break;
+      }
+    }
+  } else {
+    // Import on mobile
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null && result.files.single.path != null) {
+      File file = File(result.files.single.path!);
+
+      switch (importType) {
+        case ImportType.Buttercup:
+          var lines = await file
+              .openRead()
+              .map(utf8.decode)
+              .transform(LineSplitter())
+              .toList();
+          return _importFromButtercup(lines);
+        default:
+          break;
+      }
     }
   }
 
@@ -41,10 +71,8 @@ Future<ImportData> importFromFile(ImportType importType) async {
 }
 
 /// Import the buttercup data
-Future<ImportData> _importFromButtercup(XFile file) async {
+Future<ImportData> _importFromButtercup(List<String> lines) async {
   var index = 0;
-  var lines =
-      await file.openRead().map(utf8.decode).transform(LineSplitter()).toList();
 
   List<String> customFieldKeys = [];
   HashMap<String, String> categoriesMap = HashMap();
