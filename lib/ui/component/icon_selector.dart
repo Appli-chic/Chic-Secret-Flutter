@@ -8,12 +8,22 @@ import 'package:provider/provider.dart';
 
 import 'common/chic_text_button.dart';
 
+class IconSelectorController {
+  Function(IconData)? onIconChange;
+
+  IconSelectorController({
+    this.onIconChange,
+  });
+}
+
 class IconSelector extends StatefulWidget {
+  final IconSelectorController iconSelectorController;
   final Color color;
   final Function(IconData) onIconSelected;
   final IconData icon;
 
   IconSelector({
+    required this.iconSelectorController,
     required this.color,
     required this.onIconSelected,
     required this.icon,
@@ -31,7 +41,15 @@ class _IconSelectorState extends State<IconSelector> {
 
   @override
   void initState() {
-    _icon = widget.icon;
+    widget.iconSelectorController.onIconChange = _onIconChange;
+
+    _onIconChange(widget.icon);
+    super.initState();
+  }
+
+  /// Triggered when the icon is being changed
+  _onIconChange(IconData icon) {
+    _icon = icon;
     var iconListed = _icons
         .sublist(0, _iconsListSize)
         .where((i) => i.codePoint == _icon.codePoint)
@@ -42,8 +60,6 @@ class _IconSelectorState extends State<IconSelector> {
     } else {
       _icons[0] = _icon;
     }
-
-    super.initState();
   }
 
   @override

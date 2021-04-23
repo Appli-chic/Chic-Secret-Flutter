@@ -34,14 +34,19 @@ class NewCategoryScreen extends StatefulWidget {
 class _NewCategoryScreenState extends State<NewCategoryScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  var _nameController = TextEditingController();
-  var _predefinedCategoryController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _predefinedCategoryController = TextEditingController();
 
-  var _nameFocusNode = FocusNode();
-  var _predefinedCategoryFocusNode = FocusNode();
+  FocusNode _nameFocusNode = FocusNode();
+  FocusNode _predefinedCategoryFocusNode = FocusNode();
 
-  var _desktopNameFocusNode = FocusNode();
-  var _desktopPredefinedCategoryFocusNode = FocusNode();
+  FocusNode _desktopNameFocusNode = FocusNode();
+  FocusNode _desktopPredefinedCategoryFocusNode = FocusNode();
+
+  ColorSelectorController _colorSelectorController = ColorSelectorController();
+  IconSelectorController _iconSelectorController = IconSelectorController();
+
+  Category? _preselectedCategory;
 
   Color _color = Colors.blue;
   IconData _icon = icons[0];
@@ -169,6 +174,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
             ),
             SizedBox(height: 16.0),
             ColorSelector(
+              colorSelectorController: _colorSelectorController,
               color: _color,
               onColorSelected: (Color color) {
                 setState(() {
@@ -187,6 +193,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
             ),
             SizedBox(height: 16.0),
             IconSelector(
+              iconSelectorController: _iconSelectorController,
               icon: _icon,
               color: _color,
               onIconSelected: (IconData icon) {
@@ -227,15 +234,25 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   _selectPredefinedCategory() async {
     var category = await ChicNavigator.push(
       context,
-      SelectPredefinedCategory(),
+      SelectPredefinedCategory(category: _preselectedCategory),
       isModal: true,
     );
 
     if (category != null && category is Category) {
+      _preselectedCategory = category;
       _nameController.text = category.name;
       _predefinedCategoryController.text = category.name;
       _color = getColorFromHex(category.color);
       _icon = IconData(category.icon, fontFamily: 'MaterialIcons');
+
+      if (_colorSelectorController.onColorChange != null) {
+        _colorSelectorController.onColorChange!(_color);
+      }
+
+      if (_iconSelectorController.onIconChange != null) {
+        _iconSelectorController.onIconChange!(_icon);
+      }
+
       setState(() {});
     }
   }

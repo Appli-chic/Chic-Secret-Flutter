@@ -8,9 +8,12 @@ import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 class SelectPredefinedCategory extends StatefulWidget {
+  final Category? category;
+
+  SelectPredefinedCategory({this.category});
+
   @override
   _SelectPredefinedCategoryState createState() =>
       _SelectPredefinedCategoryState();
@@ -20,6 +23,12 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
   bool _isLoadingCategories = true;
   List<Category> _predefinedCategories = [];
   Category? _category;
+
+  @override
+  void initState() {
+    _category = widget.category;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +136,7 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
   _generatePredefinedCategories(BuildContext context) {
     _predefinedCategories = [
       Category(
-        id: Uuid().v4(),
+        id: "c76bb0ba-dba8-43ae-b319-ef2dc0f37b25",
         name: AppTranslations.of(context).text("general"),
         color: "#ff2196f3",
         icon: 58136,
@@ -137,7 +146,7 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
         updatedAt: DateTime.now(),
       ),
       Category(
-        id: Uuid().v4(),
+        id: "25852ade-8c20-44f2-aaeb-0b0f84f1758e",
         name: AppTranslations.of(context).text("email"),
         color: "#ffff5722",
         icon: 57898,
@@ -147,7 +156,7 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
         updatedAt: DateTime.now(),
       ),
       Category(
-        id: Uuid().v4(),
+        id: "d24a71bf-1f3e-4f3b-aae0-e8d601d323b4",
         name: AppTranslations.of(context).text("music"),
         color: "#ff4caf50",
         icon: 58389,
@@ -157,7 +166,7 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
         updatedAt: DateTime.now(),
       ),
       Category(
-        id: Uuid().v4(),
+        id: "7347b5e1-2ca2-4d79-b547-230466f6747b",
         name: AppTranslations.of(context).text("shopping"),
         color: "#ff9c27b0",
         icon: 58780,
@@ -167,7 +176,7 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
         updatedAt: DateTime.now(),
       ),
       Category(
-        id: Uuid().v4(),
+        id: "2394cf62-c52f-499d-99db-3d690b445664",
         name: AppTranslations.of(context).text("business"),
         color: "#ffffc107",
         icon: 57628,
@@ -177,7 +186,7 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
         updatedAt: DateTime.now(),
       ),
       Category(
-        id: Uuid().v4(),
+        id: "1c5df5cf-14ae-4e55-870a-fe98253422b7",
         name: AppTranslations.of(context).text("streaming"),
         color: "#ff795548",
         icon: 58267,
@@ -187,7 +196,7 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
         updatedAt: DateTime.now(),
       ),
       Category(
-        id: Uuid().v4(),
+        id: "3b0061d6-1a36-477d-9b1c-dc9e5795f088",
         name: AppTranslations.of(context).text("bank"),
         color: "#ff00bcd4",
         icon: 57409,
@@ -197,7 +206,7 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
         updatedAt: DateTime.now(),
       ),
       Category(
-        id: Uuid().v4(),
+        id: "eaf10d73-1636-455a-b108-e64ef516b946",
         name: AppTranslations.of(context).text("education"),
         color: "#ffff9800",
         icon: 57583,
@@ -207,7 +216,7 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
         updatedAt: DateTime.now(),
       ),
       Category(
-        id: Uuid().v4(),
+        id: "1f06c4f7-b07f-4070-87b2-6719541b3e0a",
         name: AppTranslations.of(context).text("games"),
         color: "#ff009688",
         icon: 60833,
@@ -217,7 +226,7 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
         updatedAt: DateTime.now(),
       ),
       Category(
-        id: Uuid().v4(),
+        id: "75d56579-6e6a-4969-971d-1d0a190ca738",
         name: AppTranslations.of(context).text("transportation"),
         color: "#ff673ab7",
         icon: 58997,
@@ -227,7 +236,7 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
         updatedAt: DateTime.now(),
       ),
       Category(
-        id: Uuid().v4(),
+        id: "ca12563e-bab0-49f9-8483-8ad5104d8cd6",
         name: AppTranslations.of(context).text("social"),
         color: "#ff3f51b5",
         icon: 57943,
@@ -237,7 +246,7 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
         updatedAt: DateTime.now(),
       ),
       Category(
-        id: Uuid().v4(),
+        id: "b79393fa-359f-42b3-bf0d-ea773a27edd0",
         name: AppTranslations.of(context).text("health"),
         color: "#ffe91e63",
         icon: 58328,

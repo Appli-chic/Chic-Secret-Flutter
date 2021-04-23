@@ -7,11 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
+class ColorSelectorController {
+  Function(Color)? onColorChange;
+
+  ColorSelectorController({
+    this.onColorChange,
+  });
+}
+
 class ColorSelector extends StatefulWidget {
+  final ColorSelectorController colorSelectorController;
   final Function(Color) onColorSelected;
   final Color color;
 
   ColorSelector({
+    required this.colorSelectorController,
     required this.onColorSelected,
     required this.color,
   });
@@ -26,7 +36,15 @@ class _ColorSelectorState extends State<ColorSelector> {
 
   @override
   void initState() {
-    _selectedColor = widget.color;
+    widget.colorSelectorController.onColorChange = _changeColorSelection;
+
+    _changeColorSelection(widget.color);
+    super.initState();
+  }
+
+  /// Change the color selection
+  _changeColorSelection(Color color) {
+    _selectedColor = color;
     var colorsListed = _colors
         .where((c) =>
             c.value.toRadixString(16) == _selectedColor.value.toRadixString(16))
@@ -37,8 +55,6 @@ class _ColorSelectorState extends State<ColorSelector> {
     } else {
       _colors[0] = _selectedColor;
     }
-
-    super.initState();
   }
 
   @override
