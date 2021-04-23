@@ -37,6 +37,8 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
   late Entry _oldEntry;
   List<Tag> _tags = [];
   List<CustomField> _customFields = [];
+  EntryDetailInputController _passwordEntryDetailController =
+      EntryDetailInputController();
 
   @override
   void initState() {
@@ -65,6 +67,10 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
 
     // Reload tags and custom fields if the entry changed (mainly for desktop usage)
     if (widget.entry.id != _oldEntry.id) {
+      if (_passwordEntryDetailController.hidePassword != null) {
+        _passwordEntryDetailController.hidePassword!();
+      }
+
       _oldEntry = widget.entry;
       _loadTags();
       _loadCustomFields();
@@ -162,6 +168,8 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                     ),
                     SizedBox(height: 24),
                     EntryDetailInput(
+                      entryDetailInputController:
+                          _passwordEntryDetailController,
                       label: AppTranslations.of(context).text("password"),
                       text:
                           Security.decrypt(currentPassword!, widget.entry.hash),

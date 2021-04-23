@@ -56,6 +56,7 @@ class _EntryScreenState extends State<EntryScreen> {
   final _searchController = TextEditingController();
   var _searchFocusNode = FocusNode();
   var _desktopSearchFocusNode = FocusNode();
+  var _shortcutsFocusNode = FocusNode();
   var _isCommandKeyDown = false;
   var _isControlKeyDown = false;
 
@@ -79,6 +80,8 @@ class _EntryScreenState extends State<EntryScreen> {
 
   /// Load the list of passwords linked to the current vault
   _loadPassword() async {
+    _searchController.clear();
+
     if (selectedVault != null) {
       String? categoryId;
       String? tagId;
@@ -143,7 +146,7 @@ class _EntryScreenState extends State<EntryScreen> {
 
     return RawKeyboardListener(
       autofocus: true,
-      focusNode: FocusNode(),
+      focusNode: _shortcutsFocusNode,
       onKey: _onKeyChanged,
       child: Scaffold(
         backgroundColor: themeProvider.backgroundColor,
@@ -333,6 +336,9 @@ class _EntryScreenState extends State<EntryScreen> {
 
     if (ChicPlatform.isDesktop()) {
       // Display the NewEntryScreen in the entry detail
+      _searchFocusNode.unfocus();
+      FocusScope.of(context).unfocus();
+      _shortcutsFocusNode.requestFocus();
       if (widget.onCreateNewEntry != null) {
         widget.onCreateNewEntry!();
       }
@@ -354,6 +360,7 @@ class _EntryScreenState extends State<EntryScreen> {
     _searchController.dispose();
     _searchFocusNode.dispose();
     _desktopSearchFocusNode.dispose();
+    _shortcutsFocusNode.dispose();
 
     super.dispose();
   }
@@ -387,6 +394,12 @@ class _EntryScreenState extends State<EntryScreen> {
     // Check the key changed
     var commandKeyIsConcerned = false;
     var controlKeyIsConcerned = false;
+    var aKeyIsConcerned = false;
+
+    if (keyCode == LogicalKeyboardKey.keyA) {
+      aKeyIsConcerned = true;
+    }
+
     if (Platform.isMacOS) {
       if (keyCode == LogicalKeyboardKey.metaLeft ||
           keyCode == LogicalKeyboardKey.metaRight) {
@@ -410,6 +423,12 @@ class _EntryScreenState extends State<EntryScreen> {
           _isCommandKeyDown = true;
         } else if (controlKeyIsConcerned) {
           _isControlKeyDown = true;
+        } else if (aKeyIsConcerned &&
+            _isCommandKeyDown &&
+            !_searchFocusNode.hasFocus) {
+          // Select all entries
+          _selectedEntries.clear();
+          _selectedEntries.addAll(_entries);
         }
 
         setState(() {});

@@ -6,7 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
+class EntryDetailInputController {
+  Function()? hidePassword;
+
+  EntryDetailInputController({this.hidePassword});
+}
+
 class EntryDetailInput extends StatefulWidget {
+  final EntryDetailInputController? entryDetailInputController;
   final String label;
   final Widget? child;
   final String? text;
@@ -14,6 +21,7 @@ class EntryDetailInput extends StatefulWidget {
   final bool isPassword;
 
   EntryDetailInput({
+    this.entryDetailInputController,
     required this.label,
     this.text,
     this.child,
@@ -31,6 +39,14 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
 
   @override
   void initState() {
+    if (widget.entryDetailInputController != null) {
+      widget.entryDetailInputController!.hidePassword = () {
+        setState(() {
+          _isPasswordHidden = true;
+        });
+      };
+    }
+
     super.initState();
     _toast.init(context);
   }
@@ -141,7 +157,7 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
       return Expanded(
         child: Container(
           margin: EdgeInsets.only(top: 4),
-          child: Text(
+          child: SelectableText(
             widget.text!,
             style: TextStyle(color: themeProvider.textColor),
           ),
@@ -164,8 +180,8 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
       return Expanded(
         child: Container(
           margin: EdgeInsets.only(top: 4),
-          child: RichText(
-            text: RichTextEditingController.textToSpan(widget.text!.characters),
+          child: SelectableText.rich(
+            RichTextEditingController.textToSpan(widget.text!.characters),
           ),
         ),
       );
