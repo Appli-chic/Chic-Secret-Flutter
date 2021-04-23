@@ -69,11 +69,16 @@ Future<ImportData> _importFromButtercup(XFile file) async {
         categoriesMap[cells[1]] = cells[2];
       } else {
         // Retrieve the passwords
+        var hash = cells[6];
+        if (hash.contains(",")) {
+          hash = hash.substring(1, hash.length - 1);
+        }
+
         var entry = Entry(
           id: Uuid().v4(),
           name: cells[4],
           username: cells[5],
-          hash: cells[6],
+          hash: hash,
           vaultId: selectedVault!.id,
           categoryId: categoriesMap[cells[1]]!,
           createdAt: DateTime.now(),

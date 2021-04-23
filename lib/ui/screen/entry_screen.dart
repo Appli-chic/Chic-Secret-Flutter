@@ -54,11 +54,11 @@ class _EntryScreenState extends State<EntryScreen> {
   List<Entry> _selectedEntries = [];
 
   final _searchController = TextEditingController();
-  var _searchFocusNode = FocusNode();
-  var _desktopSearchFocusNode = FocusNode();
-  var _shortcutsFocusNode = FocusNode();
-  var _isCommandKeyDown = false;
-  var _isControlKeyDown = false;
+  FocusNode _searchFocusNode = FocusNode();
+  FocusNode _desktopSearchFocusNode = FocusNode();
+  FocusNode _shortcutsFocusNode = FocusNode();
+  bool _isCommandKeyDown = false;
+  bool _isControlKeyDown = false;
 
   @override
   void initState() {
