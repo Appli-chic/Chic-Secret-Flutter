@@ -185,13 +185,7 @@ class _ImportScreenState extends State<ImportScreen> {
             hint: AppTranslations.of(context).text("category"),
             errorMessage:
                 AppTranslations.of(context).text("error_category_empty"),
-            validating: (String text) {
-              if (_newCategoryController.text.isEmpty) {
-                return false;
-              }
-
-              return true;
-            },
+            validating: (String text) => _newCategoryController.text.isNotEmpty,
             onTap: _selectCategory,
           ),
           SizedBox(height: 16.0),

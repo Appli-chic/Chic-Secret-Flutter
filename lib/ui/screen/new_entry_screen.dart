@@ -294,13 +294,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
               hint: AppTranslations.of(context).text("name"),
               errorMessage:
                   AppTranslations.of(context).text("error_name_empty"),
-              validating: (String text) {
-                if (_nameController.text.isEmpty) {
-                  return false;
-                }
-
-                return true;
-              },
+              validating: (String text) => _nameController.text.isNotEmpty,
               onSubmitted: (String text) {
                 _usernameFocusNode.requestFocus();
               },
@@ -313,16 +307,11 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
               nextFocus: _desktopPasswordFocusNode,
               autoFocus: false,
               textCapitalization: TextCapitalization.none,
+              keyboardType: TextInputType.emailAddress,
               hint: AppTranslations.of(context).text("username_email"),
               errorMessage:
                   AppTranslations.of(context).text("error_username_empty"),
-              validating: (String text) {
-                if (_usernameController.text.isEmpty) {
-                  return false;
-                }
-
-                return true;
-              },
+              validating: (String text) => _usernameController.text.isNotEmpty,
               onSubmitted: (String text) {
                 _passwordFocusNode.requestFocus();
               },
@@ -335,17 +324,11 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
               autoFocus: false,
               isPassword: true,
               hasStrengthIndicator: true,
-              textCapitalization: TextCapitalization.sentences,
+              textCapitalization: TextCapitalization.none,
               hint: AppTranslations.of(context).text("password"),
               errorMessage:
                   AppTranslations.of(context).text("error_empty_password"),
-              validating: (String text) {
-                if (_passwordController.text.isEmpty) {
-                  return false;
-                }
-
-                return true;
-              },
+              validating: (String text) => _passwordController.text.isNotEmpty,
               onSubmitted: (String text) {},
             ),
             SizedBox(height: 16.0),
@@ -381,13 +364,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
               hint: AppTranslations.of(context).text("category"),
               errorMessage:
                   AppTranslations.of(context).text("error_category_empty"),
-              validating: (String text) {
-                if (_categoryController.text.isEmpty) {
-                  return false;
-                }
-
-                return true;
-              },
+              validating: (String text) => _categoryController.text.isNotEmpty,
               onTap: _selectCategory,
             ),
             SizedBox(height: 16.0),

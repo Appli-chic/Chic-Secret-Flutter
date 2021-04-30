@@ -155,13 +155,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
               hint: AppTranslations.of(context).text("name"),
               errorMessage:
                   AppTranslations.of(context).text("error_name_empty"),
-              validating: (String text) {
-                if (_nameController.text.isEmpty) {
-                  return false;
-                }
-
-                return true;
-              },
+              validating: (String text) => _nameController.text.isNotEmpty,
             ),
             SizedBox(height: 16.0),
             Text(

@@ -1,4 +1,6 @@
 import 'package:chic_secret/localization/app_translations.dart';
+import 'package:chic_secret/model/database/user.dart';
+import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
@@ -6,8 +8,12 @@ import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/screen/import_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/import_export.dart';
+import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+
+import 'login_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -15,9 +21,26 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  late SynchronizationProvider _synchronizationProvider;
+  User? _user;
+
+  @override
+  void initState() {
+    _getUser();
+    super.initState();
+  }
+
+  /// Retrieve the user information
+  _getUser() async {
+    _user = await Security.getCurrentUser();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+    _synchronizationProvider =
+        Provider.of<SynchronizationProvider>(context, listen: true);
 
     if (ChicPlatform.isDesktop()) {
       return _displaysDesktopInModal(themeProvider);
@@ -70,8 +93,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   /// Displays a unified body for both mobile and desktop version
   Widget _displaysBody(ThemeProvider themeProvider) {
+    String? lastSyncDate;
+
+    if (_synchronizationProvider.lastSyncDate != null) {
+      var locale = AppTranslations.of(context).locale;
+      lastSyncDate = DateFormat.yMMMd(locale.languageCode)
+          .format(_synchronizationProvider.lastSyncDate!);
+    }
+
     return Column(
       children: [
+        _user != null
+            ? ListTile(
+                leading: Icon(Icons.person),
+                title: Text(_user!.email),
+              )
+            : ListTile(
+                leading: Icon(Icons.login),
+                title: Text(AppTranslations.of(context).text("login")),
+                onTap: _login,
+              ),
+        _user != null
+            ? ListTile(
+                leading: Icon(Icons.sync),
+                title: Text(AppTranslations.of(context).text("synchronizing")),
+                subtitle: lastSyncDate != null ? Text(lastSyncDate) : null,
+                onTap: () {},
+              )
+            : SizedBox.shrink(),
         ListTile(
           leading: Icon(Icons.import_export_outlined),
           title: Text(AppTranslations.of(context).text("import_buttercup")),
@@ -79,6 +128,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ],
     );
+  }
+
+  /// Send to the login page
+  _login() async {
+    var isLogged = await ChicNavigator.push(
+      context,
+      LoginScreen(),
+      isModal: true,
+    );
+
+    if (isLogged) {
+      _getUser();
+    }
   }
 
   /// Import the data from another password manager

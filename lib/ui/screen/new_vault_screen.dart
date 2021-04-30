@@ -148,14 +148,9 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
               hasStrengthIndicator: true,
               errorMessage:
                   AppTranslations.of(context).text("error_small_password"),
-              validating: (String text) {
-                if (_passwordController.text.isEmpty ||
-                    _passwordController.text.length < 6) {
-                  return false;
-                }
-
-                return true;
-              },
+              validating: (String text) =>
+                  _passwordController.text.isNotEmpty &&
+                  _passwordController.text.length >= 6,
               onSubmitted: (String text) {
                 _verifyPasswordFocusNode.requestFocus();
               },
@@ -170,14 +165,8 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
               isPassword: true,
               errorMessage:
                   AppTranslations.of(context).text("error_different_password"),
-              validating: (String text) {
-                if (_verifyPasswordController.text !=
-                    _passwordController.text) {
-                  return false;
-                }
-
-                return true;
-              },
+              validating: (String text) =>
+                  _verifyPasswordController.text == _passwordController.text,
             ),
             SizedBox(height: 16.0),
             Text(

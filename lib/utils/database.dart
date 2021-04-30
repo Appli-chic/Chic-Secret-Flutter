@@ -21,6 +21,7 @@ Future<void> initDatabase() async {
       options: OpenDatabaseOptions(
         version: version,
         onCreate: _onCreate,
+        onUpgrade: _onUpgrade,
       ),
     );
   } else {
@@ -31,12 +32,18 @@ Future<void> initDatabase() async {
       path,
       version: version,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
   }
 }
 
+/// Execute scripts to upgrade the database
+_onUpgrade(Database db, int oldVersion, int newVersion) async {
+
+}
+
 /// Execute the scripts to create the database structure
-_onCreate(db, version) async {
+_onCreate(Database db, int version) async {
   var batch = db.batch();
   batch.execute(createVaultTable);
   batch.execute(createCategoryTable);
