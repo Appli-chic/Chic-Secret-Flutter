@@ -1,28 +1,28 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:chic_secret/service/vault_service.dart';
-import 'package:intl/intl.dart';
 
 import 'package:chic_secret/api/auth_api.dart';
 import 'package:chic_secret/model/api_error.dart';
-import 'package:chic_secret/model/database/vault.dart';
+import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:http/http.dart' as http;
+import 'package:chic_secret/model/database/category.dart';
+import 'package:intl/intl.dart';
 
-const String vaults_route = "api/vaults";
+const String categories_route = "api/categories";
 
-class VaultApi {
-  /// Send the vaults to synchronize to the server
-  static Future<void> sendVaults(List<Vault> vaults) async {
+class CategoryApi {
+  /// Send the categories to synchronize to the server
+  static Future<void> sendCategories(List<Category> categories) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
 
     var response = await client.post(
-      Uri.parse("$url$vaults_route"),
+      Uri.parse("$url$categories_route"),
       headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"},
       body: json.encode({
-        "vaults": vaults.map((v) => v.toJson()).toList(),
+        "categories": categories.map((v) => v.toJson()).toList(),
       }),
     );
 
@@ -30,40 +30,40 @@ class VaultApi {
       return;
     } else if (response.statusCode == 401) {
       await AuthApi.refreshAccessToken();
-      return await sendVaults(vaults);
+      return await sendCategories(categories);
     } else {
       throw ApiError.fromJson(json.decode(response.body));
     }
   }
 
-  /// Retrieve all the vaults that changed
-  static Future<void> retrieveVaults(DateTime? lastSync) async {
+  /// Retrieve all the categories that changed
+  static Future<void> retrieveCategories(DateTime? lastSync) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
     var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    String vaultUrl = "$url$vaults_route";
+    String categoryUrl = "$url$categories_route";
 
     if (lastSync != null) {
-      vaultUrl += "?LastSynchro=${dateFormatter.format(lastSync)}";
+      categoryUrl += "?LastSynchro=${dateFormatter.format(lastSync)}";
     }
 
     var response = await client.get(
-      Uri.parse(vaultUrl),
+      Uri.parse(categoryUrl),
       headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"},
     );
 
     if (response.statusCode == 200) {
-      List<dynamic> dataList = json.decode(response.body)["vaults"];
+      List<dynamic> dataList = json.decode(response.body)["categories"];
 
       for (var data in dataList) {
-        var vault = Vault.fromJson(data);
-        await VaultService.save(vault);
+        var category = Category.fromJson(data);
+        await CategoryService.save(category);
       }
 
       return;
     } else if (response.statusCode == 401) {
       await AuthApi.refreshAccessToken();
-      return await retrieveVaults(lastSync);
+      return await retrieveCategories(lastSync);
     } else {
       throw ApiError.fromJson(json.decode(response.body));
     }

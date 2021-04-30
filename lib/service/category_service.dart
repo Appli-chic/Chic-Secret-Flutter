@@ -1,6 +1,8 @@
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
+import 'package:intl/intl.dart';
+import 'package:sqflite/sqflite.dart';
 
 class CategoryService {
   /// Delete a [category] from the local database
@@ -25,6 +27,7 @@ class CategoryService {
     await db.insert(
       categoryTable,
       category.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
@@ -94,5 +97,26 @@ class CategoryService {
     }
 
     return categories;
+  }
+
+  /// Get all the categories to synchronize from the locale database to the server
+  static Future<List<Category>> getCategoriesToSynchronize(
+      DateTime? lastSync) async {
+    String? whereQuery;
+
+    if (lastSync != null) {
+      var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+      String lastSyncString = dateFormatter.format(lastSync);
+      whereQuery = "$columnUpdatedAt > '$lastSyncString' ";
+    }
+
+    List<Map<String, dynamic>> maps = await db.query(
+      categoryTable,
+      where: whereQuery,
+    );
+
+    return List.generate(maps.length, (i) {
+      return Category.fromMap(maps[i]);
+    });
   }
 }

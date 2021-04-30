@@ -1,4 +1,6 @@
+import 'package:chic_secret/api/category_api.dart';
 import 'package:chic_secret/api/vault_api.dart';
+import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +42,8 @@ class SynchronizationProvider with ChangeNotifier {
 
     // Retrieve data to synchronize from the local database
     var vaults = await VaultService.getVaultsToSynchronize(_lastSyncDate);
+    var categories =
+        await CategoryService.getCategoriesToSynchronize(_lastSyncDate);
 
     // Check if vaults have a user ID before to synchronize
     for (var vault in vaults) {
@@ -53,11 +57,16 @@ class SynchronizationProvider with ChangeNotifier {
     if (vaults.isNotEmpty) {
       await VaultApi.sendVaults(vaults);
     }
+
+    if (categories.isNotEmpty) {
+      await CategoryApi.sendCategories(categories);
+    }
   }
 
   /// Get all the data that changed from the server
   Future<void> _pull() async {
     await VaultApi.retrieveVaults(_lastSyncDate);
+    await CategoryApi.retrieveCategories(_lastSyncDate);
   }
 
   /// Get the last date of synchronization
