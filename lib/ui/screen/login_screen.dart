@@ -3,6 +3,7 @@ import 'package:chic_secret/api/user_api.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/api_error.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
@@ -183,6 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         await AuthApi.login(_emailController.text, _codeController.text);
         var user = await UserApi.getCurrentUser();
+        await UserService.save(user);
         await Security.setCurrentUser(user);
         EasyLoading.dismiss();
 

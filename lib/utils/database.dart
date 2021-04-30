@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 import 'package:sqflite/sqflite.dart';
@@ -39,12 +40,12 @@ Future<void> initDatabase() async {
 
 /// Execute scripts to upgrade the database
 _onUpgrade(Database db, int oldVersion, int newVersion) async {
-
 }
 
 /// Execute the scripts to create the database structure
 _onCreate(Database db, int version) async {
   var batch = db.batch();
+  batch.execute(createUserTable);
   batch.execute(createVaultTable);
   batch.execute(createCategoryTable);
   batch.execute(createEntryTable);

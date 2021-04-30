@@ -1,4 +1,8 @@
+import 'package:chic_secret/utils/database_structure.dart';
 import 'package:intl/intl.dart';
+
+const String userTable = "user";
+const String columnUserEmail = "email";
 
 class User {
   String id;
@@ -53,5 +57,44 @@ class User {
     data['DeletedAt'] = deletedAtString;
 
     return data;
+  }
+
+  /// Transform a map of [data] into an user
+  factory User.fromMap(Map<String, dynamic> data) {
+    var createdAtString = DateTime.parse(data[columnCreatedAt]);
+    var updatedAtString = DateTime.parse(data[columnUpdatedAt]);
+    var deletedAtString;
+
+    if (data[columnDeletedAt] != null) {
+      deletedAtString = DateTime.parse(data[columnDeletedAt]);
+    }
+
+    return User(
+      id: data[columnId],
+      email: data[columnUserEmail],
+      createdAt: createdAtString,
+      updatedAt: updatedAtString,
+      deletedAt: deletedAtString,
+    );
+  }
+
+  // Transform an user into a map of data
+  Map<String, dynamic> toMap() {
+    var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    String createdAtString = dateFormatter.format(createdAt);
+    String updatedAtString = dateFormatter.format(updatedAt);
+    String? deletedAtString;
+
+    if (this.deletedAt != null) {
+      deletedAtString = dateFormatter.format(deletedAt!);
+    }
+
+    return {
+      columnId: id,
+      columnUserEmail: email,
+      columnCreatedAt: createdAtString,
+      columnUpdatedAt: updatedAtString,
+      columnDeletedAt: deletedAtString,
+    };
   }
 }

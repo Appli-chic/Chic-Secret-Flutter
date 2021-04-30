@@ -186,10 +186,13 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
   /// Save a new vault in the local database
   _onAddingVault() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      var user = await Security.getCurrentUser();
+
       var vault = Vault(
         id: Uuid().v4(),
         name: _nameController.text,
         signature: Security.encrypt(_passwordController.text, signature),
+        userId: user != null ? user.id : null,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );

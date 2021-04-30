@@ -3,6 +3,7 @@ import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/entry_tag.dart';
 import 'package:chic_secret/model/database/tag.dart';
+import 'package:chic_secret/model/database/user.dart';
 import 'package:chic_secret/model/database/vault.dart';
 
 const String columnId = "id";
@@ -12,14 +13,26 @@ const String columnDeletedAt = "deleted_at";
 
 /// Database Structure
 
+const String createUserTable = '''
+CREATE TABLE $userTable(
+$columnId TEXT PRIMARY KEY NOT NULL, 
+$columnUserEmail TEXT NOT NULL, 
+$columnCreatedAt DATETIME NOT NULL, 
+$columnUpdatedAt DATETIME NOT NULL, 
+$columnDeletedAt DATETIME
+)
+''';
+
 const String createVaultTable = '''
 CREATE TABLE $vaultTable(
 $columnId TEXT PRIMARY KEY NOT NULL, 
 $columnVaultName TEXT NOT NULL, 
 $columnVaultSignature TEXT NOT NULL, 
+$columnVaultUserId TEXT NULL, 
 $columnCreatedAt DATETIME NOT NULL, 
 $columnUpdatedAt DATETIME NOT NULL, 
-$columnDeletedAt DATETIME
+$columnDeletedAt DATETIME,
+FOREIGN KEY($columnVaultUserId) REFERENCES $userTable($columnId)
 )
 ''';
 

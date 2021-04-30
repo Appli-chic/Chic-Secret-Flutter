@@ -31,7 +31,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     _synchronizingAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
-      // upperBound: pi * 2,
     );
 
     _getUser();
@@ -176,6 +175,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 
     if (isLogged) {
       _getUser();
+      _synchronizationProvider.synchronize();
     }
   }
 

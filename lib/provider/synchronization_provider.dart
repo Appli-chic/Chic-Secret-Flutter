@@ -1,3 +1,6 @@
+import 'package:chic_secret/api/vault_api.dart';
+import 'package:chic_secret/service/vault_service.dart';
+import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
@@ -18,12 +21,43 @@ class SynchronizationProvider with ChangeNotifier {
       _isSynchronizing = true;
       notifyListeners();
 
-      await Future.delayed(Duration(seconds: 3));
-      await setLastSyncDate();
+      try {
+        await _push();
+        await _pull();
+        await setLastSyncDate();
+      } catch (e) {
+        print(e);
+      }
 
       _isSynchronizing = false;
       notifyListeners();
     }
+  }
+
+  /// Push the data to the server
+  Future<void> _push() async {
+    var user = await Security.getCurrentUser();
+
+    // Retrieve data to synchronize from the local database
+    var vaults = await VaultService.getVaultsToSynchronize(_lastSyncDate);
+
+    // Check if vaults have a user ID before to synchronize
+    for (var vault in vaults) {
+      if (vault.userId == null || vault.userId!.isEmpty) {
+        vault.userId = user!.id;
+        await VaultService.update(vault);
+      }
+    }
+
+    // Send the data to the server
+    if (vaults.isNotEmpty) {
+      await VaultApi.sendVaults(vaults);
+    }
+  }
+
+  /// Get all the data that changed from the server
+  Future<void> _pull() async {
+    await VaultApi.retrieveVaults(_lastSyncDate);
   }
 
   /// Get the last date of synchronization
