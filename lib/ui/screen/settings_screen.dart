@@ -20,12 +20,20 @@ class SettingsScreen extends StatefulWidget {
   _SettingsScreenState createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen>
+    with SingleTickerProviderStateMixin {
   late SynchronizationProvider _synchronizationProvider;
   User? _user;
+  late AnimationController _synchronizingAnimationController;
 
   @override
   void initState() {
+    _synchronizingAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+      // upperBound: pi * 2,
+    );
+
     _getUser();
     super.initState();
   }
@@ -36,11 +44,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {});
   }
 
+  _startsAnimatingSynchronisation() {
+    if (!_synchronizingAnimationController.isAnimating) {
+      _synchronizingAnimationController.forward();
+      _synchronizingAnimationController.repeat();
+    }
+  }
+
+  _stopAnimatingSynchronisation() {
+    _synchronizingAnimationController.stop();
+  }
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
     _synchronizationProvider =
         Provider.of<SynchronizationProvider>(context, listen: true);
+
+    // Starts and stop the synchronization animation
+    if (_synchronizationProvider.isSynchronizing) {
+      _startsAnimatingSynchronisation();
+    } else {
+      _stopAnimatingSynchronisation();
+    }
 
     if (ChicPlatform.isDesktop()) {
       return _displaysDesktopInModal(themeProvider);
@@ -95,10 +121,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _displaysBody(ThemeProvider themeProvider) {
     String? lastSyncDate;
 
+    // Get last date synchronization
     if (_synchronizationProvider.lastSyncDate != null) {
       var locale = AppTranslations.of(context).locale;
-      lastSyncDate = DateFormat.yMMMd(locale.languageCode)
+      var time = DateFormat.Hm(locale.languageCode)
           .format(_synchronizationProvider.lastSyncDate!);
+
+      var date = DateFormat.yMMMMEEEEd(locale.languageCode)
+          .format(_synchronizationProvider.lastSyncDate!);
+
+      lastSyncDate = "$time - $date";
     }
 
     return Column(
@@ -115,10 +147,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
         _user != null
             ? ListTile(
-                leading: Icon(Icons.sync),
+                leading: RotationTransition(
+                  turns: Tween(begin: 1.0, end: 0.0)
+                      .animate(_synchronizingAnimationController),
+                  child: Icon(Icons.sync),
+                ),
                 title: Text(AppTranslations.of(context).text("synchronizing")),
                 subtitle: lastSyncDate != null ? Text(lastSyncDate) : null,
-                onTap: () {},
+                onTap: () => _synchronizationProvider.synchronize(),
               )
             : SizedBox.shrink(),
         ListTile(

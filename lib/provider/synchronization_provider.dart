@@ -5,10 +5,25 @@ import 'package:intl/intl.dart';
 const String lastDateSyncKey = "lastDateSyncKey";
 
 class SynchronizationProvider with ChangeNotifier {
+  bool _isSynchronizing = false;
   DateTime? _lastSyncDate;
 
   SynchronizationProvider() {
     _getLastSyncDate();
+  }
+
+  /// Synchronize all the elements of the user in the local database
+  Future<void> synchronize() async {
+    if (!_isSynchronizing) {
+      _isSynchronizing = true;
+      notifyListeners();
+
+      await Future.delayed(Duration(seconds: 3));
+      await setLastSyncDate();
+
+      _isSynchronizing = false;
+      notifyListeners();
+    }
   }
 
   /// Get the last date of synchronization
@@ -35,4 +50,7 @@ class SynchronizationProvider with ChangeNotifier {
 
   /// Get the last sync date
   DateTime? get lastSyncDate => _lastSyncDate;
+
+  /// Is it synchronizing
+  bool get isSynchronizing => _isSynchronizing;
 }
