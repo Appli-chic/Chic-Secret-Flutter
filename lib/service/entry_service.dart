@@ -8,6 +8,7 @@ import 'package:chic_secret/service/custom_field_service.dart';
 import 'package:chic_secret/service/entry_tag_service.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
+import 'package:intl/intl.dart';
 
 const entryGeneralSelect = """
 SELECT DISTINCT e.$columnId, e.$columnEntryName, e.$columnEntryUsername, e.$columnEntryHash,
@@ -173,5 +174,25 @@ class EntryService {
     }
 
     return entries;
+  }
+
+  /// Get all the entries to synchronize from the locale database to the server
+  static Future<List<Entry>> getEntriesToSynchronize(DateTime? lastSync) async {
+    String? whereQuery;
+
+    if (lastSync != null) {
+      var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+      String lastSyncString = dateFormatter.format(lastSync);
+      whereQuery = "$columnUpdatedAt > '$lastSyncString' ";
+    }
+
+    List<Map<String, dynamic>> maps = await db.query(
+      entryTable,
+      where: whereQuery,
+    );
+
+    return List.generate(maps.length, (i) {
+      return Entry.fromMap(maps[i]);
+    });
   }
 }

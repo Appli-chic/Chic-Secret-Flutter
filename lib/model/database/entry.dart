@@ -40,6 +40,55 @@ class Entry {
     this.category,
   });
 
+  /// Transform a json to an entry
+  factory Entry.fromJson(Map<String, dynamic> json) {
+    var createdAtString = DateTime.parse(json['CreatedAt']);
+    var updatedAtString = DateTime.parse(json['UpdatedAt']);
+    var deletedAtString;
+
+    if (json['DeletedAt'] != null) {
+      deletedAtString = DateTime.parse(json['DeletedAt']);
+    }
+
+    return Entry(
+      id: json['ID'],
+      name: json['Name'],
+      username: json['Username'],
+      hash: json['Hash'],
+      comment: json['Comment'],
+      vaultId: json['VaultID'],
+      categoryId: json['CategoryID'],
+      createdAt: createdAtString,
+      updatedAt: updatedAtString,
+      deletedAt: deletedAtString,
+    );
+  }
+
+  /// Transform an entry to a json
+  Map<String, dynamic> toJson() {
+    var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    String createdAtString = dateFormatter.format(createdAt);
+    String updatedAtString = dateFormatter.format(updatedAt);
+    String? deletedAtString;
+
+    if (deletedAt != null) {
+      deletedAtString = dateFormatter.format(deletedAt!);
+    }
+
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['ID'] = id;
+    data['Name'] = name;
+    data['Username'] = username;
+    data['Hash'] = hash;
+    data['Comment'] = comment;
+    data['VaultID'] = vaultId;
+    data['CategoryID'] = categoryId;
+    data['CreatedAt'] = createdAtString;
+    data['UpdatedAt'] = updatedAtString;
+    data['DeletedAt'] = deletedAtString;
+    return data;
+  }
+
   /// Transform a map of [data] into an entry
   factory Entry.fromMap(Map<String, dynamic> data, {String? categoryPrefix}) {
     var createdAtString = DateTime.parse(data[columnCreatedAt]);

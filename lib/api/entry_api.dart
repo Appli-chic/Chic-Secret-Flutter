@@ -3,26 +3,26 @@ import 'dart:io';
 
 import 'package:chic_secret/api/auth_api.dart';
 import 'package:chic_secret/model/api_error.dart';
-import 'package:chic_secret/service/category_service.dart';
+import 'package:chic_secret/model/database/entry.dart';
+import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:http/http.dart' as http;
-import 'package:chic_secret/model/database/category.dart';
 import 'package:intl/intl.dart';
 
-const String categories_route = "api/categories";
+const String entries_route = "api/entries";
 
-class CategoryApi {
-  /// Send the categories to synchronize to the server
-  static Future<void> sendCategories(List<Category> categories) async {
+class EntryApi {
+  /// Send the entries to synchronize to the server
+  static Future<void> sendEntries(List<Entry> entries) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
 
     var response = await client.post(
-      Uri.parse("$url$categories_route"),
+      Uri.parse("$url$entries_route"),
       headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"},
       body: json.encode({
-        "categories": categories.map((v) => v.toJson()).toList(),
+        "entries": entries.map((v) => v.toJson()).toList(),
       }),
     );
 
@@ -30,41 +30,40 @@ class CategoryApi {
       return;
     } else if (response.statusCode == 401) {
       await AuthApi.refreshAccessToken();
-      return await sendCategories(categories);
-
+      return await sendEntries(entries);
     } else {
       throw ApiError.fromJson(json.decode(response.body));
     }
   }
 
-  /// Retrieve all the categories that changed
-  static Future<void> retrieveCategories(DateTime? lastSync) async {
+  /// Retrieve all the entries that changed
+  static Future<void> retrieveEntries(DateTime? lastSync) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
     var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    String categoryUrl = "$url$categories_route";
+    String entryUrl = "$url$entries_route";
 
     if (lastSync != null) {
-      categoryUrl += "?LastSynchro=${dateFormatter.format(lastSync)}";
+      entryUrl += "?LastSynchro=${dateFormatter.format(lastSync)}";
     }
 
     var response = await client.get(
-      Uri.parse(categoryUrl),
+      Uri.parse(entryUrl),
       headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"},
     );
 
     if (response.statusCode == 200) {
-      List<dynamic> dataList = json.decode(response.body)["categories"];
+      List<dynamic> dataList = json.decode(response.body)["entries"];
 
       for (var data in dataList) {
-        var category = Category.fromJson(data);
-        await CategoryService.save(category);
+        var entry = Entry.fromJson(data);
+        await EntryService.save(entry);
       }
 
       return;
     } else if (response.statusCode == 401) {
       await AuthApi.refreshAccessToken();
-      return await retrieveCategories(lastSync);
+      return await retrieveEntries(lastSync);
     } else {
       throw ApiError.fromJson(json.decode(response.body));
     }
