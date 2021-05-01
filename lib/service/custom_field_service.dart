@@ -2,6 +2,7 @@ import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 import 'package:intl/intl.dart';
+import 'package:sqflite/sqflite.dart';
 
 class CustomFieldService {
   /// Save a [customField] into the local database
@@ -9,6 +10,7 @@ class CustomFieldService {
     await db.insert(
       customFieldTable,
       customField.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
@@ -44,7 +46,8 @@ class CustomFieldService {
   }
 
   /// Get all the custom fields to synchronize from the locale database to the server
-  static Future<List<CustomField>> getCustomFieldsToSynchronize(DateTime? lastSync) async {
+  static Future<List<CustomField>> getCustomFieldsToSynchronize(
+      DateTime? lastSync) async {
     String? whereQuery;
 
     if (lastSync != null) {

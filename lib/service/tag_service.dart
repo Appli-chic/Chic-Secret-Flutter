@@ -2,6 +2,8 @@ import 'package:chic_secret/model/database/entry_tag.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
+import 'package:intl/intl.dart';
+import 'package:sqflite/sqflite.dart';
 
 class TagService {
   /// Save a [tag] into the local database
@@ -9,6 +11,7 @@ class TagService {
     await db.insert(
       tagTable,
       tag.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
@@ -81,5 +84,25 @@ class TagService {
     }
 
     return tags;
+  }
+
+  /// Get all the tags to synchronize from the locale database to the server
+  static Future<List<Tag>> getTagsToSynchronize(DateTime? lastSync) async {
+    String? whereQuery;
+
+    if (lastSync != null) {
+      var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+      String lastSyncString = dateFormatter.format(lastSync);
+      whereQuery = "$columnUpdatedAt > '$lastSyncString' ";
+    }
+
+    List<Map<String, dynamic>> maps = await db.query(
+      tagTable,
+      where: whereQuery,
+    );
+
+    return List.generate(maps.length, (i) {
+      return Tag.fromMap(maps[i]);
+    });
   }
 }

@@ -20,6 +20,45 @@ class EntryTag {
     this.deletedAt,
   });
 
+  /// Transform a json to an entry tag
+  factory EntryTag.fromJson(Map<String, dynamic> json) {
+    var createdAtString = DateTime.parse(json['CreatedAt']);
+    var updatedAtString = DateTime.parse(json['UpdatedAt']);
+    var deletedAtString;
+
+    if (json['DeletedAt'] != null) {
+      deletedAtString = DateTime.parse(json['DeletedAt']);
+    }
+
+    return EntryTag(
+      entryId: json['EntryID'],
+      tagId: json['TagID'],
+      createdAt: createdAtString,
+      updatedAt: updatedAtString,
+      deletedAt: deletedAtString,
+    );
+  }
+
+  /// Transform an entry tag to a json
+  Map<String, dynamic> toJson() {
+    var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    String createdAtString = dateFormatter.format(createdAt);
+    String updatedAtString = dateFormatter.format(updatedAt);
+    String? deletedAtString;
+
+    if (deletedAt != null) {
+      deletedAtString = dateFormatter.format(deletedAt!);
+    }
+
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['EntryID'] = entryId;
+    data['TagID'] = tagId;
+    data['CreatedAt'] = createdAtString;
+    data['UpdatedAt'] = updatedAtString;
+    data['DeletedAt'] = deletedAtString;
+    return data;
+  }
+
   /// Transform a map of [data] into a entry tag
   factory EntryTag.fromMap(Map<String, dynamic> data) {
     var createdAtString = DateTime.parse(data[columnCreatedAt]);
