@@ -1,7 +1,9 @@
 import 'package:chic_secret/api/category_api.dart';
+import 'package:chic_secret/api/custom_field_api.dart';
 import 'package:chic_secret/api/entry_api.dart';
 import 'package:chic_secret/api/vault_api.dart';
 import 'package:chic_secret/service/category_service.dart';
+import 'package:chic_secret/service/custom_field_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
 import 'package:chic_secret/utils/security.dart';
@@ -47,6 +49,8 @@ class SynchronizationProvider with ChangeNotifier {
     var categories =
         await CategoryService.getCategoriesToSynchronize(_lastSyncDate);
     var entries = await EntryService.getEntriesToSynchronize(_lastSyncDate);
+    var customFields =
+        await CustomFieldService.getCustomFieldsToSynchronize(_lastSyncDate);
 
     // Check if vaults have a user ID before to synchronize
     for (var vault in vaults) {
@@ -68,6 +72,10 @@ class SynchronizationProvider with ChangeNotifier {
     if (entries.isNotEmpty) {
       await EntryApi.sendEntries(entries);
     }
+
+    if (customFields.isNotEmpty) {
+      await CustomFieldApi.sendCustomFields(customFields);
+    }
   }
 
   /// Get all the data that changed from the server
@@ -75,6 +83,7 @@ class SynchronizationProvider with ChangeNotifier {
     await VaultApi.retrieveVaults(_lastSyncDate);
     await CategoryApi.retrieveCategories(_lastSyncDate);
     await EntryApi.retrieveEntries(_lastSyncDate);
+    await CustomFieldApi.retrieveCustomFields(_lastSyncDate);
   }
 
   /// Get the last date of synchronization

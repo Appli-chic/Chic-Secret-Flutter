@@ -25,6 +25,49 @@ class CustomField {
     this.deletedAt,
   });
 
+  /// Transform a json to a custom field
+  factory CustomField.fromJson(Map<String, dynamic> json) {
+    var createdAtString = DateTime.parse(json['CreatedAt']);
+    var updatedAtString = DateTime.parse(json['UpdatedAt']);
+    var deletedAtString;
+
+    if (json['DeletedAt'] != null) {
+      deletedAtString = DateTime.parse(json['DeletedAt']);
+    }
+
+    return CustomField(
+      id: json['ID'],
+      name: json['Name'],
+      value: json['Value'],
+      entryId: json['EntryID'],
+      createdAt: createdAtString,
+      updatedAt: updatedAtString,
+      deletedAt: deletedAtString,
+    );
+  }
+
+  /// Transform a custom field to a json
+  Map<String, dynamic> toJson() {
+    var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    String createdAtString = dateFormatter.format(createdAt);
+    String updatedAtString = dateFormatter.format(updatedAt);
+    String? deletedAtString;
+
+    if (deletedAt != null) {
+      deletedAtString = dateFormatter.format(deletedAt!);
+    }
+
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['ID'] = id;
+    data['Name'] = name;
+    data['Value'] = value;
+    data['EntryID'] = entryId;
+    data['CreatedAt'] = createdAtString;
+    data['UpdatedAt'] = updatedAtString;
+    data['DeletedAt'] = deletedAtString;
+    return data;
+  }
+
   /// Transform a map of [data] into a custom field
   factory CustomField.fromMap(Map<String, dynamic> data) {
     var createdAtString = DateTime.parse(data[columnCreatedAt]);

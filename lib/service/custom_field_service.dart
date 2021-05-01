@@ -1,6 +1,7 @@
 import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
+import 'package:intl/intl.dart';
 
 class CustomFieldService {
   /// Save a [customField] into the local database
@@ -40,5 +41,25 @@ class CustomFieldService {
       customFieldTable,
       where: "$columnCustomFieldEntryId = '$entryId'",
     );
+  }
+
+  /// Get all the custom fields to synchronize from the locale database to the server
+  static Future<List<CustomField>> getCustomFieldsToSynchronize(DateTime? lastSync) async {
+    String? whereQuery;
+
+    if (lastSync != null) {
+      var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+      String lastSyncString = dateFormatter.format(lastSync);
+      whereQuery = "$columnUpdatedAt > '$lastSyncString' ";
+    }
+
+    List<Map<String, dynamic>> maps = await db.query(
+      customFieldTable,
+      where: whereQuery,
+    );
+
+    return List.generate(maps.length, (i) {
+      return CustomField.fromMap(maps[i]);
+    });
   }
 }

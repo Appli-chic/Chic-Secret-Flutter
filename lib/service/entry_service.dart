@@ -9,6 +9,7 @@ import 'package:chic_secret/service/entry_tag_service.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 import 'package:intl/intl.dart';
+import 'package:sqflite/sqflite.dart';
 
 const entryGeneralSelect = """
 SELECT DISTINCT e.$columnId, e.$columnEntryName, e.$columnEntryUsername, e.$columnEntryHash,
@@ -43,6 +44,7 @@ class EntryService {
     await db.insert(
       entryTable,
       entry.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
