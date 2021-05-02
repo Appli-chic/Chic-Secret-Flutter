@@ -1,6 +1,7 @@
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/vault.dart';
+import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
@@ -22,6 +23,8 @@ class NewVaultScreen extends StatefulWidget {
 }
 
 class _NewVaultScreenState extends State<NewVaultScreen> {
+  late SynchronizationProvider _synchronizationProvider;
+
   final _formKey = GlobalKey<FormState>();
 
   final _nameController = TextEditingController();
@@ -39,6 +42,8 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+    _synchronizationProvider =
+        Provider.of<SynchronizationProvider>(context, listen: true);
 
     if (ChicPlatform.isDesktop()) {
       return _displaysDesktopInModal(themeProvider);
@@ -216,6 +221,8 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
       // Select the vault and keep the password in memory
       selectedVault = vault;
       currentPassword = _passwordController.text;
+
+      _synchronizationProvider.synchronize();
 
       Navigator.pop(context, vault);
     }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/entry.dart';
+import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
@@ -49,6 +50,8 @@ class EntryScreen extends StatefulWidget {
 }
 
 class _EntryScreenState extends State<EntryScreen> {
+  late SynchronizationProvider _synchronizationProvider;
+
   List<Entry> _entries = [];
   Entry? _selectedEntry;
   List<Entry> _selectedEntries = [];
@@ -143,6 +146,8 @@ class _EntryScreenState extends State<EntryScreen> {
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+    _synchronizationProvider =
+        Provider.of<SynchronizationProvider>(context, listen: true);
 
     return RawKeyboardListener(
       autofocus: true,
@@ -534,6 +539,7 @@ class _EntryScreenState extends State<EntryScreen> {
         }
       }
 
+      _synchronizationProvider.synchronize();
       _loadPassword();
     }
   }
@@ -565,6 +571,7 @@ class _EntryScreenState extends State<EntryScreen> {
         await EntryService.moveToAnotherCategory(entry, category.id);
       }
 
+      _synchronizationProvider.synchronize();
       _loadPassword();
     }
   }

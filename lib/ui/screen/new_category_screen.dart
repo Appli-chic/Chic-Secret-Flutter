@@ -1,5 +1,6 @@
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
+import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/ui/component/color_selector.dart';
@@ -32,6 +33,8 @@ class NewCategoryScreen extends StatefulWidget {
 }
 
 class _NewCategoryScreenState extends State<NewCategoryScreen> {
+  late SynchronizationProvider _synchronizationProvider;
+
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController _nameController = TextEditingController();
@@ -69,6 +72,8 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+    _synchronizationProvider =
+        Provider.of<SynchronizationProvider>(context, listen: true);
 
     if (ChicPlatform.isDesktop()) {
       return _displaysDesktopInModal(themeProvider);
@@ -285,6 +290,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         await CategoryService.save(category);
       }
 
+      _synchronizationProvider.synchronize();
       Navigator.pop(context, category);
     }
   }

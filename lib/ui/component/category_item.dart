@@ -1,5 +1,6 @@
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
+import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
@@ -32,11 +33,14 @@ class CategoryItem extends StatefulWidget {
 }
 
 class _CategoryItemState extends State<CategoryItem> {
+  late SynchronizationProvider _synchronizationProvider;
   Offset _mousePosition = Offset(0, 0);
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+    _synchronizationProvider =
+        Provider.of<SynchronizationProvider>(context, listen: true);
 
     if (ChicPlatform.isDesktop() && !widget.isForcingMobileStyle) {
       return _buildDesktopItem(context, themeProvider);
@@ -247,6 +251,8 @@ class _CategoryItemState extends State<CategoryItem> {
       // Delete the category and put the linked entries into the trash category
       await EntryService.moveToTrashAllEntriesFromCategory(widget.category!);
       await CategoryService.delete(widget.category!.id);
+
+      _synchronizationProvider.synchronize();
 
       if (widget.onCategoryChanged != null) {
         widget.onCategoryChanged!();

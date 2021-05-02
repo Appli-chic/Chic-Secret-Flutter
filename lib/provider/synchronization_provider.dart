@@ -27,7 +27,7 @@ class SynchronizationProvider with ChangeNotifier {
 
   /// Synchronize all the elements of the user in the local database and to the server
   Future<void> synchronize() async {
-    if (!_isSynchronizing) {
+    if (await Security.isConnected()) {
       _isSynchronizing = true;
       notifyListeners();
 

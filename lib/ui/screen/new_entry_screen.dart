@@ -4,6 +4,7 @@ import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/entry_tag.dart';
 import 'package:chic_secret/model/database/tag.dart';
+import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/custom_field_service.dart';
@@ -44,6 +45,8 @@ class NewEntryScreen extends StatefulWidget {
 }
 
 class _NewEntryScreenState extends State<NewEntryScreen> {
+  late SynchronizationProvider _synchronizationProvider;
+
   final _formKey = GlobalKey<FormState>();
 
   var _nameController = TextEditingController();
@@ -141,6 +144,8 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+    _synchronizationProvider =
+        Provider.of<SynchronizationProvider>(context, listen: true);
 
     if (ChicPlatform.isDesktop()) {
       return Container(
@@ -773,6 +778,8 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
 
         await CustomFieldService.save(customField);
       }
+
+      _synchronizationProvider.synchronize();
 
       // Return to the previous screen
       entry.category = _category;
