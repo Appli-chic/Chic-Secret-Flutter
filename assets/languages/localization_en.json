@@ -59,6 +59,7 @@
   "warning_message_delete_entry": "Are you sure to delete the password {} ?",
   "warning_message_delete_entry_definitely": "Are you sure to delete definitely the {} password ?\nNo restore will be possible.",
   "warning_message_delete_category": "Are you sure to delete definitely the {} category ?\nAll the passwords in this category are going to be moved to the trash category.",
+  "warning_message_delete_tag": "Are you sure to delete the {} tag ?",
   "move_to": "Move to...",
   "move_to_trash": "Move to the trash",
   "warning_message_delete_multiple_entry": "Are you sure to delete these passwords ?",

@@ -6,6 +6,17 @@ import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
 class TagService {
+  /// Delete a [tag] from the local database
+  static Future<void> delete(Tag tag) async {
+    tag.deletedAt = DateTime.now();
+
+    await db.update(
+      tagTable,
+      tag.toMap(),
+      where: "$columnId = '${tag.id}'",
+    );
+  }
+
   /// Save a [tag] into the local database
   static Future<void> save(Tag tag) async {
     await db.insert(

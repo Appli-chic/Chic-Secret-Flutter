@@ -368,6 +368,19 @@ class _VaultsScreenState extends State<VaultsScreen> {
                 tag: _tags[index - 1],
                 isSelected: selectedTag != null &&
                     selectedTag!.id == _tags[index - 1].id,
+                onTagChanged: (Tag tag, bool isDeleted) async {
+                  if (tag == selectedTag && isDeleted) {
+                    selectedTag = null;
+                  }
+
+                  await _loadTags();
+                  widget.onVaultChange();
+                  if (widget.onTagChange != null) {
+                    widget.onTagChange!();
+                  }
+
+                  setState(() {});
+                },
                 onTap: (Tag? tag) {
                   selectedTag = tag;
 
