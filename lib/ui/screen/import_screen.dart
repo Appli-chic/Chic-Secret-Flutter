@@ -17,6 +17,7 @@ import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/import_export.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 class ImportScreen extends StatefulWidget {
@@ -256,6 +257,8 @@ class _ImportScreenState extends State<ImportScreen> {
   /// When all the categories have been migrated to a new one
   _onDone() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      EasyLoading.show();
+
       // Start the migration process
       _newCategories.add(_category!);
       List<Future> entryFutures = [];
@@ -287,6 +290,8 @@ class _ImportScreenState extends State<ImportScreen> {
       }
 
       await Future.wait(customFieldsFutures);
+
+      EasyLoading.dismiss();
 
       Navigator.pop(context, true);
     }

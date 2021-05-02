@@ -1,7 +1,9 @@
+import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/ui/screen/main_desktop_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LandingScreen extends StatefulWidget {
   @override
@@ -9,6 +11,22 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
+  SynchronizationProvider? _synchronizationProvider;
+
+  didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_synchronizationProvider == null) {
+      _synchronizationProvider =
+          Provider.of<SynchronizationProvider>(context, listen: true);
+
+      _synchronizationProvider!.synchronize();
+
+      Future(() {
+        _firstConnection();
+      });
+    }
+  }
 
   /// Displays the next screen depending if the application is launched on
   /// desktop or mobile version
@@ -28,15 +46,6 @@ class _LandingScreenState extends State<LandingScreen> {
         ),
       );
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    Future(() {
-      _firstConnection();
-    });
   }
 
   @override

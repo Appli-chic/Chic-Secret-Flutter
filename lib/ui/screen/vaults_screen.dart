@@ -4,6 +4,7 @@ import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/model/database/vault.dart';
+import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
@@ -14,13 +15,16 @@ import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/tag_item.dart';
 import 'package:chic_secret/ui/component/vault_item.dart';
+import 'package:chic_secret/ui/screen/login_screen.dart';
 import 'package:chic_secret/ui/screen/main_mobile_screen.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
 import 'package:chic_secret/ui/screen/new_vault_screen.dart';
 import 'package:chic_secret/ui/screen/settings_screen.dart';
 import 'package:chic_secret/ui/screen/unlock_vault_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 Vault? selectedVault;
@@ -60,6 +64,9 @@ class VaultsScreen extends StatefulWidget {
 }
 
 class _VaultsScreenState extends State<VaultsScreen> {
+  late SynchronizationProvider _synchronizationProvider;
+  bool _isUserLoggedIn = false;
+
   List<Vault> _vaults = [];
   List<Category> _categories = [];
   List<Tag> _tags = [];
@@ -71,8 +78,15 @@ class _VaultsScreenState extends State<VaultsScreen> {
       widget.vaultScreenController!.reloadTags = _loadTags;
     }
 
+    _isUserLogged();
     _loadVaults();
     super.initState();
+  }
+
+  /// Get if the user is logged in
+  _isUserLogged() async {
+    _isUserLoggedIn = await Security.isConnected();
+    setState(() {});
   }
 
   /// Loads all the vaults from the database
@@ -100,6 +114,8 @@ class _VaultsScreenState extends State<VaultsScreen> {
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+    _synchronizationProvider =
+        Provider.of<SynchronizationProvider>(context, listen: true);
 
     return Scaffold(
       backgroundColor: ChicPlatform.isDesktop()
@@ -137,26 +153,31 @@ class _VaultsScreenState extends State<VaultsScreen> {
               ),
             ),
           ),
+          selectedVault == null && !_isUserLoggedIn
+              ? Container(
+                  margin: EdgeInsets.only(left: 16, bottom: 8, top: 6),
+                  child: ChicTextIconButton(
+                    onPressed: _onLogin,
+                    icon: Icon(
+                      Icons.login,
+                      color: themeProvider.textColor,
+                      size: 18,
+                    ),
+                    label: Text(
+                      AppTranslations.of(context).text("login"),
+                      style: TextStyle(
+                        color: themeProvider.textColor,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                )
+              : SizedBox.shrink(),
           selectedVault != null
               ? Container(
                   margin: EdgeInsets.only(left: 16, bottom: 8, top: 6),
                   child: ChicTextIconButton(
-                    onPressed: () async {
-                      var haveToReload = await ChicNavigator.push(
-                          context, SettingsScreen(),
-                          isModal: true);
-
-                      if (haveToReload != null && haveToReload) {
-                        // Select the vault and start working on it
-                        widget.onVaultChange();
-
-                        // Only load categories and tags if it's the desktop version
-                        if (ChicPlatform.isDesktop()) {
-                          _loadCategories();
-                          _loadTags();
-                        }
-                      }
-                    },
+                    onPressed: _onOptionsClicked,
                     icon: Icon(
                       Icons.settings,
                       color: themeProvider.textColor,
@@ -175,6 +196,23 @@ class _VaultsScreenState extends State<VaultsScreen> {
         ],
       ),
     );
+  }
+
+  /// Triggered when the options are clicked
+  _onOptionsClicked() async {
+    var haveToReload =
+        await ChicNavigator.push(context, SettingsScreen(), isModal: true);
+
+    if (haveToReload != null && haveToReload) {
+      // Select the vault and start working on it
+      widget.onVaultChange();
+
+      // Only load categories and tags if it's the desktop version
+      if (ChicPlatform.isDesktop()) {
+        _loadCategories();
+        _loadTags();
+      }
+    }
   }
 
   /// Displays the list of vaults for the desktop version
@@ -441,6 +479,15 @@ class _VaultsScreenState extends State<VaultsScreen> {
         backgroundColor: themeProvider.secondBackgroundColor,
         brightness: themeProvider.getBrightness(),
         title: Text(AppTranslations.of(context).text("vaults")),
+        leading: !_isUserLoggedIn
+            ? IconButton(
+                icon: Icon(
+                  Icons.person,
+                  color: themeProvider.textColor,
+                ),
+                onPressed: _onLogin,
+              )
+            : null,
         actions: [
           IconButton(
             icon: Icon(
@@ -453,6 +500,26 @@ class _VaultsScreenState extends State<VaultsScreen> {
       );
     } else {
       return null;
+    }
+  }
+
+  /// Go the [LoginScreen] to synchronize the vaults
+  _onLogin() async {
+    var isLogged = await ChicNavigator.push(
+      context,
+      LoginScreen(),
+      isModal: true,
+    );
+
+    if (isLogged) {
+      EasyLoading.show();
+
+      await _synchronizationProvider.synchronize(isFullSynchronization: true);
+
+      EasyLoading.dismiss();
+
+      _isUserLoggedIn = true;
+      _loadVaults();
     }
   }
 
