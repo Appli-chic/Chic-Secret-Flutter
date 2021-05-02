@@ -250,7 +250,7 @@ class _CategoryItemState extends State<CategoryItem> {
     if (result != null && result) {
       // Delete the category and put the linked entries into the trash category
       await EntryService.moveToTrashAllEntriesFromCategory(widget.category!);
-      await CategoryService.delete(widget.category!.id);
+      await CategoryService.delete(widget.category!);
 
       _synchronizationProvider.synchronize();
 

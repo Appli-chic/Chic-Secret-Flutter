@@ -144,7 +144,7 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
     if (result != null && result) {
       // Delete the category and put the linked entries into the trash category
       await EntryService.moveToTrashAllEntriesFromCategory(_category);
-      await CategoryService.delete(_category.id);
+      await CategoryService.delete(_category);
       Navigator.pop(context, true);
     }
   }

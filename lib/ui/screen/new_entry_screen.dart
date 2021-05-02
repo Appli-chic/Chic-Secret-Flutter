@@ -71,6 +71,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
 
   Category? _category;
   List<String> _tagLabelList = [];
+  List<String> _customFieldsIds = [];
   List<TextEditingController> _customFieldsNameControllers = [];
   List<FocusNode> _customFieldsNameFocusNode = [];
   List<FocusNode> _customFieldsNameDesktopFocusNode = [];
@@ -117,6 +118,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     _customFields = await CustomFieldService.getAllByEntry(widget.entry!.id);
 
     for (var customField in _customFields) {
+      _customFieldsIds.add(customField.id);
       _customFieldsNameControllers
           .add(TextEditingController(text: customField.name));
       _customFieldsNameFocusNode.add(FocusNode());
@@ -482,6 +484,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
 
   /// Triggered when we add a new custom field to the list
   _onAddCustomField() {
+    _customFieldsIds.add("");
     _customFieldsNameControllers.add(TextEditingController());
     _customFieldsNameFocusNode.add(FocusNode());
     _customFieldsNameDesktopFocusNode.add(FocusNode());
@@ -578,6 +581,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                   type: ChicIconButtonType.filledCircle,
                   icon: Icons.remove,
                   onPressed: () {
+                    _customFieldsIds.removeAt(customFieldIndex);
                     _customFieldsNameControllers.removeAt(customFieldIndex);
                     _customFieldsNameFocusNode.removeAt(customFieldIndex);
                     _customFieldsNameDesktopFocusNode
@@ -758,17 +762,24 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         }
       }
 
-      // Clear the previous custom fields before to add the new ones
+      // Delete the custom fields that are not existent anymore
       for (var customField in _customFields) {
-        await CustomFieldService.delete(customField.id);
+        var exist =
+            _customFieldsIds.where((id) => id == customField.id).isNotEmpty;
+
+        if (!exist) {
+          await CustomFieldService.delete(customField);
+        }
       }
 
-      // Save all the custom fields
+      // Add or the update the custom fields
       for (var customFieldIndex = 0;
           customFieldIndex < _customFieldsNameControllers.length;
           customFieldIndex++) {
+        var exist = _customFieldsIds[customFieldIndex].isNotEmpty;
+
         var customField = CustomField(
-          id: Uuid().v4(),
+          id: "",
           name: _customFieldsNameControllers[customFieldIndex].text,
           value: _customFieldsValueControllers[customFieldIndex].text,
           entryId: entry.id,
@@ -776,7 +787,15 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
           updatedAt: DateTime.now(),
         );
 
-        await CustomFieldService.save(customField);
+        if (!exist) {
+          // Create a new one
+          customField.id = Uuid().v4();
+          await CustomFieldService.save(customField);
+        } else {
+          // Update the custom field
+          customField.id = _customFieldsIds[customFieldIndex];
+          await CustomFieldService.update(customField);
+        }
       }
 
       _synchronizationProvider.synchronize();

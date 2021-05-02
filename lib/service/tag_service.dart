@@ -19,7 +19,8 @@ class TagService {
   static Future<Tag?> getTagByVaultByName(String vaultId, String name) async {
     List<Map<String, dynamic>> maps = await db.query(
       tagTable,
-      where: "$columnTagVaultId = '$vaultId' and $columnTagName = '$name'",
+      where:
+          "$columnTagVaultId = '$vaultId' and $columnTagName = '$name' AND $columnDeletedAt IS NULL",
     );
 
     if (maps.isNotEmpty) {
@@ -34,7 +35,7 @@ class TagService {
     List<Tag> tags = [];
     List<Map<String, dynamic>> maps = await db.query(
       tagTable,
-      where: "$columnTagVaultId = '$vaultId'",
+      where: "$columnTagVaultId = '$vaultId' AND $columnDeletedAt IS NULL",
     );
 
     if (maps.isNotEmpty) {
@@ -52,7 +53,8 @@ class TagService {
     List<Tag> tags = [];
     List<Map<String, dynamic>> maps = await db.query(
       tagTable,
-      where: "$columnTagVaultId = '$vaultId' and $columnTagName LIKE '%$text%'",
+      where:
+          "$columnTagVaultId = '$vaultId' and $columnTagName LIKE '%$text%' AND $columnDeletedAt IS NULL",
     );
 
     if (maps.isNotEmpty) {
@@ -73,7 +75,8 @@ class TagService {
     t.$columnUpdatedAt, t.$columnDeletedAt
     FROM $tagTable as t
     LEFT JOIN $entryTagTable as et ON et.$columnEntryTagTagId = t.$columnId
-    WHERE et.$columnEntryTagEntryId = '$entryId'
+    WHERE et.$columnEntryTagEntryId = '$entryId' AND t.$columnDeletedAt IS NULL 
+    AND et.$columnDeletedAt IS NULL
     """;
 
     var maps = await db.rawQuery(query);

@@ -6,10 +6,13 @@ import 'package:sqflite/sqflite.dart';
 
 class CategoryService {
   /// Delete a [category] from the local database
-  static Future<void> delete(String categoryId) async {
-    await db.delete(
+  static Future<void> delete(Category category) async {
+    category.deletedAt = DateTime.now();
+
+    await db.update(
       categoryTable,
-      where: "$columnId = '$categoryId'",
+      category.toMap(),
+      where: "$columnId = '${category.id}'",
     );
   }
 
@@ -52,7 +55,7 @@ class CategoryService {
     List<Map<String, dynamic>> maps = await db.query(
       categoryTable,
       where:
-          "$columnCategoryVaultId = '$vaultId' and $columnCategoryIsTrash = 0",
+          "$columnCategoryVaultId = '$vaultId' and $columnCategoryIsTrash = 0 AND $columnDeletedAt IS NULL",
       limit: 1,
     );
 
@@ -67,7 +70,7 @@ class CategoryService {
   static Future<List<Category>> getAllByVault(String vaultId) async {
     List<Category> categories = [];
     List<Map<String, dynamic>> maps = await db.query(categoryTable,
-        where: "$columnCategoryVaultId = '$vaultId'",
+        where: "$columnCategoryVaultId = '$vaultId' AND $columnDeletedAt IS NULL",
         orderBy: "$columnCategoryIsTrash ASC, LOWER($columnCategoryName) ASC");
 
     if (maps.isNotEmpty) {
@@ -86,7 +89,7 @@ class CategoryService {
     List<Map<String, dynamic>> maps = await db.query(
       categoryTable,
       where:
-          "$columnCategoryVaultId = '$vaultId' and $columnCategoryIsTrash = 0",
+          "$columnCategoryVaultId = '$vaultId' and $columnCategoryIsTrash = 0 AND $columnDeletedAt IS NULL",
       orderBy: "$columnCreatedAt ASC, LOWER($columnCategoryName) ASC",
     );
 

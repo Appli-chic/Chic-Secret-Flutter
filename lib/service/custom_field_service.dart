@@ -5,6 +5,15 @@ import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
 class CustomFieldService {
+  /// Update a [customField] into the local database
+  static Future<void> update(CustomField customField) async {
+    await db.update(
+      customFieldTable,
+      customField.toMap(),
+      where: "$columnId = '${customField.id}'",
+    );
+  }
+
   /// Save a [customField] into the local database
   static Future<void> save(CustomField customField) async {
     await db.insert(
@@ -15,10 +24,13 @@ class CustomFieldService {
   }
 
   /// Delete a [customField] from the local database
-  static Future<void> delete(String customFieldId) async {
-    await db.delete(
+  static Future<void> delete(CustomField customField) async {
+    customField.deletedAt = DateTime.now();
+
+    await db.update(
       customFieldTable,
-      where: "$columnId = '$customFieldId'",
+      customField.toMap(),
+      where: "$columnId = '${customField.id}'",
     );
   }
 
@@ -26,7 +38,8 @@ class CustomFieldService {
   static Future<List<CustomField>> getAllByEntry(String entryId) async {
     List<CustomField> customFields = [];
     List<Map<String, dynamic>> maps = await db.query(customFieldTable,
-        where: "$columnCustomFieldEntryId = '$entryId'");
+        where:
+            "$columnCustomFieldEntryId = '$entryId' AND $columnDeletedAt IS NULL");
 
     if (maps.isNotEmpty) {
       for (var map in maps) {
@@ -39,10 +52,14 @@ class CustomFieldService {
 
   /// Delete all the custom fields of an entry
   static Future<void> deleteAllFromEntry(String entryId) async {
-    await db.delete(
-      customFieldTable,
-      where: "$columnCustomFieldEntryId = '$entryId'",
-    );
+    var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    String deleteDate = dateFormatter.format(DateTime.now());
+
+    await db.rawUpdate("""
+      UPDATE $customFieldTable 
+      SET $columnDeletedAt = '$deleteDate' 
+      WHERE $columnCustomFieldEntryId = '$entryId'
+      """);
   }
 
   /// Get all the custom fields to synchronize from the locale database to the server

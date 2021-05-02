@@ -28,6 +28,7 @@ class VaultService {
     List<Vault> vaults = [];
     List<Map<String, dynamic>> maps = await db.query(
       vaultTable,
+      where: "$columnDeletedAt IS NULL"
     );
 
     if (maps.isNotEmpty) {

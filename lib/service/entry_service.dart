@@ -53,8 +53,12 @@ class EntryService {
     await EntryTagService.deleteAllFromEntry(entry.id);
     await CustomFieldService.deleteAllFromEntry(entry.id);
 
-    await db.delete(
+    entry.deletedAt = DateTime.now();
+    entry.hash = "deleted";
+
+    await db.update(
       entryTable,
+      entry.toMap(),
       where: "$columnId = '${entry.id}'",
     );
   }
@@ -103,7 +107,9 @@ class EntryService {
   static Future<List<Entry>> getAllByVault(String vaultId,
       {String? categoryId, String? tagId}) async {
     List<Entry> entries = [];
-    var query = entryGeneralSelect + "WHERE e.$columnEntryVaultId = '$vaultId'";
+    var query = entryGeneralSelect +
+        "WHERE e.$columnEntryVaultId = '$vaultId' "
+            "AND e.$columnDeletedAt IS NULL ";
 
     // Filter on category if selected
     if (categoryId != null) {
@@ -161,6 +167,7 @@ class EntryService {
     OR c.$columnCategoryName LIKE '%$text%' OR t.$columnTagName LIKE '%$text%' 
     OR cf.$columnCustomFieldName LIKE '%$text%' OR cf.$columnCustomFieldValue LIKE '%$text%' 
     OR e.$columnEntryComment LIKE '%$text%') 
+    AND e.$columnDeletedAt IS NULL 
     """;
 
     // Order the rows
