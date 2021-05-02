@@ -264,6 +264,8 @@ class _ImportScreenState extends State<ImportScreen> {
         // Add entries
         if (entry.hash.isNotEmpty) {
           entry.hash = Security.encrypt(currentPassword!, entry.hash);
+          entry.createdAt = DateTime.now();
+          entry.updatedAt = DateTime.now();
 
           entry.categoryId = _newCategories[
                   widget.importData.categories.indexOf(entry.categoryId)]
@@ -279,6 +281,8 @@ class _ImportScreenState extends State<ImportScreen> {
       List<Future> customFieldsFutures = [];
 
       for (var customField in widget.importData.customFields) {
+        customField.createdAt = DateTime.now();
+        customField.updatedAt = DateTime.now();
         customFieldsFutures.add(CustomFieldService.save(customField));
       }
 

@@ -114,6 +114,14 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
 
   /// Displays the body of the screen
   Widget _displaysBody(ThemeProvider themeProvider) {
+    var password = "";
+
+    try {
+      password = Security.decrypt(currentPassword!, widget.entry.hash);
+    } catch (e) {
+      print(e);
+    }
+
     return Column(
       children: [
         Expanded(
@@ -171,8 +179,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                       entryDetailInputController:
                           _passwordEntryDetailController,
                       label: AppTranslations.of(context).text("password"),
-                      text:
-                          Security.decrypt(currentPassword!, widget.entry.hash),
+                      text: password,
                       canCopy: true,
                       isPassword: true,
                     ),

@@ -26,21 +26,28 @@ class SynchronizationProvider with ChangeNotifier {
   }
 
   /// Synchronize all the elements of the user in the local database and to the server
-  Future<void> synchronize() async {
-    if (await Security.isConnected()) {
-      _isSynchronizing = true;
-      notifyListeners();
+  Future<void> synchronize({bool isFullSynchronization = false}) async {
+    if (!_isSynchronizing) {
+      if (await Security.isConnected()) {
+        _isSynchronizing = true;
+        notifyListeners();
 
-      try {
-        await _push();
-        await _pull();
-        await setLastSyncDate();
-      } catch (e) {
-        print(e);
+        if (isFullSynchronization) {
+          _lastSyncDate = null;
+        }
+
+        try {
+          var synchronizationDate = DateTime.now();
+          await _push();
+          await _pull();
+          await setLastSyncDate(dateToSet: synchronizationDate);
+        } catch (e) {
+          print(e);
+        }
+
+        _isSynchronizing = false;
+        notifyListeners();
       }
-
-      _isSynchronizing = false;
-      notifyListeners();
     }
   }
 
@@ -115,11 +122,16 @@ class SynchronizationProvider with ChangeNotifier {
   }
 
   /// Set the last date of synchronization
-  Future<void> setLastSyncDate() async {
+  Future<void> setLastSyncDate({DateTime? dateToSet}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var today = DateTime.now();
+    var date = DateTime.now();
+
+    if (dateToSet != null) {
+      date = dateToSet;
+    }
+
     var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    String todayString = dateFormatter.format(today);
+    String todayString = dateFormatter.format(date);
 
     await prefs.setString(lastDateSyncKey, todayString);
     _getLastSyncDate();

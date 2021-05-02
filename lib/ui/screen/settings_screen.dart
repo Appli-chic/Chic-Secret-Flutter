@@ -175,7 +175,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 
     if (isLogged) {
       _getUser();
-      _synchronizationProvider.synchronize();
+      _synchronizationProvider.synchronize(isFullSynchronization: true);
     }
   }
 
@@ -188,6 +188,8 @@ class _SettingsScreenState extends State<SettingsScreen>
       ImportScreen(importData: data),
       isModal: true,
     );
+
+    _synchronizationProvider.synchronize(isFullSynchronization: true);
 
     if (ChicPlatform.isDesktop()) {
       Navigator.pop(context, true);

@@ -524,6 +524,14 @@ class _EntryScreenState extends State<EntryScreen> {
 
           for (var selectedEntry in _selectedEntries) {
             futureList.add(EntryService.deleteDefinitively(selectedEntry));
+
+            if (selectedEntry == _selectedEntry) {
+              _selectedEntry = null;
+
+              if (widget.onEntrySelected != null) {
+                widget.onEntrySelected!(entry);
+              }
+            }
           }
 
           await Future.wait(futureList);
@@ -536,6 +544,14 @@ class _EntryScreenState extends State<EntryScreen> {
         } else {
           // We delete it definitely
           await EntryService.deleteDefinitively(entry);
+
+          if (entry == _selectedEntry) {
+            _selectedEntry = null;
+
+            if (widget.onEntrySelected != null) {
+              widget.onEntrySelected!(entry);
+            }
+          }
         }
       }
 
