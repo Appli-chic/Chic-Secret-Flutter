@@ -511,7 +511,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
       isModal: true,
     );
 
-    if (isLogged) {
+    if (isLogged != null && isLogged) {
       EasyLoading.show();
 
       await _synchronizationProvider.synchronize(isFullSynchronization: true);
