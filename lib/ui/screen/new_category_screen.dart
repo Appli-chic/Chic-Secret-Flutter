@@ -155,7 +155,6 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
               controller: _nameController,
               focus: _nameFocusNode,
               desktopFocus: _desktopNameFocusNode,
-              autoFocus: true,
               textCapitalization: TextCapitalization.sentences,
               hint: AppTranslations.of(context).text("name"),
               errorMessage:

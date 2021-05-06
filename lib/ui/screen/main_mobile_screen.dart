@@ -5,6 +5,7 @@ import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/screen/category_screen.dart';
 import 'package:chic_secret/ui/screen/entry_screen.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
+import 'package:chic_secret/ui/screen/security_screen.dart';
 import 'package:chic_secret/ui/screen/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -36,9 +37,14 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
           ),
           CategoriesScreen(
             categoryScreenController: _categoryScreenController,
+            onCategoriesChanged: () {
+              if (_passwordScreenController.reloadPasswords != null) {
+                _passwordScreenController.reloadPasswords!();
+              }
+            },
           ),
           Container(),
-          Container(),
+          SecurityScreen(),
           SettingsScreen(),
         ],
       ),

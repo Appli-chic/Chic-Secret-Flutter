@@ -49,7 +49,8 @@ class EntryScreen extends StatefulWidget {
   _EntryScreenState createState() => _EntryScreenState();
 }
 
-class _EntryScreenState extends State<EntryScreen> {
+class _EntryScreenState extends State<EntryScreen>
+    with AutomaticKeepAliveClientMixin<EntryScreen> {
   late SynchronizationProvider _synchronizationProvider;
 
   List<Entry> _entries = [];
@@ -145,6 +146,7 @@ class _EntryScreenState extends State<EntryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
     _synchronizationProvider =
         Provider.of<SynchronizationProvider>(context, listen: true);
@@ -253,16 +255,19 @@ class _EntryScreenState extends State<EntryScreen> {
       );
     }
 
-    return ListView.builder(
-      physics: BouncingScrollPhysics(),
-      itemCount: _entries.length,
-      itemBuilder: (context, index) {
-        return EntryItem(
-          entry: _entries[index],
-          isSelected: false,
-          onTap: _onEntrySelected,
-        );
-      },
+    return Container(
+      margin: EdgeInsets.only(bottom: 8),
+      child: ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemCount: _entries.length,
+        itemBuilder: (context, index) {
+          return EntryItem(
+            entry: _entries[index],
+            isSelected: false,
+            onTap: _onEntrySelected,
+          );
+        },
+      ),
     );
   }
 
@@ -591,4 +596,7 @@ class _EntryScreenState extends State<EntryScreen> {
       _loadPassword();
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -47,7 +47,7 @@ class _EntryItemState extends State<EntryItem> {
         },
         child: Card(
           elevation: ChicPlatform.isDesktop() ? 0 : null,
-          margin: EdgeInsets.only(left: 16, right: 16, top: 8),
+          margin: EdgeInsets.only(left: 8, right: 8, top: 8),
           color:
               widget.isSelected ? themeProvider.primaryColor : backgroundColor,
           shape: RoundedRectangleBorder(

@@ -64,7 +64,7 @@ class _CategoryItemState extends State<CategoryItem> {
     }
 
     return Card(
-      margin: EdgeInsets.only(left: 16, right: 16, top: 8),
+      margin: EdgeInsets.only(left: 8, right: 8, top: 8),
       color: backgroundColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(6.0),

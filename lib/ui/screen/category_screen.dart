@@ -20,16 +20,19 @@ class CategoryScreenController {
 
 class CategoriesScreen extends StatefulWidget {
   final CategoryScreenController? categoryScreenController;
+  final Function() onCategoriesChanged;
 
   const CategoriesScreen({
     this.categoryScreenController,
+    required this.onCategoriesChanged,
   });
 
   @override
   _CategoriesScreenState createState() => _CategoriesScreenState();
 }
 
-class _CategoriesScreenState extends State<CategoriesScreen> {
+class _CategoriesScreenState extends State<CategoriesScreen>
+    with AutomaticKeepAliveClientMixin<CategoriesScreen> {
   List<Category> _categories = [];
 
   @override
@@ -52,6 +55,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
     return Scaffold(
@@ -84,6 +88,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     category: category,
                     onCategoryChanged: () {
                       _loadCategories();
+                      widget.onCategoriesChanged();
                     },
                   ),
                   isModal: true,
@@ -112,4 +117,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       _loadCategories();
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

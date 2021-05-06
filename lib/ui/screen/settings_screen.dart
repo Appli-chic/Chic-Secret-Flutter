@@ -5,6 +5,7 @@ import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
+import 'package:chic_secret/ui/component/setting_item.dart';
 import 'package:chic_secret/ui/screen/import_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/import_export.dart';
@@ -135,17 +136,17 @@ class _SettingsScreenState extends State<SettingsScreen>
     return Column(
       children: [
         _user != null
-            ? ListTile(
+            ? SettingItem(
                 leading: Icon(Icons.person),
                 title: Text(_user!.email),
               )
-            : ListTile(
+            : SettingItem(
                 leading: Icon(Icons.login),
                 title: Text(AppTranslations.of(context).text("login")),
                 onTap: _login,
               ),
         _user != null
-            ? ListTile(
+            ? SettingItem(
                 leading: RotationTransition(
                   turns: Tween(begin: 1.0, end: 0.0)
                       .animate(_synchronizingAnimationController),
@@ -156,7 +157,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                 onTap: () => _synchronizationProvider.synchronize(),
               )
             : SizedBox.shrink(),
-        ListTile(
+        SettingItem(
           leading: Icon(Icons.import_export_outlined),
           title: Text(AppTranslations.of(context).text("import_buttercup")),
           onTap: _importData,
