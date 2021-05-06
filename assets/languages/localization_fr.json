@@ -77,6 +77,10 @@
   "error_code": "Le code ne doit pas être null",
   "code": "Code",
   "synchronizing": "Synchroniser",
+  "biometry": "Biométrie",
+  "yes": "Oui",
+  "no": "Non",
+  "message_will_lock_vault": "Souhaitez-vous retourner à la liste de coffres?",
 
   "general": "Général",
   "email": "Courriel",

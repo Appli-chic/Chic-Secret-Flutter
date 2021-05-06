@@ -77,6 +77,10 @@
   "error_code": "The code must not be empty",
   "code": "Code",
   "synchronizing": "Synchronizing now",
+  "biometry": "Biometry",
+  "yes": "Yes",
+  "no": "No",
+  "message_will_lock_vault": "Are you willing to go back to the list of vaults?",
 
 
   "general": "General",

@@ -17,6 +17,12 @@ import 'package:intl/intl.dart';
 import 'login_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
+  final Function()? onDataChanged;
+
+  SettingsScreen({
+    this.onDataChanged,
+  });
+
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
@@ -162,6 +168,13 @@ class _SettingsScreenState extends State<SettingsScreen>
           title: Text(AppTranslations.of(context).text("import_buttercup")),
           onTap: _importData,
         ),
+        !ChicPlatform.isDesktop()
+            ? SettingItem(
+                leading: Icon(Icons.fingerprint),
+                title: Text(AppTranslations.of(context).text("biometry")),
+                onTap: () {},
+              )
+            : SizedBox.shrink(),
       ],
     );
   }
@@ -176,7 +189,11 @@ class _SettingsScreenState extends State<SettingsScreen>
 
     if (isLogged) {
       _getUser();
-      _synchronizationProvider.synchronize(isFullSynchronization: true);
+      await _synchronizationProvider.synchronize(isFullSynchronization: true);
+
+      if (widget.onDataChanged != null) {
+        widget.onDataChanged!();
+      }
     }
   }
 
@@ -189,6 +206,10 @@ class _SettingsScreenState extends State<SettingsScreen>
       ImportScreen(importData: data),
       isModal: true,
     );
+
+    if (widget.onDataChanged != null) {
+      widget.onDataChanged!();
+    }
 
     _synchronizationProvider.synchronize(isFullSynchronization: true);
 

@@ -2,6 +2,7 @@ import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/clipper/half_circle_clipper.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
+import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/screen/category_screen.dart';
 import 'package:chic_secret/ui/screen/entry_screen.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
@@ -26,33 +27,74 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      body: PageView(
-        controller: _pageController,
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          EntryScreen(
-            passwordScreenController: _passwordScreenController,
-          ),
-          CategoriesScreen(
-            categoryScreenController: _categoryScreenController,
-            onCategoriesChanged: () {
-              if (_passwordScreenController.reloadPasswords != null) {
-                _passwordScreenController.reloadPasswords!();
-              }
-            },
-          ),
-          Container(),
-          SecurityScreen(),
-          SettingsScreen(),
-        ],
+    return WillPopScope(
+      onWillPop: () async {
+        var willPop = await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: themeProvider.secondBackgroundColor,
+              title: Text(AppTranslations.of(context).text("warning")),
+              content: Text(
+                  AppTranslations.of(context).text("message_will_lock_vault")),
+              actions: [
+                ChicTextButton(
+                  child: Text(AppTranslations.of(context).text("no")),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                ChicTextButton(
+                  child: Text(AppTranslations.of(context).text("yes")),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+
+        return willPop;
+      },
+      child: Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        body: PageView(
+          controller: _pageController,
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            EntryScreen(
+              passwordScreenController: _passwordScreenController,
+            ),
+            CategoriesScreen(
+              categoryScreenController: _categoryScreenController,
+              onCategoriesChanged: () {
+                if (_passwordScreenController.reloadPasswords != null) {
+                  _passwordScreenController.reloadPasswords!();
+                }
+              },
+            ),
+            Container(),
+            SecurityScreen(),
+            SettingsScreen(
+              onDataChanged: () {
+                if (_passwordScreenController.reloadPasswords != null) {
+                  _passwordScreenController.reloadPasswords!();
+                }
+
+                if (_categoryScreenController.reloadCategories != null) {
+                  _categoryScreenController.reloadCategories!();
+                }
+              },
+            ),
+          ],
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: MediaQuery.of(context).viewInsets.bottom == 0
+            ? _displaysFloatingButton(themeProvider)
+            : null,
+        bottomNavigationBar: _displayBottomBar(themeProvider),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: MediaQuery.of(context).viewInsets.bottom == 0
-          ? _displaysFloatingButton(themeProvider)
-          : null,
-      bottomNavigationBar: _displayBottomBar(themeProvider),
     );
   }
 
