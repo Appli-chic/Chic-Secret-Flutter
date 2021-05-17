@@ -4,6 +4,8 @@ import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/entry_tag_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
+import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
+import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -101,6 +103,12 @@ class _TagItemState extends State<TagItem> {
   _onSecondaryClick(BuildContext context, ThemeProvider themeProvider) async {
     List<PopupMenuEntry> popupEntries = [
       ChicPopupMenuItem(
+        onTap: () {
+          _renameTag(themeProvider);
+        },
+        title: AppTranslations.of(context).text("rename"),
+      ),
+      ChicPopupMenuItem(
         onTap: _onDeletingTag,
         title: AppTranslations.of(context).text("delete"),
       ),
@@ -113,6 +121,66 @@ class _TagItemState extends State<TagItem> {
           RelativeRect.fromLTRB(_mousePosition.dx, _mousePosition.dy, 500, 500),
       items: popupEntries,
     );
+  }
+
+  /// Rename a tag
+  void _renameTag(ThemeProvider themeProvider) async {
+    var controller = TextEditingController(text: widget.tag!.name);
+
+    var result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          buttonPadding: EdgeInsets.only(right: 32, bottom: 32),
+          backgroundColor: themeProvider.backgroundColor,
+          title: Text(AppTranslations.of(context).text("rename")),
+          content: ChicTextField(
+            controller: controller,
+            focus: FocusNode(),
+            desktopFocus: FocusNode(),
+            autoFocus: true,
+            textCapitalization: TextCapitalization.sentences,
+            hint: AppTranslations.of(context).text("name"),
+            errorMessage: AppTranslations.of(context).text("error_name_empty"),
+            validating: (String text) {
+              return text.isNotEmpty;
+            },
+          ),
+          actions: [
+            TextButton(
+              child: Text(
+                AppTranslations.of(context).text("cancel"),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            ChicElevatedButton(
+              child: Text(
+                AppTranslations.of(context).text("rename"),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    // Rename the tag
+    if (result != null && result) {
+      var tag = widget.tag!;
+      tag.name = controller.text;
+      tag.updatedAt = DateTime.now();
+      await TagService.update(tag);
+
+      _synchronizationProvider.synchronize();
+
+      if (widget.onTagChanged != null) {
+        widget.onTagChanged!(tag, true);
+      }
+    }
   }
 
   /// Ask if the tag should be deleted

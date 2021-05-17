@@ -26,6 +26,16 @@ class TagService {
     );
   }
 
+  /// Update a [tag] in the local database
+  static Future<void> update(Tag tag) async {
+    await db.update(
+      tagTable,
+      tag.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+      where: "$columnId = '${tag.id}'",
+    );
+  }
+
   /// Retrieve a tag that has this exact name in the specified vault
   static Future<Tag?> getTagByVaultByName(String vaultId, String name) async {
     List<Map<String, dynamic>> maps = await db.query(

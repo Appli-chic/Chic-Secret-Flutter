@@ -81,6 +81,7 @@
   "yes": "Oui",
   "no": "Non",
   "message_will_lock_vault": "Souhaitez-vous retourner à la liste de coffres?",
+  "rename": "Renommer",
 
   "general": "Général",
   "email": "Courriel",
