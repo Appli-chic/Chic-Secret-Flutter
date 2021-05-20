@@ -27,7 +27,7 @@ enum ImportType {
 }
 
 /// Import a file from the type of import
-Future<ImportData> importFromFile(ImportType importType) async {
+Future<ImportData?> importFromFile(ImportType importType) async {
   if (ChicPlatform.isDesktop()) {
     // Import on desktop
     final typeGroup = XTypeGroup(label: 'CSV', extensions: ['csv']);
@@ -67,7 +67,7 @@ Future<ImportData> importFromFile(ImportType importType) async {
     }
   }
 
-  return ImportData();
+  return null;
 }
 
 /// Import the buttercup data

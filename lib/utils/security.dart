@@ -1,6 +1,8 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:chic_secret/model/database/user.dart';
+import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 const String refreshTokenKey = "refreshTokenKey";
 const String accessTokenKey = "accessTokenKey";
 const String userKey = "userKey";
+const String biometryKey = "biometryKey";
 
 class Security {
   /// Encrypt a message from a key password
@@ -22,6 +25,72 @@ class Security {
     var encrypter = Encrypter(AES(Key.fromUtf8(encryptionKey)));
     var encrypted = Encrypted.fromBase64(message);
     return encrypter.decrypt(encrypted, iv: IV.fromUtf8(key));
+  }
+
+  /// Add the password in the shared preferences to unlock the vault
+  /// automatically with biometry
+  static addPasswordForBiometry(Vault vault, String password) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jsonData = prefs.getString(biometryKey);
+
+    if (jsonData == null || jsonData.isEmpty) {
+      // Add the first biometry password
+      HashMap<String, String> biometryMap = HashMap();
+      biometryMap[vault.id] = password;
+      String biometryMapEncoded = json.encode(biometryMap);
+      await prefs.setString(biometryKey, biometryMapEncoded);
+    } else {
+      // Add a biometry password in an existing Map
+      var biometryMap = json.decode(jsonData);
+      biometryMap[vault.id] = password;
+      String biometryMapEncoded = json.encode(biometryMap);
+      await prefs.setString(biometryKey, biometryMapEncoded);
+    }
+  }
+
+  /// Remove a password from the map of passwords for biometry
+  static removePasswordFromBiometry(Vault vault) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jsonData = prefs.getString(biometryKey);
+
+    if (jsonData != null && jsonData.isNotEmpty) {
+      var biometryMap = json.decode(jsonData);
+      biometryMap.remove(vault.id);
+      String biometryMapEncoded = json.encode(biometryMap);
+      await prefs.setString(biometryKey, biometryMapEncoded);
+    }
+  }
+
+  /// Retrieve the password saved if it exists for this [vault]
+  static Future<bool> isPasswordSavedForBiometry(Vault vault) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jsonData = prefs.getString(biometryKey);
+
+    if (jsonData != null && jsonData.isNotEmpty) {
+      var biometryMap = json.decode(jsonData);
+
+      if (biometryMap[vault.id] != null) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /// Retrieve the password stored in the shared preference linked to this vault
+  static Future<String?> getPasswordFromBiometry(Vault vault) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jsonData = prefs.getString(biometryKey);
+
+    if (jsonData != null && jsonData.isNotEmpty) {
+      var biometryMap = json.decode(jsonData);
+
+      if (biometryMap[vault.id] != null) {
+        return biometryMap[vault.id];
+      }
+    }
+
+    return null;
   }
 
   /// Get the current user

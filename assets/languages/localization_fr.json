@@ -82,6 +82,8 @@
   "no": "Non",
   "message_will_lock_vault": "Souhaitez-vous retourner à la liste de coffres?",
   "rename": "Renommer",
+  "activated_biometry": "Biométrie activée",
+  "authenticate_to_unlock": "Merci de vous identifier pour déverouiller votre coffre",
 
   "general": "Général",
   "email": "Courriel",

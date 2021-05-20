@@ -10,12 +10,15 @@ import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:local_auth/local_auth.dart';
 
 class UnlockVaultScreen extends StatefulWidget {
   final Vault vault;
+  final bool isUnlocking;
 
   UnlockVaultScreen({
     required this.vault,
+    this.isUnlocking = false,
   });
 
   @override
@@ -23,6 +26,7 @@ class UnlockVaultScreen extends StatefulWidget {
 }
 
 class _UnlockVaultScreenState extends State<UnlockVaultScreen> {
+  final LocalAuthentication auth = LocalAuthentication();
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
 
@@ -30,6 +34,42 @@ class _UnlockVaultScreenState extends State<UnlockVaultScreen> {
   var _desktopPasswordFocusNode = FocusNode();
 
   var _isPasswordIncorrect = false;
+
+  @override
+  void initState() {
+    _unlockWithBiometry();
+
+    super.initState();
+  }
+
+  /// Unlock
+  _unlockWithBiometry() async {
+    var isUsingBiometry =
+        await Security.isPasswordSavedForBiometry(widget.vault);
+
+    if (widget.isUnlocking && isUsingBiometry) {
+      bool canCheckBiometrics = await auth.canCheckBiometrics;
+
+      if (canCheckBiometrics) {
+        try {
+          bool didAuthenticate = await auth.authenticate(
+            localizedReason:
+                AppTranslations.of(context).text("authenticate_to_unlock"),
+          );
+
+          if (didAuthenticate) {
+            var password = await Security.getPasswordFromBiometry(widget.vault);
+
+            if (password != null) {
+              Navigator.pop(context, password);
+            }
+          }
+        } catch (e) {
+          print(e);
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

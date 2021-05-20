@@ -82,6 +82,8 @@
   "no": "No",
   "message_will_lock_vault": "Are you willing to go back to the list of vaults?",
   "rename": "Rename",
+  "activated_biometry": "Activated Biometry",
+  "authenticate_to_unlock": "Please authenticate to unlock your vault",
 
 
   "general": "General",

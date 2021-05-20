@@ -567,7 +567,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
   Future<String?> _isVaultUnlocking(Vault vault) async {
     var unlockingPassword = await ChicNavigator.push(
       context,
-      UnlockVaultScreen(vault: vault),
+      UnlockVaultScreen(vault: vault, isUnlocking: true),
       isModal: true,
     );
 
