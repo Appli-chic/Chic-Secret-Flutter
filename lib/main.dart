@@ -64,6 +64,7 @@ class _AppState extends State<App> {
         supportedLocales: [
           const Locale('en', ''), // English
           const Locale('fr', ''), // French
+          const Locale('es', ''), // French
         ],
         localeListResolutionCallback:
             (List<Locale>? locales, Iterable<Locale> supportedLocales) {

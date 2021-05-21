@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 
 class Application {
@@ -10,15 +9,27 @@ class Application {
 
   Application._internal();
 
-  final List<String> supportedLanguages = [
+  static List<String> supportedLanguages = [
     "English",
-    "French",
+    "Français",
+    "Español",
   ];
 
-  final List<String> supportedLanguagesCodes = [
+  static List<String> supportedLanguagesCodes = [
     "en",
     "fr",
+    "es",
   ];
+
+  /// Get the language name from it's code
+  static String getSupportedLanguageFromCode(String? code) {
+    if (supportedLanguagesCodes.contains(code)) {
+      var index = supportedLanguagesCodes.indexOf(code!);
+      return supportedLanguages[index];
+    } else {
+      return "English";
+    }
+  }
 
   /// Returns the list of supported Locales
   Iterable<Locale> supportedLocales() =>

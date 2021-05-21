@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:chic_secret/localization/app_translations.dart';
+import 'package:chic_secret/localization/application.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
@@ -10,9 +11,9 @@ import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/rich_text_editing_controller.dart';
-import 'package:chic_secret/utils/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:chic_secret/utils/string_extension.dart';
 
 class GeneratePasswordScreen extends StatefulWidget {
   @override
@@ -21,10 +22,14 @@ class GeneratePasswordScreen extends StatefulWidget {
 
 class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     with TickerProviderStateMixin {
+  Locale? _locale;
   late TabController _tabController;
   final _passwordController = RichTextEditingController();
+  final _languageController = TextEditingController();
   var _passwordFocusNode = FocusNode();
+  var _languageFocusNode = FocusNode();
   var _desktopPasswordFocusNode = FocusNode();
+  var _desktopLanguageFocusNode = FocusNode();
 
   var _isGeneratingWords = true;
 
@@ -41,8 +46,22 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
-    _passwordController.text = _generatePassword();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_locale == null) {
+      _locale = Localizations.localeOf(context);
+      _passwordController.text = _generatePassword();
+
+      if (_locale != null) {
+        _languageController.text =
+            Application.getSupportedLanguageFromCode(_locale!.languageCode);
+      }
+    }
+
+    super.didChangeDependencies();
   }
 
   @override
@@ -264,6 +283,15 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
               ),
             ],
           ),
+          SizedBox(height: 16.0),
+          ChicTextField(
+            controller: _languageController,
+            focus: _languageFocusNode,
+            desktopFocus: _desktopLanguageFocusNode,
+            isReadOnly: true,
+            hint: AppTranslations.of(context).text("language"),
+            onTap: () {},
+          ),
         ],
       ),
     );
@@ -349,7 +377,18 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
 
     for (var wordIndex = 0; wordIndex < _numberWords; wordIndex++) {
       var rng = new Random();
-      var randomWord = words[rng.nextInt(words.length - 1)];
+      String randomWord = "";
+
+      if (_locale!.languageCode == "fr") {
+        // French
+        randomWord = wordsFrench[rng.nextInt(wordsFrench.length - 1)];
+      } else if (_locale!.languageCode == "es") {
+        // French
+        randomWord = wordsSpanish[rng.nextInt(wordsSpanish.length - 1)];
+      } else {
+        // English by default
+        randomWord = words[rng.nextInt(words.length - 1)];
+      }
 
       // Randomly add an uppercase
       if (_hasUppercase) {
@@ -397,8 +436,13 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
   @override
   void dispose() {
     _passwordController.dispose();
+    _languageController.dispose();
+
     _passwordFocusNode.dispose();
+    _languageFocusNode.dispose();
+
     _desktopPasswordFocusNode.dispose();
+    _desktopLanguageFocusNode.dispose();
 
     super.dispose();
   }
