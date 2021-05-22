@@ -5,9 +5,11 @@ import 'package:chic_secret/localization/application.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
+import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
+import 'package:chic_secret/ui/screen/select_language_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/rich_text_editing_controller.dart';
@@ -290,7 +292,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
             desktopFocus: _desktopLanguageFocusNode,
             isReadOnly: true,
             hint: AppTranslations.of(context).text("language"),
-            onTap: () {},
+            onTap: _selectLanguage,
           ),
         ],
       ),
@@ -330,6 +332,25 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
         ),
       ],
     );
+  }
+
+  /// Select the language to generate a new password from a range of languages supported
+  _selectLanguage() async {
+    String? language = await ChicNavigator.push(
+      context,
+      SelectLanguageScreen(
+        language: _locale?.languageCode,
+      ),
+      isModal: true,
+    );
+
+    if (language != null) {
+      _locale = Locale(language);
+      var index = Application.supportedLanguagesCodes.indexOf(language);
+      _languageController.text = Application.supportedLanguages[index];
+      _passwordController.text = _generatePassword();
+      setState(() {});
+    }
   }
 
   /// Called to generate a new password
