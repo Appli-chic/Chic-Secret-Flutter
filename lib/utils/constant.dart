@@ -4,7 +4,7 @@ const String keyTheme = "THEME";
 const String signature = "chic_secret/signature";
 const String databaseName = "chic_secret.db";
 const String encryptionKey = "x!A%D*G-KaPdRgUkXp2s5v8y/B?E(H+M";
-const String url = "http://192.168.0.30:3000/";
+const String url = "http://51.159.187.113:3000/";
 
 const String errorServer = "CODE_ERROR_SERVER";
 const String codeErrorVerificationTokenInvalid = "CODE_ERROR_VERIFICATION_TOKEN_INVALID";
