@@ -2,10 +2,11 @@
     package="com.applichic.chic_secret">
 
     <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="chic_secret"
+        android:label="Chic Secret"
         android:usesCleartextTraffic="true"> <!-- TODO: To remove -->
         <activity
             android:name=".MainActivity"
