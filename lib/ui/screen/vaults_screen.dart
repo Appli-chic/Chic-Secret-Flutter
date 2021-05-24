@@ -153,7 +153,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
               ),
             ),
           ),
-          selectedVault == null && !_isUserLoggedIn
+          !_isUserLoggedIn
               ? Container(
                   margin: EdgeInsets.only(left: 16, bottom: 8, top: 6),
                   child: ChicTextIconButton(
@@ -172,9 +172,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
                     ),
                   ),
                 )
-              : SizedBox.shrink(),
-          selectedVault != null
-              ? Container(
+              : Container(
                   margin: EdgeInsets.only(left: 16, bottom: 8, top: 6),
                   child: ChicTextIconButton(
                     onPressed: _onOptionsClicked,
@@ -191,8 +189,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
                       ),
                     ),
                   ),
-                )
-              : SizedBox.shrink(),
+                ),
         ],
       ),
     );

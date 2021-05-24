@@ -26,7 +26,7 @@ class _LandingScreenState extends State<LandingScreen> {
 
   /// Synchronize the first time we start the application
   _firstSynchronization() async {
-    await _synchronizationProvider!.synchronize(isFullSynchronization: true);
+    _synchronizationProvider!.synchronize(isFullSynchronization: true);
 
     Future(() {
       _firstConnection();

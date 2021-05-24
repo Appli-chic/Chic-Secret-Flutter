@@ -8,6 +8,7 @@ import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/component/setting_item.dart';
 import 'package:chic_secret/ui/screen/biometry_screen.dart';
 import 'package:chic_secret/ui/screen/import_screen.dart';
+import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/import_export.dart';
 import 'package:chic_secret/utils/security.dart';
@@ -180,11 +181,14 @@ class _SettingsScreenState extends State<SettingsScreen>
                     isFullSynchronization: true),
               )
             : SizedBox.shrink(),
-        SettingItem(
-          leading: Icon(Icons.import_export_outlined),
-          title: Text(AppTranslations.of(context).text("import_buttercup")),
-          onTap: _importData,
-        ),
+        selectedVault != null
+            ? SettingItem(
+                leading: Icon(Icons.import_export_outlined),
+                title:
+                    Text(AppTranslations.of(context).text("import_buttercup")),
+                onTap: _importData,
+              )
+            : SizedBox.shrink(),
         !ChicPlatform.isDesktop() && _isBiometricsSupported
             ? SettingItem(
                 leading: Icon(Icons.fingerprint),
