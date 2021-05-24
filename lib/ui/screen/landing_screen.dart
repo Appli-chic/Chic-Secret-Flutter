@@ -20,12 +20,17 @@ class _LandingScreenState extends State<LandingScreen> {
       _synchronizationProvider =
           Provider.of<SynchronizationProvider>(context, listen: true);
 
-      _synchronizationProvider!.synchronize();
-
-      Future(() {
-        _firstConnection();
-      });
+      _firstSynchronization();
     }
+  }
+
+  /// Synchronize the first time we start the application
+  _firstSynchronization() async {
+    await _synchronizationProvider!.synchronize(isFullSynchronization: true);
+
+    Future(() {
+      _firstConnection();
+    });
   }
 
   /// Displays the next screen depending if the application is launched on
