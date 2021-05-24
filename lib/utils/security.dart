@@ -119,6 +119,12 @@ class Security {
     return refreshToken != null && refreshToken.isNotEmpty;
   }
 
+  /// Logout the user
+  static Future<void> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+  }
+
   /// Get the refresh token from the preferences
   static Future<String?> getRefreshToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

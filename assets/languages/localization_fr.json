@@ -85,6 +85,7 @@
   "activated_biometry": "Biométrie activée",
   "authenticate_to_unlock": "Merci de vous identifier pour déverouiller votre coffre",
   "language": "Langue",
+  "logout": "Se déconnecter",
 
   "general": "Général",
   "email": "Courriel",

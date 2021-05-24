@@ -52,8 +52,12 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   /// Checks if the biometrics are supported on this device
   _checkBiometrics() async {
-    _isBiometricsSupported = await auth.canCheckBiometrics;
-    setState(() {});
+    try {
+      _isBiometricsSupported = await auth.canCheckBiometrics;
+      setState(() {});
+    } catch (e) {
+      print(e);
+    }
   }
 
   /// Retrieve the user information
@@ -172,7 +176,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                 ),
                 title: Text(AppTranslations.of(context).text("synchronizing")),
                 subtitle: lastSyncDate != null ? Text(lastSyncDate) : null,
-                onTap: () => _synchronizationProvider.synchronize(),
+                onTap: () => _synchronizationProvider.synchronize(
+                    isFullSynchronization: true),
               )
             : SizedBox.shrink(),
         SettingItem(
@@ -187,8 +192,21 @@ class _SettingsScreenState extends State<SettingsScreen>
                 onTap: _onBiometryClicked,
               )
             : SizedBox.shrink(),
+        _user != null
+            ? SettingItem(
+                leading: Icon(Icons.logout),
+                title: Text(AppTranslations.of(context).text("logout")),
+                onTap: _logout,
+              )
+            : SizedBox.shrink(),
       ],
     );
+  }
+
+  /// Logout the user and delete the data about the user
+  _logout() async {
+    await Security.logout();
+    Navigator.of(context).pop(true);
   }
 
   /// Send to the login page
