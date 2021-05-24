@@ -103,6 +103,8 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
           _category = selectedCategory;
           _categoryController.text = _category!.name;
         }
+      } else {
+        _loadFirstCategory();
       }
     }
 

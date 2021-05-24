@@ -136,16 +136,6 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
   _generatePredefinedCategories(BuildContext context) {
     _predefinedCategories = [
       Category(
-        id: "c76bb0ba-dba8-43ae-b319-ef2dc0f37b25",
-        name: AppTranslations.of(context).text("general"),
-        color: "#ff2196f3",
-        icon: 58136,
-        isTrash: false,
-        vaultId: "",
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      ),
-      Category(
         id: "25852ade-8c20-44f2-aaeb-0b0f84f1758e",
         name: AppTranslations.of(context).text("email"),
         color: "#ffff5722",

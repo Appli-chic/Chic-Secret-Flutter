@@ -56,6 +56,7 @@ class CategoryService {
       categoryTable,
       where:
           "$columnCategoryVaultId = '$vaultId' and $columnCategoryIsTrash = 0 AND $columnDeletedAt IS NULL",
+      orderBy: "$columnCreatedAt ASC",
       limit: 1,
     );
 
@@ -70,7 +71,8 @@ class CategoryService {
   static Future<List<Category>> getAllByVault(String vaultId) async {
     List<Category> categories = [];
     List<Map<String, dynamic>> maps = await db.query(categoryTable,
-        where: "$columnCategoryVaultId = '$vaultId' AND $columnDeletedAt IS NULL",
+        where:
+            "$columnCategoryVaultId = '$vaultId' AND $columnDeletedAt IS NULL",
         orderBy: "$columnCategoryIsTrash ASC, LOWER($columnCategoryName) ASC");
 
     if (maps.isNotEmpty) {

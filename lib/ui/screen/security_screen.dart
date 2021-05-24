@@ -28,10 +28,31 @@ class _SecurityScreenState extends State<SecurityScreen> {
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
         },
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            children: [],
+        child: Container(
+          height: double.maxFinite,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.sentiment_dissatisfied,
+                  color: themeProvider.secondTextColor,
+                  size: 60,
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 8),
+                  child: Text(
+                    "In Development",
+                    style: TextStyle(
+                      color: themeProvider.secondTextColor,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

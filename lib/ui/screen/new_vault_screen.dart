@@ -205,7 +205,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
       await VaultService.save(vault);
 
       // Create the trash category
-      var category = Category(
+      var trashCategory = Category(
         id: Uuid().v4(),
         name: AppTranslations.of(context).text("trash"),
         color: "#fff44336",
@@ -216,7 +216,20 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
         updatedAt: DateTime.now(),
       );
 
-      await CategoryService.save(category);
+      // Create general category
+      var generalCategory = Category(
+        id: Uuid().v4(),
+        name: AppTranslations.of(context).text("general"),
+        color: "#ff2196f3",
+        icon: 58136,
+        isTrash: false,
+        vaultId: vault.id,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      await CategoryService.save(trashCategory);
+      await CategoryService.save(generalCategory);
 
       // Select the vault and keep the password in memory
       selectedVault = vault;
