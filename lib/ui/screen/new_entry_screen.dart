@@ -96,7 +96,14 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       _loadTags();
       _loadCustomFields();
     } else {
-      _loadFirstCategory();
+      if (ChicPlatform.isDesktop()) {
+        if (selectedCategory == null) {
+          _loadFirstCategory();
+        } else {
+          _category = selectedCategory;
+          _categoryController.text = _category!.name;
+        }
+      }
     }
 
     super.initState();
