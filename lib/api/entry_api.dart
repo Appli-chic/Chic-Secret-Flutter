@@ -18,6 +18,10 @@ class EntryApi {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
 
+    if (accessToken == null || accessToken.isEmpty) {
+      return;
+    }
+
     var response = await client.post(
       Uri.parse("$url$entries_route"),
       headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"},
@@ -40,6 +44,11 @@ class EntryApi {
   static Future<void> retrieveEntries(DateTime? lastSync) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
+
+    if (accessToken == null || accessToken.isEmpty) {
+      return;
+    }
+
     var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String entryUrl = "$url$entries_route";
 

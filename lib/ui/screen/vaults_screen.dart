@@ -436,6 +436,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
   /// Displays the list of vaults only for the mobile version
   Widget _displaysMobileBody(ThemeProvider themeProvider) {
     return ListView.builder(
+      physics: BouncingScrollPhysics(),
       itemCount: _vaults.length,
       itemBuilder: (context, index) {
         return VaultItem(
@@ -448,6 +449,8 @@ class _VaultsScreenState extends State<VaultsScreen> {
               selectedVault = vault;
               currentPassword = unlockingPassword;
               await ChicNavigator.push(context, MainMobileScreen());
+
+              _isUserLogged();
             }
           },
         );

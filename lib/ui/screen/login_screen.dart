@@ -184,7 +184,13 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         await AuthApi.login(_emailController.text, _codeController.text);
         var user = await UserApi.getCurrentUser();
-        await UserService.save(user);
+
+        if(await UserService.doesUserExist(user.id)) {
+          await UserService.update(user);
+        } else {
+          await UserService.save(user);
+        }
+
         await Security.setCurrentUser(user);
         EasyLoading.dismiss();
 

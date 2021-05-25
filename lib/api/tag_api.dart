@@ -18,6 +18,10 @@ class TagApi {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
 
+    if (accessToken == null || accessToken.isEmpty) {
+      return;
+    }
+
     var response = await client.post(
       Uri.parse("$url$tags_route"),
       headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"},
@@ -40,6 +44,11 @@ class TagApi {
   static Future<void> retrieveTags(DateTime? lastSync) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
+
+    if (accessToken == null || accessToken.isEmpty) {
+      return;
+    }
+
     var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String tagUrl = "$url$tags_route";
 

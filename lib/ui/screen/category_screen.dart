@@ -74,33 +74,36 @@ class _CategoriesScreenState extends State<CategoriesScreen>
           )
         ],
       ),
-      body: ListView.builder(
-        physics: BouncingScrollPhysics(),
-        itemCount: _categories.length,
-        itemBuilder: (context, index) {
-          return CategoryItem(
-            category: _categories[index],
-            onTap: (Category? category) async {
-              if (category != null) {
-                var isDeleted = await ChicNavigator.push(
-                  context,
-                  EntryCategoryScreen(
-                    category: category,
-                    onCategoryChanged: () {
-                      _loadCategories();
-                      widget.onCategoriesChanged();
-                    },
-                  ),
-                  isModal: true,
-                );
+      body: Container(
+        margin: EdgeInsets.only(bottom: 8),
+        child: ListView.builder(
+          physics: BouncingScrollPhysics(),
+          itemCount: _categories.length,
+          itemBuilder: (context, index) {
+            return CategoryItem(
+              category: _categories[index],
+              onTap: (Category? category) async {
+                if (category != null) {
+                  var isDeleted = await ChicNavigator.push(
+                    context,
+                    EntryCategoryScreen(
+                      category: category,
+                      onCategoryChanged: () {
+                        _loadCategories();
+                        widget.onCategoriesChanged();
+                      },
+                    ),
+                    isModal: true,
+                  );
 
-                if (isDeleted != null && isDeleted) {
-                  _loadCategories();
+                  if (isDeleted != null && isDeleted) {
+                    _loadCategories();
+                  }
                 }
-              }
-            },
-          );
-        },
+              },
+            );
+          },
+        ),
       ),
     );
   }

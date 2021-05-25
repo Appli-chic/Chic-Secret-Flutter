@@ -18,6 +18,10 @@ class VaultApi {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
 
+    if (accessToken == null || accessToken.isEmpty) {
+      return;
+    }
+
     var response = await client.post(
       Uri.parse("$url$vaults_route"),
       headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"},
@@ -40,6 +44,11 @@ class VaultApi {
   static Future<void> retrieveVaults(DateTime? lastSync) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
+
+    if (accessToken == null || accessToken.isEmpty) {
+      return;
+    }
+
     var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String vaultUrl = "$url$vaults_route";
 

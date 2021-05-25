@@ -18,6 +18,10 @@ class CategoryApi {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
 
+    if (accessToken == null || accessToken.isEmpty) {
+      return;
+    }
+
     var response = await client.post(
       Uri.parse("$url$categories_route"),
       headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"},
@@ -31,7 +35,6 @@ class CategoryApi {
     } else if (response.statusCode == 401) {
       await AuthApi.refreshAccessToken();
       return await sendCategories(categories);
-
     } else {
       throw ApiError.fromJson(json.decode(response.body));
     }
@@ -41,6 +44,11 @@ class CategoryApi {
   static Future<void> retrieveCategories(DateTime? lastSync) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
+
+    if (accessToken == null || accessToken.isEmpty) {
+      return;
+    }
+
     var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String categoryUrl = "$url$categories_route";
 

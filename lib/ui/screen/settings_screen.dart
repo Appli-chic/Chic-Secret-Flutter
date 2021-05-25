@@ -156,54 +156,57 @@ class _SettingsScreenState extends State<SettingsScreen>
       lastSyncDate = "$time - $date";
     }
 
-    return Column(
-      children: [
-        _user != null
-            ? SettingItem(
-                leading: Icon(Icons.person),
-                title: Text(_user!.email),
-              )
-            : SettingItem(
-                leading: Icon(Icons.login),
-                title: Text(AppTranslations.of(context).text("login")),
-                onTap: _login,
-              ),
-        _user != null
-            ? SettingItem(
-                leading: RotationTransition(
-                  turns: Tween(begin: 1.0, end: 0.0)
-                      .animate(_synchronizingAnimationController),
-                  child: Icon(Icons.sync),
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          _user != null
+              ? SettingItem(
+                  leading: Icon(Icons.person),
+                  title: Text(_user!.email),
+                )
+              : SettingItem(
+                  leading: Icon(Icons.login),
+                  title: Text(AppTranslations.of(context).text("login")),
+                  onTap: _login,
                 ),
-                title: Text(AppTranslations.of(context).text("synchronizing")),
-                subtitle: lastSyncDate != null ? Text(lastSyncDate) : null,
-                onTap: () => _synchronizationProvider.synchronize(
-                    isFullSynchronization: true),
-              )
-            : SizedBox.shrink(),
-        selectedVault != null
-            ? SettingItem(
-                leading: Icon(Icons.import_export_outlined),
-                title:
-                    Text(AppTranslations.of(context).text("import_buttercup")),
-                onTap: _importData,
-              )
-            : SizedBox.shrink(),
-        !ChicPlatform.isDesktop() && _isBiometricsSupported
-            ? SettingItem(
-                leading: Icon(Icons.fingerprint),
-                title: Text(AppTranslations.of(context).text("biometry")),
-                onTap: _onBiometryClicked,
-              )
-            : SizedBox.shrink(),
-        _user != null
-            ? SettingItem(
-                leading: Icon(Icons.logout),
-                title: Text(AppTranslations.of(context).text("logout")),
-                onTap: _logout,
-              )
-            : SizedBox.shrink(),
-      ],
+          _user != null
+              ? SettingItem(
+                  leading: RotationTransition(
+                    turns: Tween(begin: 1.0, end: 0.0)
+                        .animate(_synchronizingAnimationController),
+                    child: Icon(Icons.sync),
+                  ),
+                  title: Text(AppTranslations.of(context).text("synchronizing")),
+                  subtitle: lastSyncDate != null ? Text(lastSyncDate) : null,
+                  onTap: () => _synchronizationProvider.synchronize(
+                      isFullSynchronization: true),
+                )
+              : SizedBox.shrink(),
+          selectedVault != null
+              ? SettingItem(
+                  leading: Icon(Icons.import_export_outlined),
+                  title:
+                      Text(AppTranslations.of(context).text("import_buttercup")),
+                  onTap: _importData,
+                )
+              : SizedBox.shrink(),
+          !ChicPlatform.isDesktop() && _isBiometricsSupported
+              ? SettingItem(
+                  leading: Icon(Icons.fingerprint),
+                  title: Text(AppTranslations.of(context).text("biometry")),
+                  onTap: _onBiometryClicked,
+                )
+              : SizedBox.shrink(),
+          _user != null
+              ? SettingItem(
+                  leading: Icon(Icons.logout),
+                  title: Text(AppTranslations.of(context).text("logout")),
+                  onTap: _logout,
+                )
+              : SizedBox.shrink(),
+        ],
+      ),
     );
   }
 

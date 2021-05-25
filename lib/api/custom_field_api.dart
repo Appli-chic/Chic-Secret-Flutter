@@ -18,6 +18,10 @@ class CustomFieldApi {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
 
+    if (accessToken == null || accessToken.isEmpty) {
+      return;
+    }
+
     var response = await client.post(
       Uri.parse("$url$custom_fields_route"),
       headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"},
@@ -40,6 +44,11 @@ class CustomFieldApi {
   static Future<void> retrieveCustomFields(DateTime? lastSync) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
+
+    if (accessToken == null || accessToken.isEmpty) {
+      return;
+    }
+
     var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String customFieldUrl = "$url$custom_fields_route";
 
