@@ -37,10 +37,12 @@ Category? selectedCategory;
 Tag? selectedTag;
 
 class VaultScreenController {
+  void Function()? reloadVaults;
   void Function()? reloadCategories;
   void Function()? reloadTags;
 
   VaultScreenController({
+    this.reloadVaults,
     this.reloadCategories,
     this.reloadTags,
   });
@@ -74,6 +76,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
   @override
   void initState() {
     if (widget.vaultScreenController != null) {
+      widget.vaultScreenController!.reloadVaults = _onSynchronized;
       widget.vaultScreenController!.reloadCategories = _loadCategories;
       widget.vaultScreenController!.reloadTags = _loadTags;
     }
@@ -200,6 +203,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
     widget.onVaultChange();
 
     if (ChicPlatform.isDesktop()) {
+      _loadVaults();
       _loadCategories();
       _loadTags();
     }

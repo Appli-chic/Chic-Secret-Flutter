@@ -11,6 +11,9 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
+  VaultScreenController _vaultScreenController = VaultScreenController();
+  MainDesktopScreenController _mainDesktopScreenController =
+      MainDesktopScreenController();
   SynchronizationProvider? _synchronizationProvider;
 
   didChangeDependencies() {
@@ -26,11 +29,27 @@ class _LandingScreenState extends State<LandingScreen> {
 
   /// Synchronize the first time we start the application
   _firstSynchronization() async {
-    _synchronizationProvider!.synchronize(isFullSynchronization: true);
-
     Future(() {
       _firstConnection();
     });
+
+    await _synchronizationProvider!.synchronize(isFullSynchronization: true);
+
+    if (_mainDesktopScreenController.reloadAfterSynchronization != null) {
+      _mainDesktopScreenController.reloadAfterSynchronization!();
+    }
+
+    if(_vaultScreenController.reloadVaults != null) {
+      _vaultScreenController.reloadVaults!();
+    }
+
+    if(_vaultScreenController.reloadCategories != null) {
+      _vaultScreenController.reloadCategories!();
+    }
+
+    if(_vaultScreenController.reloadTags != null) {
+      _vaultScreenController.reloadTags!();
+    }
   }
 
   /// Displays the next screen depending if the application is launched on
@@ -39,13 +58,18 @@ class _LandingScreenState extends State<LandingScreen> {
     if (ChicPlatform.isDesktop()) {
       return await Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => MainDesktopScreen()),
+        MaterialPageRoute(
+          builder: (context) => MainDesktopScreen(
+            mainDesktopScreenController: _mainDesktopScreenController,
+          ),
+        ),
       );
     } else {
       return await Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => VaultsScreen(
+            vaultScreenController: _vaultScreenController,
             onVaultChange: () {},
           ),
         ),

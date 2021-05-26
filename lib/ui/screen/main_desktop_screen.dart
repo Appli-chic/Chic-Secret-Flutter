@@ -8,7 +8,21 @@ import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+class MainDesktopScreenController {
+  void Function()? reloadAfterSynchronization;
+
+  MainDesktopScreenController({
+    this.reloadAfterSynchronization,
+  });
+}
+
 class MainDesktopScreen extends StatefulWidget {
+  final MainDesktopScreenController mainDesktopScreenController;
+
+  MainDesktopScreen({
+    required this.mainDesktopScreenController,
+  });
+
   @override
   _MainDesktopScreenState createState() => _MainDesktopScreenState();
 }
@@ -18,6 +32,31 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
   bool _isCreatingOrModifyingEntry = false;
   VaultScreenController _vaultScreenController = VaultScreenController();
   EntryScreenController _entryScreenController = EntryScreenController();
+
+  @override
+  void initState() {
+    widget.mainDesktopScreenController.reloadAfterSynchronization =
+        _reloadAfterSynchronization;
+
+    super.initState();
+  }
+
+  /// Reload after a synchronization
+  _reloadAfterSynchronization() {
+    if (_vaultScreenController.reloadVaults != null) {
+      _vaultScreenController.reloadVaults!();
+    }
+
+    if (_vaultScreenController.reloadCategories != null) {
+      _vaultScreenController.reloadCategories!();
+    }
+
+    if (_entryScreenController.reloadPasswords != null) {
+      _entryScreenController.reloadPasswords!();
+    }
+
+    setState(() {});
+  }
 
   /// Ask to reload the passwords from the [EntryScreen] when the vault change
   _reloadPasswordScreenOnVaultChange() {
