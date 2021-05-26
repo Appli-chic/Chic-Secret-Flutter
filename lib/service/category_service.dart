@@ -34,6 +34,16 @@ class CategoryService {
     );
   }
 
+  /// Checks if the category already exists
+  static Future<bool> exists(Category category) async {
+    var data = await db.query(
+      categoryTable,
+      where: "$columnId = '${category.id}'",
+    );
+
+    return data.isNotEmpty;
+  }
+
   /// Retrieve the trash category linked to a vault
   static Future<Category?> getTrashByVault(String vaultId) async {
     List<Map<String, dynamic>> maps = await db.query(

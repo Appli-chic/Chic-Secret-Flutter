@@ -5,6 +5,16 @@ import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart';
 
 class EntryTagService {
+  /// Update the entryTag already exists
+  static Future<void> update(EntryTag entryTag) async {
+    await db.update(
+      entryTagTable,
+      entryTag.toMap(),
+      where:
+          "$columnEntryTagEntryId = '${entryTag.entryId}' AND $columnEntryTagTagId = '${entryTag.tagId}'",
+    );
+  }
+
   /// Save a [entryTag] into the local database
   static Future<void> save(EntryTag entryTag) async {
     await db.insert(
@@ -12,6 +22,17 @@ class EntryTagService {
       entryTag.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  /// Checks if the entryTag already exists
+  static Future<bool> exists(EntryTag entryTag) async {
+    var data = await db.query(
+      entryTagTable,
+      where:
+          "$columnEntryTagEntryId = '${entryTag.entryId}' AND $columnEntryTagTagId = '${entryTag.tagId}'",
+    );
+
+    return data.isNotEmpty;
   }
 
   /// Delete a [entryTag] from the local database

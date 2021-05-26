@@ -66,7 +66,12 @@ class CategoryApi {
 
       for (var data in dataList) {
         var category = Category.fromJson(data);
-        await CategoryService.save(category);
+
+        if (await CategoryService.exists(category)) {
+          await CategoryService.update(category);
+        } else {
+          await CategoryService.save(category);
+        }
       }
 
       return;

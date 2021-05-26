@@ -185,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
         await AuthApi.login(_emailController.text, _codeController.text);
         var user = await UserApi.getCurrentUser();
 
-        if(await UserService.doesUserExist(user.id)) {
+        if(await UserService.exists(user.id)) {
           await UserService.update(user);
         } else {
           await UserService.save(user);

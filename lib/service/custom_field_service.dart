@@ -23,6 +23,16 @@ class CustomFieldService {
     );
   }
 
+  /// Checks if the customField already exists
+  static Future<bool> exists(CustomField customField) async {
+    var data = await db.query(
+      customFieldTable,
+      where: "$columnId = '${customField.id}'",
+    );
+
+    return data.isNotEmpty;
+  }
+
   /// Delete a [customField] from the local database
   static Future<void> delete(CustomField customField) async {
     customField.deletedAt = DateTime.now();

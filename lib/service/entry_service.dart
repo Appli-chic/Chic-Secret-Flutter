@@ -48,6 +48,16 @@ class EntryService {
     );
   }
 
+  /// Checks if the entry already exists
+  static Future<bool> exists(Entry entry) async {
+    var data = await db.query(
+      entryTable,
+      where: "$columnId = '${entry.id}'",
+    );
+
+    return data.isNotEmpty;
+  }
+
   /// Hard delete of the entry
   static Future<void> deleteDefinitively(Entry entry) async {
     await EntryTagService.deleteAllFromEntry(entry.id);

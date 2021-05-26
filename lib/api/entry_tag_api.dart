@@ -66,7 +66,12 @@ class EntryTagApi {
 
       for (var data in dataList) {
         var entryTag = EntryTag.fromJson(data);
-        await EntryTagService.save(entryTag);
+
+        if (await EntryTagService.exists(entryTag)) {
+          await EntryTagService.update(entryTag);
+        } else {
+          await EntryTagService.save(entryTag);
+        }
       }
 
       return;

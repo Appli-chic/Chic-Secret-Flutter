@@ -66,7 +66,11 @@ class CustomFieldApi {
 
       for (var data in dataList) {
         var customField = CustomField.fromJson(data);
-        await CustomFieldService.save(customField);
+        if (await CustomFieldService.exists(customField)) {
+          await CustomFieldService.update(customField);
+        } else {
+          await CustomFieldService.save(customField);
+        }
       }
 
       return;

@@ -66,7 +66,12 @@ class TagApi {
 
       for (var data in dataList) {
         var tag = Tag.fromJson(data);
-        await TagService.save(tag);
+
+        if (await TagService.exists(tag)) {
+          await TagService.update(tag);
+        } else {
+          await TagService.save(tag);
+        }
       }
 
       return;

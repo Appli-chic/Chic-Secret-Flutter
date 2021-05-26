@@ -36,6 +36,16 @@ class TagService {
     );
   }
 
+  /// Checks if the tag already exists
+  static Future<bool> exists(Tag tag) async {
+    var data = await db.query(
+      tagTable,
+      where: "$columnId = '${tag.id}'",
+    );
+
+    return data.isNotEmpty;
+  }
+
   /// Retrieve a tag that has this exact name in the specified vault
   static Future<Tag?> getTagByVaultByName(String vaultId, String name) async {
     List<Map<String, dynamic>> maps = await db.query(

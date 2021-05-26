@@ -21,7 +21,7 @@ class UserService {
   }
 
   /// Check if the user exists
-  static Future<bool> doesUserExist(String userId) async {
+  static Future<bool> exists(String userId) async {
     List<Map<String, dynamic>> maps = await db.query(
       userTable,
       where: "$columnId = '$userId'",

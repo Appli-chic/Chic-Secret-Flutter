@@ -14,7 +14,7 @@ const String columnDeletedAt = "deleted_at";
 /// Database Structure
 
 const String createUserTable = '''
-CREATE TABLE $userTable(
+CREATE TABLE IF NOT EXISTS $userTable(
 $columnId TEXT PRIMARY KEY NOT NULL, 
 $columnUserEmail TEXT NOT NULL, 
 $columnCreatedAt DATETIME NOT NULL, 
@@ -24,7 +24,7 @@ $columnDeletedAt DATETIME
 ''';
 
 const String createVaultTable = '''
-CREATE TABLE $vaultTable(
+CREATE TABLE IF NOT EXISTS $vaultTable(
 $columnId TEXT PRIMARY KEY NOT NULL, 
 $columnVaultName TEXT NOT NULL, 
 $columnVaultSignature TEXT NOT NULL, 
@@ -37,7 +37,7 @@ FOREIGN KEY($columnVaultUserId) REFERENCES $userTable($columnId)
 ''';
 
 const String createCategoryTable = '''
-CREATE TABLE $categoryTable(
+CREATE TABLE IF NOT EXISTS $categoryTable(
 $columnId TEXT PRIMARY KEY NOT NULL, 
 $columnCategoryName TEXT NOT NULL, 
 $columnCategoryColor TEXT NOT NULL, 
@@ -52,7 +52,7 @@ FOREIGN KEY($columnCategoryVaultId) REFERENCES $vaultTable($columnId)
 ''';
 
 const String createEntryTable = '''
-CREATE TABLE $entryTable(
+CREATE TABLE IF NOT EXISTS $entryTable(
 $columnId TEXT PRIMARY KEY NOT NULL, 
 $columnEntryName TEXT NOT NULL, 
 $columnEntryUsername TEXT NOT NULL, 
@@ -69,7 +69,7 @@ FOREIGN KEY($columnEntryCategoryId) REFERENCES $categoryTable($columnId)
 ''';
 
 const String createTagTable = '''
-CREATE TABLE $tagTable(
+CREATE TABLE IF NOT EXISTS $tagTable(
 $columnId TEXT PRIMARY KEY NOT NULL, 
 $columnTagName TEXT NOT NULL UNIQUE, 
 $columnTagVaultId TEXT NOT NULL, 
@@ -81,7 +81,7 @@ FOREIGN KEY($columnTagVaultId) REFERENCES $vaultTable($columnId)
 ''';
 
 const String createEntryTagTable = '''
-CREATE TABLE $entryTagTable(
+CREATE TABLE IF NOT EXISTS $entryTagTable(
 $columnEntryTagEntryId TEXT NOT NULL, 
 $columnEntryTagTagId TEXT NOT NULL, 
 $columnCreatedAt DATETIME NOT NULL, 
@@ -94,7 +94,7 @@ PRIMARY KEY($columnEntryTagEntryId, $columnEntryTagTagId)
 ''';
 
 const String createCustomFieldTable = '''
-CREATE TABLE $customFieldTable(
+CREATE TABLE IF NOT EXISTS $customFieldTable(
 $columnId TEXT PRIMARY KEY NOT NULL, 
 $columnCustomFieldName TEXT NOT NULL,
 $columnCustomFieldValue TEXT NOT NULL,  

@@ -7,7 +7,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:path/path.dart';
 
-const int version = 1;
+const int version = 2;
 late Database db;
 
 /// Init the local database for all the platforms
@@ -38,7 +38,15 @@ Future<void> initDatabase() async {
 }
 
 /// Execute scripts to upgrade the database
-_onUpgrade(Database db, int oldVersion, int newVersion) async {}
+_onUpgrade(Database db, int oldVersion, int newVersion) async {
+  var batch = db.batch();
+
+  if (oldVersion <= 1) {
+    batch.execute(createUserTable);
+  }
+
+  await batch.commit();
+}
 
 /// Execute the scripts to create the database structure
 _onCreate(Database db, int version) async {

@@ -66,7 +66,12 @@ class VaultApi {
 
       for (var data in dataList) {
         var vault = Vault.fromJson(data);
-        await VaultService.save(vault);
+
+        if (await VaultService.exists(vault)) {
+          await VaultService.update(vault);
+        } else {
+          await VaultService.save(vault);
+        }
       }
 
       return;

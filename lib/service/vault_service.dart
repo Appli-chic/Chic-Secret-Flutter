@@ -23,6 +23,16 @@ class VaultService {
     );
   }
 
+  /// Checks if the vault already exists
+  static Future<bool> exists(Vault vault) async {
+    var data = await db.query(
+      vaultTable,
+      where: "$columnId = '${vault.id}'",
+    );
+
+    return data.isNotEmpty;
+  }
+
   /// Retrieve all the vaults
   static Future<List<Vault>> getAll() async {
     List<Vault> vaults = [];

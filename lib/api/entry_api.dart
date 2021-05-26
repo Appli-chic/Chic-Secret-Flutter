@@ -66,7 +66,12 @@ class EntryApi {
 
       for (var data in dataList) {
         var entry = Entry.fromJson(data);
-        await EntryService.save(entry);
+
+        if (await EntryService.exists(entry)) {
+          await EntryService.update(entry);
+        } else {
+          await EntryService.save(entry);
+        }
       }
 
       return;
