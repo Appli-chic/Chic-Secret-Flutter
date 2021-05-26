@@ -177,17 +177,17 @@ class _SettingsScreenState extends State<SettingsScreen>
                         .animate(_synchronizingAnimationController),
                     child: Icon(Icons.sync),
                   ),
-                  title: Text(AppTranslations.of(context).text("synchronizing")),
+                  title:
+                      Text(AppTranslations.of(context).text("synchronizing")),
                   subtitle: lastSyncDate != null ? Text(lastSyncDate) : null,
-                  onTap: () => _synchronizationProvider.synchronize(
-                      isFullSynchronization: true),
+                  onTap: _synchronize,
                 )
               : SizedBox.shrink(),
           selectedVault != null
               ? SettingItem(
                   leading: Icon(Icons.import_export_outlined),
-                  title:
-                      Text(AppTranslations.of(context).text("import_buttercup")),
+                  title: Text(
+                      AppTranslations.of(context).text("import_buttercup")),
                   onTap: _importData,
                 )
               : SizedBox.shrink(),
@@ -208,6 +208,15 @@ class _SettingsScreenState extends State<SettingsScreen>
         ],
       ),
     );
+  }
+
+  /// Synchronize the data with the server
+  _synchronize() async {
+    await _synchronizationProvider.synchronize(isFullSynchronization: true);
+
+    if (widget.onDataChanged != null) {
+      widget.onDataChanged!();
+    }
   }
 
   /// Logout the user and delete the data about the user

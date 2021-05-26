@@ -195,10 +195,23 @@ class _VaultsScreenState extends State<VaultsScreen> {
     );
   }
 
+  /// Reload the data after a synchronization
+  _onSynchronized() async {
+    widget.onVaultChange();
+
+    if (ChicPlatform.isDesktop()) {
+      _loadCategories();
+      _loadTags();
+    }
+  }
+
   /// Triggered when the options are clicked
   _onOptionsClicked() async {
-    var haveToReload =
-        await ChicNavigator.push(context, SettingsScreen(), isModal: true);
+    var haveToReload = await ChicNavigator.push(
+      context,
+      SettingsScreen(onDataChanged: _onSynchronized),
+      isModal: true,
+    );
 
     if (haveToReload != null && haveToReload) {
       // Select the vault and start working on it
