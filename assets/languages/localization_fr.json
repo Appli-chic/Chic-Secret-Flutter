@@ -86,6 +86,9 @@
   "authenticate_to_unlock": "Merci de vous identifier pour déverouiller votre coffre",
   "language": "Langue",
   "logout": "Se déconnecter",
+  "weak_passwords": "Faibles mots de passe",
+  "old_passwords": "Vieux mots de passe",
+  "duplicated_passwords": "Mots de passe dupliqués",
 
   "general": "Général",
   "email": "Courriel",

@@ -10,6 +10,8 @@ const String columnEntryHash = "hash";
 const String columnEntryComment = "comment";
 const String columnEntryVaultId = "vault_id";
 const String columnEntryCategoryId = "category_id";
+const String columnEntryPasswordSize = "password_size";
+const String columnEntryHashUpdatedAt = "hash_updated_at";
 
 class Entry {
   String id;
@@ -19,6 +21,8 @@ class Entry {
   String? comment;
   String vaultId;
   String categoryId;
+  int? passwordSize;
+  DateTime? hashUpdatedAt;
   DateTime createdAt;
   DateTime updatedAt;
   DateTime? deletedAt;
@@ -34,6 +38,8 @@ class Entry {
     this.comment,
     required this.vaultId,
     required this.categoryId,
+    this.passwordSize,
+    this.hashUpdatedAt,
     required this.createdAt,
     required this.updatedAt,
     this.deletedAt,
@@ -58,6 +64,8 @@ class Entry {
       comment: json['Comment'],
       vaultId: json['VaultID'],
       categoryId: json['CategoryID'],
+      passwordSize: json['PasswordSize'],
+      hashUpdatedAt: json['HashUpdatedAt'],
       createdAt: createdAtString,
       updatedAt: updatedAtString,
       deletedAt: deletedAtString,
@@ -83,6 +91,8 @@ class Entry {
     data['Comment'] = comment;
     data['VaultID'] = vaultId;
     data['CategoryID'] = categoryId;
+    data['PasswordSize'] = passwordSize;
+    data['HashUpdatedAt'] = hashUpdatedAt;
     data['CreatedAt'] = createdAtString;
     data['UpdatedAt'] = updatedAtString;
     data['DeletedAt'] = deletedAtString;
@@ -94,9 +104,14 @@ class Entry {
     var createdAtString = DateTime.parse(data[columnCreatedAt]);
     var updatedAtString = DateTime.parse(data[columnUpdatedAt]);
     var deletedAtString;
+    var hashUpdatedAtString;
 
     if (data[columnDeletedAt] != null) {
       deletedAtString = DateTime.parse(data[columnDeletedAt]);
+    }
+
+    if (data[columnEntryHashUpdatedAt] != null) {
+      hashUpdatedAtString = DateTime.parse(data[columnEntryHashUpdatedAt]);
     }
 
     return Entry(
@@ -107,6 +122,8 @@ class Entry {
       comment: data[columnEntryComment],
       vaultId: data[columnEntryVaultId],
       categoryId: data[columnEntryCategoryId],
+      passwordSize: data[columnEntryPasswordSize],
+      hashUpdatedAt: hashUpdatedAtString,
       createdAt: createdAtString,
       updatedAt: updatedAtString,
       deletedAt: deletedAtString,
@@ -135,6 +152,8 @@ class Entry {
       columnEntryComment: comment,
       columnEntryVaultId: vaultId,
       columnEntryCategoryId: categoryId,
+      columnEntryPasswordSize: passwordSize,
+      columnEntryHashUpdatedAt: hashUpdatedAt,
       columnCreatedAt: createdAtString,
       columnUpdatedAt: updatedAtString,
       columnDeletedAt: deletedAtString,

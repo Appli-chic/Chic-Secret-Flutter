@@ -1,5 +1,9 @@
 import 'package:chic_secret/localization/app_translations.dart';
+import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/entry_service.dart';
+import 'package:chic_secret/ui/component/security_item.dart';
+import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +15,39 @@ class SecurityScreen extends StatefulWidget {
 }
 
 class _SecurityScreenState extends State<SecurityScreen> {
+  List<Entry> _duplicatedEntries = [];
+  List<Entry> _oldEntries = [];
+
+  @override
+  void initState() {
+    _checkPasswordSecurity();
+    super.initState();
+  }
+
+  /// Check the security of all the entries
+  _checkPasswordSecurity() async {
+    var entries = await EntryService.getAllByVault(selectedVault!.id);
+
+    for (var entry in entries) {
+      // Get duplicated entries
+      var hasSamePassword =
+          entries.where((e) => e.hash == entry.hash).isNotEmpty;
+
+      if (hasSamePassword) {
+        _duplicatedEntries.add(entry);
+      }
+
+      // Get old entries
+      var isOld = DateTime.now().difference(entry.updatedAt).inDays > 365;
+
+      if (isOld) {
+        _oldEntries.add(entry);
+      }
+    }
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
@@ -21,7 +58,6 @@ class _SecurityScreenState extends State<SecurityScreen> {
         backgroundColor: themeProvider.secondBackgroundColor,
         brightness: themeProvider.getBrightness(),
         title: Text(AppTranslations.of(context).text("security")),
-        actions: [],
       ),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -29,30 +65,25 @@ class _SecurityScreenState extends State<SecurityScreen> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: Container(
-          height: double.maxFinite,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.sentiment_dissatisfied,
-                  color: themeProvider.secondTextColor,
-                  size: 60,
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 8),
-                  child: Text(
-                    "In Development",
-                    style: TextStyle(
-                      color: themeProvider.secondTextColor,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                )
-              ],
-            ),
+          margin: EdgeInsets.only(top: 8),
+          child: Column(
+            children: [
+              SecurityItem(
+                number: 10,
+                title: AppTranslations.of(context).text("weak_passwords"),
+                color: Colors.red,
+              ),
+              SecurityItem(
+                number: _oldEntries.length,
+                title: AppTranslations.of(context).text("old_passwords"),
+                color: Colors.deepOrange,
+              ),
+              SecurityItem(
+                number: _duplicatedEntries.length,
+                title: AppTranslations.of(context).text("duplicated_passwords"),
+                color: Colors.orange,
+              ),
+            ],
           ),
         ),
       ),

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 import 'package:sqflite/sqflite.dart';
@@ -7,7 +8,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:path/path.dart';
 
-const int version = 2;
+const int version = 3;
 late Database db;
 
 /// Init the local database for all the platforms
@@ -43,6 +44,11 @@ _onUpgrade(Database db, int oldVersion, int newVersion) async {
 
   if (oldVersion <= 1) {
     batch.execute(createUserTable);
+  } else if (oldVersion <= 2) {
+    batch.execute(
+        "ALTER TABLE $entryTable ADD $columnEntryPasswordSize INTEGER");
+    batch.execute(
+        "ALTER TABLE $entryTable ADD $columnEntryHashUpdatedAt DATETIME");
   }
 
   await batch.commit();

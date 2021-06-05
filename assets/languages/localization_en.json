@@ -86,7 +86,9 @@
   "authenticate_to_unlock": "Please authenticate to unlock your vault",
   "language": "Language",
   "logout": "Logout",
-
+  "weak_passwords": "Weak Passwords",
+  "old_passwords": "Old Passwords",
+  "duplicated_passwords": "Duplicated Passwords",
 
   "general": "General",
   "email": "Email",
