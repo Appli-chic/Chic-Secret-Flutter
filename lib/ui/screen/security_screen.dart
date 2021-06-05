@@ -15,8 +15,9 @@ class SecurityScreen extends StatefulWidget {
 }
 
 class _SecurityScreenState extends State<SecurityScreen> {
-  List<Entry> _duplicatedEntries = [];
+  List<Entry> _weakPasswordEntries = [];
   List<Entry> _oldEntries = [];
+  List<Entry> _duplicatedEntries = [];
 
   @override
   void initState() {
@@ -29,19 +30,30 @@ class _SecurityScreenState extends State<SecurityScreen> {
     var entries = await EntryService.getAllByVault(selectedVault!.id);
 
     for (var entry in entries) {
+      // Get weak passwords
+      if (entry.passwordSize != null && entry.passwordSize! <= 6) {
+        _weakPasswordEntries.add(entry);
+      }
+
+      // Get old entries
+      var isOld = DateTime.now().difference(entry.updatedAt).inDays > 365 ||
+          DateTime.now()
+                  .difference(entry.hashUpdatedAt != null
+                      ? entry.hashUpdatedAt!
+                      : DateTime.now())
+                  .inDays >
+              365;
+
+      if (isOld) {
+        _oldEntries.add(entry);
+      }
+
       // Get duplicated entries
       var hasSamePassword =
           entries.where((e) => e.hash == entry.hash).isNotEmpty;
 
       if (hasSamePassword) {
         _duplicatedEntries.add(entry);
-      }
-
-      // Get old entries
-      var isOld = DateTime.now().difference(entry.updatedAt).inDays > 365;
-
-      if (isOld) {
-        _oldEntries.add(entry);
       }
     }
 
@@ -69,7 +81,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
           child: Column(
             children: [
               SecurityItem(
-                number: 10,
+                number: _weakPasswordEntries.length,
                 title: AppTranslations.of(context).text("weak_passwords"),
                 color: Colors.red,
               ),

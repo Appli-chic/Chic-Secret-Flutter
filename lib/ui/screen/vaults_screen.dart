@@ -7,6 +7,7 @@ import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
+import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
 import 'package:chic_secret/ui/component/category_item.dart';
@@ -291,6 +292,20 @@ class _VaultsScreenState extends State<VaultsScreen> {
                 selectedVault = vault;
                 currentPassword = unlockingPassword;
 
+                // Set the entry length if they don't have one
+                var entriesWithoutPasswordLength =
+                    await EntryService.getEntriesWithoutPasswordLength();
+
+                Future(() async {
+                  for (var entry in entriesWithoutPasswordLength) {
+                    var password =
+                        Security.decrypt(currentPassword!, entry.hash);
+
+                    entry.passwordSize = password.length;
+                    await EntryService.update(entry);
+                  }
+                });
+
                 // Reload the data for this vault
                 widget.onVaultChange();
                 _loadCategories();
@@ -465,6 +480,21 @@ class _VaultsScreenState extends State<VaultsScreen> {
             if (unlockingPassword != null) {
               selectedVault = vault;
               currentPassword = unlockingPassword;
+
+              // Set the entry length if they don't have one
+              var entriesWithoutPasswordLength =
+                  await EntryService.getEntriesWithoutPasswordLength();
+
+              Future(() async {
+                for (var entry in entriesWithoutPasswordLength) {
+                  var password = Security.decrypt(currentPassword!, entry.hash);
+
+                  entry.passwordSize = password.length;
+                  await EntryService.update(entry);
+                }
+              });
+
+              // Move to the main screen
               await ChicNavigator.push(context, MainMobileScreen());
 
               _isUserLogged();

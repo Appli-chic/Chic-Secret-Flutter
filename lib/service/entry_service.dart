@@ -13,8 +13,8 @@ import 'package:sqflite/sqflite.dart';
 
 const entryGeneralSelect = """
 SELECT DISTINCT e.$columnId, e.$columnEntryName, e.$columnEntryUsername, e.$columnEntryHash,
-e.$columnEntryComment, e.$columnEntryVaultId, e.$columnEntryCategoryId, e.$columnCreatedAt, 
-e.$columnUpdatedAt, e.$columnDeletedAt, 
+e.$columnEntryComment, e.$columnEntryVaultId, e.$columnEntryCategoryId, e.$columnEntryPasswordSize, 
+e.$columnEntryHashUpdatedAt, e.$columnCreatedAt, e.$columnUpdatedAt, e.$columnDeletedAt, 
 
 c.$columnId as c_$columnId, 
 c.$columnCategoryName as c_$columnCategoryName, c.$columnCategoryColor as c_$columnCategoryColor, 
@@ -193,6 +193,18 @@ class EntryService {
     }
 
     return entries;
+  }
+
+  /// Get all the entries that don't have a password length defined
+  static Future<List<Entry>> getEntriesWithoutPasswordLength() async {
+    List<Map<String, dynamic>> maps = await db.query(
+      entryTable,
+      where: "$columnEntryPasswordSize IS NULL ",
+    );
+
+    return List.generate(maps.length, (i) {
+      return Entry.fromMap(maps[i]);
+    });
   }
 
   /// Get all the entries to synchronize from the locale database to the server
