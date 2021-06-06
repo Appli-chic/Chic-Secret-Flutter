@@ -29,7 +29,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
   _checkPasswordSecurity() async {
     var entries = await EntryService.getAllByVault(selectedVault!.id);
 
-    for (var entry in entries) {
+    for (var entry in entries.where((e) => e.deletedAt == null)) {
       // Get weak passwords
       if (entry.passwordSize != null && entry.passwordSize! <= 6) {
         _weakPasswordEntries.add(entry);

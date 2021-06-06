@@ -298,11 +298,15 @@ class _VaultsScreenState extends State<VaultsScreen> {
 
                 Future(() async {
                   for (var entry in entriesWithoutPasswordLength) {
-                    var password =
-                        Security.decrypt(currentPassword!, entry.hash);
+                    try {
+                      var password =
+                          Security.decrypt(currentPassword!, entry.hash);
 
-                    entry.passwordSize = password.length;
-                    await EntryService.update(entry);
+                      entry.passwordSize = password.length;
+                      await EntryService.update(entry);
+                    } catch (e) {
+                      print(e);
+                    }
                   }
                 });
 
@@ -487,10 +491,15 @@ class _VaultsScreenState extends State<VaultsScreen> {
 
               Future(() async {
                 for (var entry in entriesWithoutPasswordLength) {
-                  var password = Security.decrypt(currentPassword!, entry.hash);
+                  try {
+                    var password =
+                        Security.decrypt(currentPassword!, entry.hash);
 
-                  entry.passwordSize = password.length;
-                  await EntryService.update(entry);
+                    entry.passwordSize = password.length;
+                    await EntryService.update(entry);
+                  } catch (e) {
+                    print(e);
+                  }
                 }
               });
 
