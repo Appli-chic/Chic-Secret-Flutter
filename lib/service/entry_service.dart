@@ -199,7 +199,7 @@ class EntryService {
   static Future<List<Entry>> getEntriesWithoutPasswordLength() async {
     List<Map<String, dynamic>> maps = await db.query(
       entryTable,
-      where: "$columnEntryPasswordSize IS NULL ",
+      where: "$columnEntryPasswordSize IS NULL AND $columnDeletedAt IS NULL ",
     );
 
     return List.generate(maps.length, (i) {

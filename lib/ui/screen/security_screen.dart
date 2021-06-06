@@ -1,9 +1,8 @@
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/ui/component/security_item.dart';
-import 'package:chic_secret/ui/screen/vaults_screen.dart';
+import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,36 +26,11 @@ class _SecurityScreenState extends State<SecurityScreen> {
 
   /// Check the security of all the entries
   _checkPasswordSecurity() async {
-    var entries = await EntryService.getAllByVault(selectedVault!.id);
+    var data = await Security.retrievePasswordsSecurityInfo();
 
-    for (var entry in entries.where((e) => e.deletedAt == null)) {
-      // Get weak passwords
-      if (entry.passwordSize != null && entry.passwordSize! <= 6) {
-        _weakPasswordEntries.add(entry);
-      }
-
-      // Get old entries
-      var isOld = DateTime.now().difference(entry.updatedAt).inDays > 365 ||
-          DateTime.now()
-                  .difference(entry.hashUpdatedAt != null
-                      ? entry.hashUpdatedAt!
-                      : DateTime.now())
-                  .inDays >
-              365;
-
-      if (isOld) {
-        _oldEntries.add(entry);
-      }
-
-      // Get duplicated entries
-      var hasSamePassword =
-          entries.where((e) => e.hash == entry.hash).isNotEmpty;
-
-      if (hasSamePassword) {
-        _duplicatedEntries.add(entry);
-      }
-    }
-
+    _weakPasswordEntries = data.item1;
+    _oldEntries = data.item2;
+    _duplicatedEntries = data.item3;
     setState(() {});
   }
 

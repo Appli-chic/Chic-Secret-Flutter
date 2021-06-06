@@ -1,11 +1,15 @@
 import 'dart:collection';
 import 'dart:convert';
 
+import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/user.dart';
 import 'package:chic_secret/model/database/vault.dart';
+import 'package:chic_secret/service/entry_service.dart';
+import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tuple/tuple.dart';
 
 const String refreshTokenKey = "refreshTokenKey";
 const String accessTokenKey = "accessTokenKey";
@@ -25,6 +29,49 @@ class Security {
     var encrypter = Encrypter(AES(Key.fromUtf8(encryptionKey)));
     var encrypted = Encrypted.fromBase64(message);
     return encrypter.decrypt(encrypted, iv: IV.fromUtf8(key));
+  }
+
+  /// Retrieve the weak passwords, old passwords and duplicated passwords
+  static Future<Tuple3<List<Entry>, List<Entry>, List<Entry>>>
+      retrievePasswordsSecurityInfo() async {
+    List<Entry> weakPasswordEntries = [];
+    List<Entry> oldEntries = [];
+    List<Entry> duplicatedEntries = [];
+
+    if (selectedVault != null) {
+      var entries = await EntryService.getAllByVault(selectedVault!.id);
+
+      for (var entry in entries.where((e) => e.deletedAt == null)) {
+        // Get weak passwords
+        if (entry.passwordSize != null && entry.passwordSize! <= 6) {
+          weakPasswordEntries.add(entry);
+        }
+
+        // Get old entries
+        var isOld = DateTime.now().difference(entry.updatedAt).inDays > 365 ||
+            DateTime.now()
+                    .difference(entry.hashUpdatedAt != null
+                        ? entry.hashUpdatedAt!
+                        : DateTime.now())
+                    .inDays >
+                365;
+
+        if (isOld) {
+          oldEntries.add(entry);
+        }
+
+        // Get duplicated entries
+        var hasSamePassword = entries
+            .where((e) => e.hash == entry.hash && e.id != entry.id)
+            .isNotEmpty;
+
+        if (hasSamePassword) {
+          duplicatedEntries.add(entry);
+        }
+      }
+    }
+
+    return Tuple3(weakPasswordEntries, oldEntries, duplicatedEntries);
   }
 
   /// Add the password in the shared preferences to unlock the vault

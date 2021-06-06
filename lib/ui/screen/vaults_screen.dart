@@ -207,6 +207,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
       _loadVaults();
       _loadCategories();
       _loadTags();
+      _checkPasswordSecurity();
     }
   }
 
@@ -226,6 +227,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
       if (ChicPlatform.isDesktop()) {
         _loadCategories();
         _loadTags();
+        _checkPasswordSecurity();
       }
     }
   }
@@ -311,6 +313,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
                 });
 
                 // Reload the data for this vault
+                _checkPasswordSecurity();
                 widget.onVaultChange();
                 _loadCategories();
                 _loadTags();
@@ -628,5 +631,11 @@ class _VaultsScreenState extends State<VaultsScreen> {
     );
 
     return unlockingPassword;
+  }
+
+  /// Check the security of all the entries
+  _checkPasswordSecurity() async {
+    var data = await Security.retrievePasswordsSecurityInfo();
+    setState(() {});
   }
 }
