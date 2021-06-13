@@ -6,11 +6,13 @@ class SecurityItem extends StatelessWidget {
   final String title;
   final Color color;
   final int number;
+  final Function(String) onTap;
 
   const SecurityItem({
     required this.title,
     required this.color,
     required this.number,
+    required this.onTap,
   });
 
   @override
@@ -23,6 +25,9 @@ class SecurityItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(6.0),
       ),
       child: ListTile(
+        onTap: () {
+          onTap(title);
+        },
         contentPadding: EdgeInsets.only(top: 3, bottom: 3, left: 12, right: 12),
         leading: Container(
           width: 40,

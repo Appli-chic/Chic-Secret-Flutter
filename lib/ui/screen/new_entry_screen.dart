@@ -709,6 +709,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
           comment: _commentController.text,
           vaultId: selectedVault!.id,
           categoryId: _category!.id,
+          passwordSize: _passwordController.text.length,
           createdAt: widget.entry!.createdAt,
           updatedAt: DateTime.now(),
         );
@@ -725,6 +726,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
           comment: _commentController.text,
           vaultId: selectedVault!.id,
           categoryId: _category!.id,
+          passwordSize: _passwordController.text.length,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         );

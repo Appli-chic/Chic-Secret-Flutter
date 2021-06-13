@@ -1,7 +1,9 @@
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/security_item.dart';
+import 'package:chic_secret/ui/screen/security_entry_screen.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -58,21 +60,29 @@ class _SecurityScreenState extends State<SecurityScreen> {
                 number: _weakPasswordEntries.length,
                 title: AppTranslations.of(context).text("weak_passwords"),
                 color: Colors.red,
+                onTap: _onSecurityItemClicked,
               ),
               SecurityItem(
                 number: _oldEntries.length,
                 title: AppTranslations.of(context).text("old_passwords"),
                 color: Colors.deepOrange,
+                onTap: _onSecurityItemClicked,
               ),
               SecurityItem(
                 number: _duplicatedEntries.length,
                 title: AppTranslations.of(context).text("duplicated_passwords"),
                 color: Colors.orange,
+                onTap: _onSecurityItemClicked,
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  /// Displays the list of elements to change for security purposes
+  _onSecurityItemClicked(String title) async {
+    await ChicNavigator.push(context, SecurityEntryScreen(title: title));
   }
 }
