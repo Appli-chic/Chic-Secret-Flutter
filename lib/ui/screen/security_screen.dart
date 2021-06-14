@@ -57,18 +57,21 @@ class _SecurityScreenState extends State<SecurityScreen> {
           child: Column(
             children: [
               SecurityItem(
+                securityIndex: 1,
                 number: _weakPasswordEntries.length,
                 title: AppTranslations.of(context).text("weak_passwords"),
                 color: Colors.red,
                 onTap: _onSecurityItemClicked,
               ),
               SecurityItem(
+                securityIndex: 2,
                 number: _oldEntries.length,
                 title: AppTranslations.of(context).text("old_passwords"),
                 color: Colors.deepOrange,
                 onTap: _onSecurityItemClicked,
               ),
               SecurityItem(
+                securityIndex: 3,
                 number: _duplicatedEntries.length,
                 title: AppTranslations.of(context).text("duplicated_passwords"),
                 color: Colors.orange,
@@ -82,7 +85,10 @@ class _SecurityScreenState extends State<SecurityScreen> {
   }
 
   /// Displays the list of elements to change for security purposes
-  _onSecurityItemClicked(String title) async {
-    await ChicNavigator.push(context, SecurityEntryScreen(title: title));
+  _onSecurityItemClicked(String title, int securityIndex) async {
+    await ChicNavigator.push(context,
+        SecurityEntryScreen(title: title, securityIndex: securityIndex));
+
+    _checkPasswordSecurity();
   }
 }

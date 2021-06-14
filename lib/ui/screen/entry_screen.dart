@@ -83,8 +83,10 @@ class _EntryScreenState extends State<EntryScreen>
   }
 
   /// Load the list of passwords linked to the current vault
-  _loadPassword() async {
-    _searchController.clear();
+  _loadPassword({bool isClearingSearch = true}) async {
+    if (isClearingSearch) {
+      _searchController.clear();
+    }
 
     if (selectedVault != null) {
       String? categoryId;
@@ -333,7 +335,7 @@ class _EntryScreenState extends State<EntryScreen>
         }
       } else {
         await ChicNavigator.push(context, EntryDetailScreen(entry: entry));
-        _loadPassword();
+        _loadPassword(isClearingSearch: false);
       }
 
       setState(() {});

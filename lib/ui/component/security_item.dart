@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SecurityItem extends StatelessWidget {
+  final int securityIndex;
   final String title;
   final Color color;
   final int number;
-  final Function(String) onTap;
+  final Function(String, int) onTap;
 
   const SecurityItem({
+    required this.securityIndex,
     required this.title,
     required this.color,
     required this.number,
@@ -26,7 +28,7 @@ class SecurityItem extends StatelessWidget {
       ),
       child: ListTile(
         onTap: () {
-          onTap(title);
+          onTap(title, securityIndex);
         },
         contentPadding: EdgeInsets.only(top: 3, bottom: 3, left: 12, right: 12),
         leading: Container(
