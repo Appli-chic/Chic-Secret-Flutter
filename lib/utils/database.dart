@@ -40,18 +40,22 @@ Future<void> initDatabase() async {
 
 /// Execute scripts to upgrade the database
 _onUpgrade(Database db, int oldVersion, int newVersion) async {
-  var batch = db.batch();
+  try {
+    var batch = db.batch();
 
-  if (oldVersion <= 1) {
-    batch.execute(createUserTable);
-  } else if (oldVersion <= 2) {
-    batch.execute(
-        "ALTER TABLE $entryTable ADD $columnEntryPasswordSize INTEGER");
-    batch.execute(
-        "ALTER TABLE $entryTable ADD $columnEntryHashUpdatedAt DATETIME");
+    if (oldVersion <= 1) {
+      batch.execute(createUserTable);
+    } else if (oldVersion <= 2) {
+      batch.execute(
+          "ALTER TABLE $entryTable ADD $columnEntryPasswordSize INTEGER");
+      batch.execute(
+          "ALTER TABLE $entryTable ADD $columnEntryHashUpdatedAt DATETIME");
+    }
+
+    await batch.commit();
+  } catch (e) {
+    print(e);
   }
-
-  await batch.commit();
 }
 
 /// Execute the scripts to create the database structure
