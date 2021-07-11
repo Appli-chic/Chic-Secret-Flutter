@@ -109,6 +109,7 @@ Future<ImportData> _importFromButtercup(List<String> lines) async {
           hash: hash,
           vaultId: selectedVault!.id,
           categoryId: categoriesMap[cells[1]]!,
+          passwordSize: hash.length,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         );

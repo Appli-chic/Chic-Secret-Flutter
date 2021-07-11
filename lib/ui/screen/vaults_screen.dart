@@ -310,11 +310,14 @@ class _VaultsScreenState extends State<VaultsScreen> {
                           Security.decrypt(currentPassword!, entry.hash);
 
                       entry.passwordSize = password.length;
+                      entry.updatedAt = DateTime.now();
                       await EntryService.update(entry);
                     } catch (e) {
                       print(e);
                     }
                   }
+
+                  _checkPasswordSecurity();
                 });
 
                 // Reload the data for this vault
@@ -528,11 +531,14 @@ class _VaultsScreenState extends State<VaultsScreen> {
                         Security.decrypt(currentPassword!, entry.hash);
 
                     entry.passwordSize = password.length;
+                    entry.updatedAt = DateTime.now();
                     await EntryService.update(entry);
                   } catch (e) {
                     print(e);
                   }
                 }
+
+                _checkPasswordSecurity();
               });
 
               // Move to the main screen
