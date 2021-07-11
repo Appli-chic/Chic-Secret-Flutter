@@ -19,6 +19,9 @@ class CategoryItem extends StatefulWidget {
   final Function(Category?) onTap;
   final bool isForcingMobileStyle;
   final Function()? onCategoryChanged;
+  final int nbWeakPasswords;
+  final int nbOldPasswords;
+  final int nbDuplicatedPasswords;
 
   CategoryItem({
     this.category,
@@ -26,6 +29,9 @@ class CategoryItem extends StatefulWidget {
     required this.onTap,
     this.isForcingMobileStyle = false,
     this.onCategoryChanged,
+    this.nbWeakPasswords = 0,
+    this.nbOldPasswords = 0,
+    this.nbDuplicatedPasswords = 0,
   });
 
   @override
@@ -143,7 +149,7 @@ class _CategoryItemState extends State<CategoryItem> {
                         : themeProvider.secondTextColor,
                     size: 13,
                   ),
-                  Flexible(
+                  Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(left: 8),
                       child: Text(
@@ -162,12 +168,82 @@ class _CategoryItemState extends State<CategoryItem> {
                       ),
                     ),
                   ),
+                  _displaySecurity(),
                 ],
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  /// Displays the number of entries that are too old, duplicated or weak passwords
+  Widget _displaySecurity() {
+    Widget weakPassword = SizedBox.shrink();
+    Widget oldPassword = SizedBox.shrink();
+    Widget duplicatedPassword = SizedBox.shrink();
+
+    if (widget.nbWeakPasswords > 0) {
+      weakPassword = Container(
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
+        padding: EdgeInsets.only(left: 4, right: 4),
+        margin: EdgeInsets.only(left: 4),
+        child: Text(
+          widget.nbWeakPasswords.toString(),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+          ),
+        ),
+      );
+    }
+
+    if (widget.nbOldPasswords > 0) {
+      oldPassword = Container(
+        decoration: BoxDecoration(
+          color: Colors.deepOrange,
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
+        padding: EdgeInsets.only(left: 4, right: 4),
+        margin: EdgeInsets.only(left: 4),
+        child: Text(
+          widget.nbOldPasswords.toString(),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+          ),
+        ),
+      );
+    }
+
+    if (widget.nbDuplicatedPasswords > 0) {
+      duplicatedPassword = Container(
+        decoration: BoxDecoration(
+          color: Colors.orange,
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
+        padding: EdgeInsets.only(left: 4, right: 4),
+        margin: EdgeInsets.only(left: 4),
+        child: Text(
+          widget.nbDuplicatedPasswords.toString(),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+          ),
+        ),
+      );
+    }
+
+    return Row(
+      children: [
+        weakPassword,
+        oldPassword,
+        duplicatedPassword,
+      ],
     );
   }
 

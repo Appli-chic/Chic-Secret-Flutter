@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
+import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
@@ -73,6 +74,10 @@ class _VaultsScreenState extends State<VaultsScreen> {
   List<Vault> _vaults = [];
   List<Category> _categories = [];
   List<Tag> _tags = [];
+
+  List<Entry> _weakPasswordEntries = [];
+  List<Entry> _oldEntries = [];
+  List<Entry> _duplicatedEntries = [];
 
   @override
   void initState() {
@@ -363,6 +368,9 @@ class _VaultsScreenState extends State<VaultsScreen> {
               // Add a "Fake" category to display all the passwords
               return CategoryItem(
                 isSelected: selectedCategory == null,
+                nbWeakPasswords: _weakPasswordEntries.length,
+                nbOldPasswords: _oldEntries.length,
+                nbDuplicatedPasswords: _duplicatedEntries.length,
                 onTap: (Category? category) {
                   selectedCategory = category;
 
@@ -378,6 +386,27 @@ class _VaultsScreenState extends State<VaultsScreen> {
                 category: _categories[index - 1],
                 isSelected: selectedCategory != null &&
                     selectedCategory!.id == _categories[index - 1].id,
+                nbWeakPasswords: !_categories[index - 1].isTrash
+                    ? _weakPasswordEntries
+                        .where(
+                            (e) => e.category?.id == _categories[index - 1].id)
+                        .toList()
+                        .length
+                    : 0,
+                nbOldPasswords: !_categories[index - 1].isTrash
+                    ? _oldEntries
+                        .where(
+                            (e) => e.category?.id == _categories[index - 1].id)
+                        .toList()
+                        .length
+                    : 0,
+                nbDuplicatedPasswords: !_categories[index - 1].isTrash
+                    ? _duplicatedEntries
+                        .where(
+                            (e) => e.category?.id == _categories[index - 1].id)
+                        .toList()
+                        .length
+                    : 0,
                 onTap: (Category? category) {
                   selectedCategory = category;
 
@@ -636,6 +665,11 @@ class _VaultsScreenState extends State<VaultsScreen> {
   /// Check the security of all the entries
   _checkPasswordSecurity() async {
     var data = await Security.retrievePasswordsSecurityInfo();
+
+    _weakPasswordEntries = data.item1;
+    _oldEntries = data.item2;
+    _duplicatedEntries = data.item3;
+
     setState(() {});
   }
 }
