@@ -16,6 +16,7 @@ import 'package:chic_secret/ui/screen/new_entry_screen.dart';
 import 'package:chic_secret/ui/screen/select_category_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -56,6 +57,10 @@ class _EntryScreenState extends State<EntryScreen>
   List<Entry> _entries = [];
   Entry? _selectedEntry;
   List<Entry> _selectedEntries = [];
+
+  List<Entry> _weakPasswordEntries = [];
+  List<Entry> _oldEntries = [];
+  List<Entry> _duplicatedEntries = [];
 
   final _searchController = TextEditingController();
   FocusNode _searchFocusNode = FocusNode();
@@ -113,6 +118,8 @@ class _EntryScreenState extends State<EntryScreen>
       );
       setState(() {});
     }
+
+    _checkPasswordSecurity();
   }
 
   /// Search the entries that have a field containing the text
@@ -231,6 +238,15 @@ class _EntryScreenState extends State<EntryScreen>
                   onMovingEntryToTrash: _onMovingEntryToTrash,
                   onMovingToCategory: _onMovingToCategory,
                   isControlKeyDown: _isControlKeyDown,
+                  isWeakPassword: _weakPasswordEntries
+                      .where((e) => e.id == _entries[index].id)
+                      .isNotEmpty,
+                  isOldPassword: _oldEntries
+                      .where((e) => e.id == _entries[index].id)
+                      .isNotEmpty,
+                  isDuplicatedPassword: _duplicatedEntries
+                      .where((e) => e.id == _entries[index].id)
+                      .isNotEmpty,
                 );
               },
             ),
@@ -597,6 +613,17 @@ class _EntryScreenState extends State<EntryScreen>
       _synchronizationProvider.synchronize();
       _loadPassword();
     }
+  }
+
+  /// Check the security of all the entries
+  _checkPasswordSecurity() async {
+    var data = await Security.retrievePasswordsSecurityInfo();
+
+    _weakPasswordEntries = data.item1;
+    _oldEntries = data.item2;
+    _duplicatedEntries = data.item3;
+
+    setState(() {});
   }
 
   @override

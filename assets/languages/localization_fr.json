@@ -89,7 +89,9 @@
   "weak_passwords": "Faibles mots de passe",
   "old_passwords": "Vieux mots de passe",
   "duplicated_passwords": "Mots de passe dupliqués",
-
+  "old": "Vieux",
+  "weak": "Faible",
+  "duplicated": "Dupliqué",
   "general": "Général",
   "email": "Courriel",
   "music": "Musique",

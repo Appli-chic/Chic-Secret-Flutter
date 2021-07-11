@@ -14,6 +14,9 @@ class EntryItem extends StatefulWidget {
   final Function(Entry)? onMovingEntryToTrash;
   final Function(Entry)? onMovingToCategory;
   final bool isControlKeyDown;
+  final bool isWeakPassword;
+  final bool isOldPassword;
+  final bool isDuplicatedPassword;
 
   EntryItem({
     required this.entry,
@@ -22,6 +25,9 @@ class EntryItem extends StatefulWidget {
     this.onMovingEntryToTrash,
     this.onMovingToCategory,
     this.isControlKeyDown = false,
+    this.isWeakPassword = false,
+    this.isOldPassword = false,
+    this.isDuplicatedPassword = false,
   });
 
   @override
@@ -58,7 +64,7 @@ class _EntryItemState extends State<EntryItem> {
             contentPadding:
                 EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
             onTap: () {
-              if(widget.isControlKeyDown) {
+              if (widget.isControlKeyDown) {
                 _onSecondaryClick(context, themeProvider);
               } else {
                 widget.onTap(widget.entry);
@@ -99,10 +105,88 @@ class _EntryItemState extends State<EntryItem> {
                 ),
               ),
             ),
+            trailing: _onDisplaySecurityInfo(),
           ),
         ),
       ),
     );
+  }
+
+  /// Displays if the password is old, weak or duplicated
+  Widget _onDisplaySecurityInfo() {
+    bool hasSecurityInfo = false;
+    Widget weakPassword = SizedBox.shrink();
+    Widget oldPassword = SizedBox.shrink();
+    Widget duplicatedPassword = SizedBox.shrink();
+
+    if (widget.isWeakPassword) {
+      hasSecurityInfo = true;
+
+      weakPassword = Container(
+        margin: EdgeInsets.only(left: 4),
+        child: Chip(
+          backgroundColor: Colors.red,
+          label: Text(
+            AppTranslations.of(context).text("weak"),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+            ),
+          ),
+          labelPadding: EdgeInsets.only(left: 4, right: 4),
+        ),
+      );
+    }
+
+    if (widget.isOldPassword) {
+      hasSecurityInfo = true;
+
+      oldPassword = Container(
+        margin: EdgeInsets.only(left: 4),
+        child: Chip(
+          backgroundColor: Colors.deepOrange,
+          label: Text(
+            AppTranslations.of(context).text("old"),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+            ),
+          ),
+          labelPadding: EdgeInsets.only(left: 4, right: 4),
+        ),
+      );
+    }
+
+    if (widget.isDuplicatedPassword) {
+      hasSecurityInfo = true;
+
+      duplicatedPassword = Container(
+        margin: EdgeInsets.only(left: 4),
+        child: Chip(
+          backgroundColor: Colors.orange,
+          label: Text(
+            AppTranslations.of(context).text("duplicated"),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+            ),
+          ),
+          labelPadding: EdgeInsets.only(left: 4, right: 4),
+        ),
+      );
+    }
+
+    if (hasSecurityInfo) {
+      return Wrap(
+        children: [
+          weakPassword,
+          oldPassword,
+          duplicatedPassword,
+        ],
+      );
+    } else {
+      return SizedBox.shrink();
+    }
   }
 
   /// Show a menu when the user do a right click on the entry

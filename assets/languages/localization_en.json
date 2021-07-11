@@ -89,7 +89,9 @@
   "weak_passwords": "Weak Passwords",
   "old_passwords": "Old Passwords",
   "duplicated_passwords": "Duplicated Passwords",
-
+  "old": "Old",
+  "weak": "Weak",
+  "duplicated": "Duplicated",
   "general": "General",
   "email": "Email",
   "music": "Music",
