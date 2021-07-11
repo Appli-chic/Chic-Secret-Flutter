@@ -282,6 +282,15 @@ class _EntryScreenState extends State<EntryScreen>
           return EntryItem(
             entry: _entries[index],
             isSelected: false,
+            isWeakPassword: _weakPasswordEntries
+                .where((e) => e.id == _entries[index].id)
+                .isNotEmpty,
+            isOldPassword: _oldEntries
+                .where((e) => e.id == _entries[index].id)
+                .isNotEmpty,
+            isDuplicatedPassword: _duplicatedEntries
+                .where((e) => e.id == _entries[index].id)
+                .isNotEmpty,
             onTap: _onEntrySelected,
           );
         },
