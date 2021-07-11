@@ -170,6 +170,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     return Scaffold(
       body: SplitView(
         gripColor: themeProvider.divider,
+        positionLimit: 200,
         view1: VaultsScreen(
           onVaultChange: _reloadPasswordScreenOnVaultChange,
           onCategoryChange: _reloadPasswordScreenOnCategoryChange,
@@ -178,6 +179,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
         ),
         view2: SplitView(
           gripColor: themeProvider.divider,
+          positionLimit: 300,
           view1: EntryScreen(
             passwordScreenController: _entryScreenController,
             reloadCategories: _reloadCategories,
