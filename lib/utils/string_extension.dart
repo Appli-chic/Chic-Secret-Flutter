@@ -1,8 +1,7 @@
 extension StringExtension on String {
-
   /// Capitalize the last character of a string
   String capitalizeLast() {
-    return "${this.substring(0, length - 2)}${this[length - 1].toUpperCase()}";
+    return "${this.substring(0, length - 1)}${this[length - 1].toUpperCase()}";
   }
 
   /// Capitalize the first character of a string
