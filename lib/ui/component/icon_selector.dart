@@ -36,8 +36,7 @@ class IconSelector extends StatefulWidget {
 class _IconSelectorState extends State<IconSelector> {
   IconData _icon = icons[0];
   List<IconData> _icons = icons.toList();
-  var _crossAxisSize = ChicPlatform.isDesktop() ? 9 : 6;
-  var _iconsListSize = ChicPlatform.isDesktop() ? 18 : 12;
+  var _iconsListSize = 6;
 
   @override
   void initState() {
@@ -65,69 +64,106 @@ class _IconSelectorState extends State<IconSelector> {
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+    var shortestSide = MediaQuery.of(context).size.shortestSide;
+    double size = 24;
 
-    return GridView.count(
-      physics: BouncingScrollPhysics(),
-      shrinkWrap: true,
-      crossAxisCount: _crossAxisSize,
-      children: List.generate(_iconsListSize, (index) {
-        if (index != _iconsListSize - 1) {
-          return _displayIcon(
-            index,
-            _icon,
-            _icons,
-            widget.color,
-            (IconData icon) {
-              widget.onIconSelected(icon);
-              setState(() {
-                _icon = icon;
-              });
-            },
-            themeProvider,
-          );
-        } else {
-          return MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext context) {
-                    return IconPickerDialog(
-                      color: widget.color,
-                      icon: _icon,
-                      onIconChanged: (IconData icon) {
-                        if (_icons.indexOf(icon) > _iconsListSize - 2 ||
-                            _icons.indexOf(icon) == -1) {
-                          _icons[0] = icon;
-                        }
+    if (ChicPlatform.isDesktop()) {
+      _iconsListSize = 9;
+    } else if (shortestSide > 600) {
+      _iconsListSize = 12;
+    }
 
-                        widget.onIconSelected(icon);
-                        setState(() {
-                          _icon = icon;
-                        });
+    if (!ChicPlatform.isDesktop() && shortestSide > 600) {
+      size = 38;
+    }
+
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List.generate(_iconsListSize, (index) {
+            return _displayIcon(
+              context,
+              index,
+              _icon,
+              _icons,
+              widget.color,
+              (IconData icon) {
+                widget.onIconSelected(icon);
+                setState(() {
+                  _icon = icon;
+                });
+              },
+              themeProvider,
+            );
+          }),
+        ),
+        SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List.generate(_iconsListSize, (index) {
+            if (index + _iconsListSize != _iconsListSize * 2 - 1) {
+              return _displayIcon(
+                context,
+                index + _iconsListSize,
+                _icon,
+                _icons,
+                widget.color,
+                (IconData icon) {
+                  widget.onIconSelected(icon);
+                  setState(() {
+                    _icon = icon;
+                  });
+                },
+                themeProvider,
+              );
+            } else {
+              return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) {
+                        return IconPickerDialog(
+                          color: widget.color,
+                          icon: _icon,
+                          onIconChanged: (IconData icon) {
+                            if (_icons.indexOf(icon) > _iconsListSize * 2 - 2 ||
+                                _icons.indexOf(icon) == -1) {
+                              _icons[0] = icon;
+                            }
+
+                            widget.onIconSelected(icon);
+                            setState(() {
+                              _icon = icon;
+                            });
+                          },
+                        );
                       },
                     );
                   },
-                );
-              },
-              child: Container(
-                margin: EdgeInsets.all(10),
-                child: ClipOval(
                   child: Container(
-                    color: themeProvider.textColor,
-                    child: Icon(
-                      Icons.add,
-                      color: themeProvider.backgroundColor,
+                    width: size,
+                    height: size,
+                    margin: EdgeInsets.all(8),
+                    child: ClipOval(
+                      child: Container(
+                        color: themeProvider.textColor,
+                        child: Icon(
+                          Icons.add,
+                          color: themeProvider.backgroundColor,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          );
-        }
-      }),
+              );
+            }
+          }),
+        ),
+      ],
     );
   }
 }
@@ -159,6 +195,17 @@ class _IconPickerDialogState extends State<IconPickerDialog> {
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+    var shortestSide = MediaQuery.of(context).size.shortestSide;
+    double width = 320;
+    var cells = 4;
+
+    if (ChicPlatform.isDesktop()) {
+      width = 500;
+      cells = 7;
+    } else if (shortestSide > 600) {
+      width = 600;
+      cells = 8;
+    }
 
     return AlertDialog(
       title: Text(
@@ -172,13 +219,14 @@ class _IconPickerDialogState extends State<IconPickerDialog> {
         borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       content: Container(
-        width: 320,
+        width: width,
         height: 460,
         child: GridView.count(
           physics: BouncingScrollPhysics(),
-          crossAxisCount: ChicPlatform.isDesktop() ? 6 : 4,
+          crossAxisCount: cells,
           children: List.generate(icons.length, (index) {
             return _displayIcon(
+              context,
               index,
               _icon,
               icons,
@@ -212,6 +260,7 @@ class _IconPickerDialogState extends State<IconPickerDialog> {
 /// Displays the icon that will be displayed in the list of icons
 /// and in the icon picker
 Widget _displayIcon(
+  BuildContext context,
   int index,
   IconData icon,
   List<IconData> icons,
@@ -220,11 +269,17 @@ Widget _displayIcon(
   ThemeProvider themeProvider,
 ) {
   var child = Container();
+  var shortestSide = MediaQuery.of(context).size.shortestSide;
+  double size = 24;
+
+  if (!ChicPlatform.isDesktop() && shortestSide > 600) {
+    size = 40;
+  }
 
   if (icon == icons[index]) {
     // Display selected icon
     child = Container(
-      margin: EdgeInsets.all(8),
+      padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.all(Radius.circular(6)),
@@ -232,7 +287,7 @@ Widget _displayIcon(
       child: Icon(
         icons[index],
         color: themeProvider.textColor,
-        size: 24,
+        size: size,
       ),
     );
   } else {
@@ -242,7 +297,7 @@ Widget _displayIcon(
       child: Icon(
         icons[index],
         color: themeProvider.textColor,
-        size: 24,
+        size: size,
       ),
     );
   }

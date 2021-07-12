@@ -61,10 +61,8 @@ class _ColorSelectorState extends State<ColorSelector> {
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    return GridView.count(
-      physics: BouncingScrollPhysics(),
-      shrinkWrap: true,
-      crossAxisCount: _colorListSize(),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: _generateColorsCircles(themeProvider),
     );
   }
@@ -72,6 +70,13 @@ class _ColorSelectorState extends State<ColorSelector> {
   /// Generates a list of selectable color circles
   List<Widget> _generateColorsCircles(ThemeProvider themeProvider) {
     List<Widget> circles = [];
+
+    var shortestSide = MediaQuery.of(context).size.shortestSide;
+    double size = 31;
+
+    if (!ChicPlatform.isDesktop() && shortestSide > 600) {
+      size = 70;
+    }
 
     for (var colorIndex = 0; colorIndex < _colorListSize(); colorIndex++) {
       if (colorIndex != _colorListSize() - 1) {
@@ -99,7 +104,9 @@ class _ColorSelectorState extends State<ColorSelector> {
                 );
               },
               child: Container(
-                margin: EdgeInsets.all(8),
+                width: size,
+                height: size,
+                margin: EdgeInsets.only(left: 2, top: 2, bottom: 2),
                 child: ClipOval(
                   child: Container(
                     color: themeProvider.textColor,
@@ -121,9 +128,18 @@ class _ColorSelectorState extends State<ColorSelector> {
 
   /// Displays A single color circle
   Widget _generateColorWidget(ThemeProvider themeProvider, Color color) {
+    var shortestSide = MediaQuery.of(context).size.shortestSide;
+    double size = 36;
+
+    if (!ChicPlatform.isDesktop() && shortestSide > 600) {
+      size = 70;
+    }
+
     if (_selectedColor == color) {
       // If the color is selected
       return Container(
+        width: size,
+        height: size,
         decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         child: Center(
           child: Container(
@@ -147,12 +163,12 @@ class _ColorSelectorState extends State<ColorSelector> {
         _onColorSelected(color);
       },
       child: Container(
-        width: 36,
-        height: 36,
+        width: size,
+        height: size,
         child: Center(
           child: Container(
-            width: 31,
-            height: 31,
+            width: size - 5,
+            height: size - 5,
             decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
         ),
@@ -175,7 +191,15 @@ class _ColorSelectorState extends State<ColorSelector> {
   }
 
   int _colorListSize() {
-    return ChicPlatform.isDesktop() ? 9 : 7;
+    var shortestSide = MediaQuery.of(context).size.shortestSide;
+
+    if (ChicPlatform.isDesktop()) {
+      return 10;
+    } else if (shortestSide > 600) {
+      return 12;
+    }
+
+    return 7;
   }
 }
 

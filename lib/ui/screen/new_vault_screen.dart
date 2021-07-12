@@ -114,75 +114,78 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
 
   /// Displays a unified body for both mobile and desktop version
   Widget _displaysBody(ThemeProvider themeProvider) {
-    return Container(
-      margin: EdgeInsets.all(16),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ChicTextField(
-              controller: _nameController,
-              focus: _nameFocusNode,
-              desktopFocus: _desktopNameFocusNode,
-              nextFocus: _desktopPasswordFocusNode,
-              autoFocus: true,
-              textCapitalization: TextCapitalization.sentences,
-              hint: AppTranslations.of(context).text("name"),
-              errorMessage:
-                  AppTranslations.of(context).text("error_name_empty"),
-              validating: (String text) {
-                if (_nameController.text.isEmpty) {
-                  return false;
-                }
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      child: Container(
+        margin: EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ChicTextField(
+                controller: _nameController,
+                focus: _nameFocusNode,
+                desktopFocus: _desktopNameFocusNode,
+                nextFocus: _desktopPasswordFocusNode,
+                autoFocus: true,
+                textCapitalization: TextCapitalization.sentences,
+                hint: AppTranslations.of(context).text("name"),
+                errorMessage:
+                    AppTranslations.of(context).text("error_name_empty"),
+                validating: (String text) {
+                  if (_nameController.text.isEmpty) {
+                    return false;
+                  }
 
-                return true;
-              },
-              onSubmitted: (String text) {
-                _passwordFocusNode.requestFocus();
-              },
-            ),
-            SizedBox(height: 16.0),
-            ChicTextField(
-              controller: _passwordController,
-              focus: _passwordFocusNode,
-              desktopFocus: _desktopPasswordFocusNode,
-              nextFocus: _desktopVerifyPasswordFocusNode,
-              hint: AppTranslations.of(context).text("password"),
-              isPassword: true,
-              hasStrengthIndicator: true,
-              errorMessage:
-                  AppTranslations.of(context).text("error_small_password"),
-              validating: (String text) =>
-                  _passwordController.text.isNotEmpty &&
-                  _passwordController.text.length >= 6,
-              onSubmitted: (String text) {
-                _verifyPasswordFocusNode.requestFocus();
-              },
-            ),
-            SizedBox(height: 16.0),
-            ChicTextField(
-              controller: _verifyPasswordController,
-              focus: _verifyPasswordFocusNode,
-              desktopFocus: _desktopVerifyPasswordFocusNode,
-              textInputAction: TextInputAction.done,
-              hint: AppTranslations.of(context).text("verify_password"),
-              isPassword: true,
-              errorMessage:
-                  AppTranslations.of(context).text("error_different_password"),
-              validating: (String text) =>
-                  _verifyPasswordController.text == _passwordController.text,
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              AppTranslations.of(context).text("explanation_master_password"),
-              style: TextStyle(
-                color: themeProvider.secondTextColor,
-                fontSize: 13,
-                fontWeight: FontWeight.w300,
+                  return true;
+                },
+                onSubmitted: (String text) {
+                  _passwordFocusNode.requestFocus();
+                },
               ),
-            )
-          ],
+              SizedBox(height: 16.0),
+              ChicTextField(
+                controller: _passwordController,
+                focus: _passwordFocusNode,
+                desktopFocus: _desktopPasswordFocusNode,
+                nextFocus: _desktopVerifyPasswordFocusNode,
+                hint: AppTranslations.of(context).text("password"),
+                isPassword: true,
+                hasStrengthIndicator: true,
+                errorMessage:
+                    AppTranslations.of(context).text("error_small_password"),
+                validating: (String text) =>
+                    _passwordController.text.isNotEmpty &&
+                    _passwordController.text.length >= 6,
+                onSubmitted: (String text) {
+                  _verifyPasswordFocusNode.requestFocus();
+                },
+              ),
+              SizedBox(height: 16.0),
+              ChicTextField(
+                controller: _verifyPasswordController,
+                focus: _verifyPasswordFocusNode,
+                desktopFocus: _desktopVerifyPasswordFocusNode,
+                textInputAction: TextInputAction.done,
+                hint: AppTranslations.of(context).text("verify_password"),
+                isPassword: true,
+                errorMessage: AppTranslations.of(context)
+                    .text("error_different_password"),
+                validating: (String text) =>
+                    _verifyPasswordController.text == _passwordController.text,
+              ),
+              SizedBox(height: 16.0),
+              Text(
+                AppTranslations.of(context).text("explanation_master_password"),
+                style: TextStyle(
+                  color: themeProvider.secondTextColor,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w300,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
