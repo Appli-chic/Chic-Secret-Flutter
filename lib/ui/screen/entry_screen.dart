@@ -285,9 +285,8 @@ class _EntryScreenState extends State<EntryScreen>
             isWeakPassword: _weakPasswordEntries
                 .where((e) => e.id == _entries[index].id)
                 .isNotEmpty,
-            isOldPassword: _oldEntries
-                .where((e) => e.id == _entries[index].id)
-                .isNotEmpty,
+            isOldPassword:
+                _oldEntries.where((e) => e.id == _entries[index].id).isNotEmpty,
             isDuplicatedPassword: _duplicatedEntries
                 .where((e) => e.id == _entries[index].id)
                 .isNotEmpty,
@@ -360,7 +359,8 @@ class _EntryScreenState extends State<EntryScreen>
         }
       } else {
         await ChicNavigator.push(context, EntryDetailScreen(entry: entry));
-        _loadPassword(isClearingSearch: false);
+        await _loadPassword(isClearingSearch: false);
+        await _searchPassword(_searchController.text);
       }
 
       setState(() {});
