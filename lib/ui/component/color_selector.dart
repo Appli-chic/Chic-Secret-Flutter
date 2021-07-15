@@ -51,7 +51,11 @@ class _ColorSelectorState extends State<ColorSelector> {
         .toList();
 
     if (colorsListed.isNotEmpty) {
-      _selectedColor = colorsListed[0];
+      if (_colors.indexOf(colorsListed[0]) >= _colorListSize() - 1) {
+        _colors[0] = _selectedColor;
+      } else {
+        _selectedColor = colorsListed[0];
+      }
     } else {
       _colors[0] = _selectedColor;
     }
@@ -191,13 +195,15 @@ class _ColorSelectorState extends State<ColorSelector> {
   }
 
   int _colorListSize() {
-    var shortestSide = MediaQuery.of(context).size.shortestSide;
+    try {
+      var shortestSide = MediaQuery.of(context).size.shortestSide;
 
-    if (ChicPlatform.isDesktop()) {
-      return 10;
-    } else if (shortestSide > 600) {
-      return 12;
-    }
+      if (ChicPlatform.isDesktop()) {
+        return 10;
+      } else if (shortestSide > 600) {
+        return 12;
+      }
+    } catch (e) {}
 
     return 7;
   }

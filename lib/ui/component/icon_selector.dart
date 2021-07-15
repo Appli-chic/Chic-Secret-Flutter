@@ -41,8 +41,6 @@ class _IconSelectorState extends State<IconSelector> {
   @override
   void initState() {
     widget.iconSelectorController.onIconChange = _onIconChange;
-
-    _onIconChange(widget.icon);
     super.initState();
   }
 
@@ -50,7 +48,7 @@ class _IconSelectorState extends State<IconSelector> {
   _onIconChange(IconData icon) {
     _icon = icon;
     var iconListed = _icons
-        .sublist(0, _iconsListSize)
+        .sublist(0, _iconsListSize * 2)
         .where((i) => i.codePoint == _icon.codePoint)
         .toList();
 
@@ -67,10 +65,12 @@ class _IconSelectorState extends State<IconSelector> {
     var shortestSide = MediaQuery.of(context).size.shortestSide;
     double size = 24;
 
-    if (ChicPlatform.isDesktop()) {
+    if (ChicPlatform.isDesktop() && _iconsListSize != 9) {
       _iconsListSize = 9;
-    } else if (shortestSide > 600) {
+      _onIconChange(widget.icon);
+    } else if (shortestSide > 600 && _iconsListSize != 12) {
       _iconsListSize = 12;
+      _onIconChange(widget.icon);
     }
 
     if (!ChicPlatform.isDesktop() && shortestSide > 600) {
