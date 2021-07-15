@@ -125,6 +125,10 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     _isCreatingOrModifyingEntry = false;
     _reloadTags();
 
+    if (_vaultScreenController.reloadCategories != null) {
+      _vaultScreenController.reloadCategories!();
+    }
+
     if (entry != null) {
       if (_entryScreenController.reloadPasswords != null) {
         _entryScreenController.reloadPasswords!();
@@ -144,6 +148,11 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
   _onEditEntry(Entry entry) {
     _isCreatingOrModifyingEntry = true;
     _selectedEntry = entry;
+
+    if (_vaultScreenController.reloadCategories != null) {
+      _vaultScreenController.reloadCategories!();
+    }
+
     setState(() {});
   }
 
@@ -151,6 +160,10 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
   _onEntryDeleted() {
     _isCreatingOrModifyingEntry = false;
     _selectedEntry = null;
+
+    if (_vaultScreenController.reloadCategories != null) {
+      _vaultScreenController.reloadCategories!();
+    }
 
     if (_entryScreenController.reloadPasswords != null) {
       _entryScreenController.reloadPasswords!();

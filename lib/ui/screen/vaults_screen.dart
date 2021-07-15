@@ -108,6 +108,11 @@ class _VaultsScreenState extends State<VaultsScreen> {
   _loadCategories() async {
     if (selectedVault != null) {
       _categories = await CategoryService.getAllByVault(selectedVault!.id);
+
+      if (ChicPlatform.isDesktop()) {
+        _checkPasswordSecurity();
+      }
+
       setState(() {});
     }
   }
