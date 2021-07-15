@@ -2,11 +2,13 @@ import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/screen/landing_screen.dart';
 import 'package:chic_secret/utils/database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 
 import 'localization/app_translations_delegate.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -15,6 +17,11 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   timeago.setLocaleMessages('fr', timeago.FrMessages());
   await initDatabase();
+
+  // Enable purchases for Android
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+  }
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,

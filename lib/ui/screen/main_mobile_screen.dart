@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/clipper/half_circle_clipper.dart';
@@ -9,6 +11,7 @@ import 'package:chic_secret/ui/screen/new_entry_screen.dart';
 import 'package:chic_secret/ui/screen/security_screen.dart';
 import 'package:chic_secret/ui/screen/settings_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 
 class MainMobileScreen extends StatefulWidget {
@@ -22,6 +25,44 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
       CategoryScreenController();
   PageController _pageController = PageController();
   int _index = 0;
+
+  late StreamSubscription<List<PurchaseDetails>> _subscription;
+
+  @override
+  void initState() {
+    final Stream<List<PurchaseDetails>> purchaseUpdated =
+        InAppPurchase.instance.purchaseStream;
+
+    _subscription = purchaseUpdated.listen((purchaseDetailsList) {
+      _listenToPurchaseUpdated(purchaseDetailsList);
+    }, onDone: () {
+      _subscription.cancel();
+    }, onError: (error) {
+      print(error);
+    });
+
+    super.initState();
+  }
+
+  /// Listen to the purchases for Android/iOS
+  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
+    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      if (purchaseDetails.status == PurchaseStatus.pending) {
+        // Pending
+      } else {
+        if (purchaseDetails.status == PurchaseStatus.error) {
+          print(purchaseDetails.error!);
+        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+            purchaseDetails.status == PurchaseStatus.restored) {
+          // Item purchased
+        }
+        if (purchaseDetails.pendingCompletePurchase) {
+          await InAppPurchase.instance
+              .completePurchase(purchaseDetails);
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -218,6 +259,7 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
   @override
   void dispose() {
     _pageController.dispose();
+    _subscription.cancel();
     super.dispose();
   }
 }

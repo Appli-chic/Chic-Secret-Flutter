@@ -45,6 +45,7 @@ dependencies:
   file_selector_macos: ^0.0.4
   file_selector_windows: ^0.0.2
   file_selector_linux: ^0.0.2
+  in_app_purchase: ^1.0.6
 
 dev_dependencies:
   flutter_test:
