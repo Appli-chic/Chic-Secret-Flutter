@@ -8,6 +8,7 @@ import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/component/setting_item.dart';
 import 'package:chic_secret/ui/screen/biometry_screen.dart';
 import 'package:chic_secret/ui/screen/import_screen.dart';
+import 'package:chic_secret/ui/screen/subscribe_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/import_export.dart';
@@ -183,6 +184,13 @@ class _SettingsScreenState extends State<SettingsScreen>
                   onTap: _synchronize,
                 )
               : SizedBox.shrink(),
+          _user != null
+              ? SettingItem(
+                  leading: Icon(Icons.subscriptions),
+                  title: Text(AppTranslations.of(context).text("subscription")),
+                  onTap: _onSubscribeClicked,
+                )
+              : SizedBox.shrink(),
           selectedVault != null
               ? SettingItem(
                   leading: Icon(Icons.import_export_outlined),
@@ -207,6 +215,15 @@ class _SettingsScreenState extends State<SettingsScreen>
               : SizedBox.shrink(),
         ],
       ),
+    );
+  }
+
+  /// On subscribe clicked move to the subscribe page
+  _onSubscribeClicked() async {
+    await ChicNavigator.push(
+      context,
+      SubscribeScreen(),
+      isModal: true,
     );
   }
 
