@@ -38,6 +38,7 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
     }, onDone: () {
       _subscription.cancel();
     }, onError: (error) {
+
       print(error);
     });
 

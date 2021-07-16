@@ -22,7 +22,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class EntryScreenController {
-  void Function()? reloadPasswords;
+  void Function({bool isClearingSearch})? reloadPasswords;
   void Function(Entry?)? selectEntry;
 
   EntryScreenController({
@@ -116,9 +116,9 @@ class _EntryScreenState extends State<EntryScreen>
         categoryId: categoryId,
         tagId: tagId,
       );
-      setState(() {});
     }
 
+    await _searchPassword(_searchController.text);
     _checkPasswordSecurity();
   }
 

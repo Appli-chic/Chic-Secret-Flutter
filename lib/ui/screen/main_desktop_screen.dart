@@ -131,7 +131,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
 
     if (entry != null) {
       if (_entryScreenController.reloadPasswords != null) {
-        _entryScreenController.reloadPasswords!();
+        _entryScreenController.reloadPasswords!(isClearingSearch: false);
       }
 
       _onEntrySelected(entry);
