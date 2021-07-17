@@ -1,0 +1,93 @@
+{
+  "identifier" : "D9CF7F47",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "6B947C7B",
+      "localizations" : [
+
+      ],
+      "name" : "Premium Subscription",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "0.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "1D9EC588",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Get access for one month premium access.",
+              "displayName" : "1 Month Subscription",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "1_month_subscription",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "1 Month Subscription ",
+          "subscriptionGroupID" : "6B947C7B",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "46887251",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Get access for 6 months premium access.",
+              "displayName" : "6 Months Subscription",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "6_months_subscription",
+          "recurringSubscriptionPeriod" : "P6M",
+          "referenceName" : "6 Months Subscription",
+          "subscriptionGroupID" : "6B947C7B",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "8.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "0D3C567D",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Get access for one year premium access.",
+              "displayName" : "1 Year Subscription",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "1_year_subscription",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "1 Year Subscription",
+          "subscriptionGroupID" : "6B947C7B",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 1,
+    "minor" : 1
+  }
+}

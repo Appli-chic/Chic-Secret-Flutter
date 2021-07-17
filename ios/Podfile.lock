@@ -42,6 +42,8 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - in_app_purchase_ios (0.0.1):
+    - Flutter
   - local_auth (0.0.1):
     - Flutter
   - SDWebImage (5.11.1):
@@ -60,6 +62,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - in_app_purchase_ios (from `.symlinks/plugins/in_app_purchase_ios/ios`)
   - local_auth (from `.symlinks/plugins/local_auth/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
@@ -82,6 +85,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
+  in_app_purchase_ios:
+    :path: ".symlinks/plugins/in_app_purchase_ios/ios"
   local_auth:
     :path: ".symlinks/plugins/local_auth/ios"
   shared_preferences:
@@ -97,6 +102,7 @@ SPEC CHECKSUMS:
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  in_app_purchase_ios: 18c65275991b8a28b2a47634a7797fb23d5d773e
   local_auth: 25938960984c3a7f6e3253e3f8d962fdd16852bd
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
