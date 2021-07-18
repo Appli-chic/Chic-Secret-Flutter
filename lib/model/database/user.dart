@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 
 const String userTable = "user";
 const String columnUserEmail = "email";
+const String columnUserIsSubscribed = "isSubscribed";
+const String columnUserSubscription = "subscription";
 
 class User {
   String id;

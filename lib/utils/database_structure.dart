@@ -19,7 +19,9 @@ $columnId TEXT PRIMARY KEY NOT NULL,
 $columnUserEmail TEXT NOT NULL, 
 $columnCreatedAt DATETIME NOT NULL, 
 $columnUpdatedAt DATETIME NOT NULL, 
-$columnDeletedAt DATETIME
+$columnDeletedAt DATETIME, 
+$columnUserIsSubscribed INTEGER, 
+$columnUserSubscription TEXT
 )
 ''';
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
@@ -24,12 +26,51 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
 
   late ThemeProvider _themeProvider;
   List<ProductDetails> _subscriptions = [];
-  String _currentSubscriptionId = "";
+  String _currentSubscriptionId = "free";
+  late StreamSubscription<List<PurchaseDetails>> _subscription;
 
   @override
   void initState() {
+    final Stream<List<PurchaseDetails>> purchaseUpdated =
+        InAppPurchase.instance.purchaseStream;
+
     _loadProducts();
+
+    _subscription = purchaseUpdated.listen((purchaseDetailsList) {
+      _listenToPurchaseUpdated(purchaseDetailsList);
+    }, onDone: () {
+      _subscription.cancel();
+    }, onError: (error) {
+      print(error);
+    });
+
     super.initState();
+  }
+
+  /// Listen to the purchases for Android/iOS
+  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
+    var hasItemPurchased = false;
+
+    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      if (purchaseDetails.status == PurchaseStatus.pending) {
+        // Pending
+      } else {
+        if (purchaseDetails.status == PurchaseStatus.error) {
+          print(purchaseDetails.error!);
+        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+            purchaseDetails.status == PurchaseStatus.restored) {
+          // Item purchased
+        }
+        if (purchaseDetails.pendingCompletePurchase) {
+          await InAppPurchase.instance.completePurchase(purchaseDetails);
+        }
+      }
+    });
+
+    if (!hasItemPurchased) {
+      _currentSubscriptionId = "free";
+      setState(() {});
+    }
   }
 
   /// Load the subscriptions to display
@@ -49,6 +90,19 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
     }
 
     setState(() {});
+  }
+
+  /// Buy a subscription
+  _buyProduct(ProductDetails productDetails) async {
+    final PurchaseParam purchaseParam =
+        PurchaseParam(productDetails: productDetails);
+
+    var isBought = await InAppPurchase.instance
+        .buyNonConsumable(purchaseParam: purchaseParam);
+
+    if (isBought) {
+      // Save the information locally and send it to the server
+    }
   }
 
   @override
@@ -138,14 +192,21 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
   Widget _displaysSubscriptionWidget(String id, String title,
       {bool isFree = false}) {
     String price = "";
+    ProductDetails? productDetails;
 
     var filteredSubscriptionList =
         _subscriptions.where((s) => s.id == id).toList();
     if (filteredSubscriptionList.isNotEmpty) {
       price = filteredSubscriptionList[0].price;
+      productDetails = filteredSubscriptionList[0];
     }
 
     return ListTile(
+      onTap: () {
+        if (productDetails != null) {
+          _buyProduct(productDetails);
+        }
+      },
       title: Text(
         title,
         style: TextStyle(color: _themeProvider.textColor),
@@ -176,5 +237,11 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 }
