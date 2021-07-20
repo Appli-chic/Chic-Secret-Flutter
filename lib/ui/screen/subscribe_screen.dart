@@ -23,11 +23,10 @@ class SubscribeScreen extends StatefulWidget {
 class _SubscribeScreenState extends State<SubscribeScreen> {
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
   final String freeId = "free";
-  final Set<String> _kIds = <String>{
-    '1_month_subscription',
-    '6_months_subscription',
-    '1_year_subscription',
-  };
+  final String oneMonthId = "1_month_subscription";
+  final String sixMonthsId = "6_months_subscription";
+  final String oneYearId = "1_year_subscription";
+  late final Set<String> _kIds;
 
   late ThemeProvider _themeProvider;
   late SynchronizationProvider _synchronizationProvider;
@@ -38,6 +37,11 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
   @override
   void initState() {
     _currentSubscriptionId = freeId;
+    _kIds = <String>{
+      oneMonthId,
+      sixMonthsId,
+      oneYearId,
+    };
 
     if (!ChicPlatform.isDesktop()) {
       final Stream<List<PurchaseDetails>> purchaseUpdated =
@@ -246,20 +250,20 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
         children: [
           _displaysSubscriptionWidget(
             freeId,
-            "Free",
+            AppTranslations.of(context).text("free"),
             isFree: true,
           ),
           _displaysSubscriptionWidget(
-            "1_month_subscription",
-            "1 Month Subscription",
+            oneMonthId,
+            AppTranslations.of(context).text("1_month_subscription"),
           ),
           _displaysSubscriptionWidget(
-            "6_months_subscription",
-            "6 Months Subscription",
+            sixMonthsId,
+            AppTranslations.of(context).text("6_months_subscription"),
           ),
           _displaysSubscriptionWidget(
-            "1_year_subscription",
-            "1 Year Subscription",
+            oneYearId,
+            AppTranslations.of(context).text("1_year_subscription"),
           ),
           SizedBox(height: 40),
           ChicPlatform.isDesktop()

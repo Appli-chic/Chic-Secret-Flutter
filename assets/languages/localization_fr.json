@@ -95,6 +95,10 @@
   "subscription": "Abonnement",
   "no_subscription_synchronization": "Impossible de synchroniser sans abonnement",
   "desktop_no_payment": "Impossible de changer l'abonnement sur ordinateur, cela n'est seulement possible sur Android et iOS.",
+  "1_month_subscription": "1 mois d'abonnement",
+  "6_months_subscription": "6 mois d'abonnement",
+  "1_year_subscription": "1 an d'abonnement",
+  "free": "Gratuit",
 
   "general": "Général",
   "email": "Courriel",

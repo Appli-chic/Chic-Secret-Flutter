@@ -95,6 +95,10 @@
   "subscription": "Subscription",
   "no_subscription_synchronization": "Can't synchronize without a subscription",
   "desktop_no_payment": "Can't change the subscription on Desktop, it can only be done from an android or an iOS.",
+  "1_month_subscription": "1 Month Subscription",
+  "6_months_subscription": "6 Months Subscription",
+  "1_year_subscription": "1 Year Subscription",
+  "free": "Free",
 
   "general": "General",
   "email": "Email",

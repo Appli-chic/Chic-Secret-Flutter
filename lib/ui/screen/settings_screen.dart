@@ -2,6 +2,7 @@ import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/user.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
@@ -67,6 +68,9 @@ class _SettingsScreenState extends State<SettingsScreen>
   /// Retrieve the user information
   _getUser() async {
     _user = await Security.getCurrentUser();
+    if (_user != null) {
+      _user = await UserService.getUserById(_user!.id);
+    }
     setState(() {});
   }
 
@@ -249,6 +253,8 @@ class _SettingsScreenState extends State<SettingsScreen>
       SubscribeScreen(),
       isModal: true,
     );
+
+    _getUser();
   }
 
   /// Synchronize the data with the server
