@@ -3,12 +3,14 @@ import 'package:chic_secret/api/custom_field_api.dart';
 import 'package:chic_secret/api/entry_api.dart';
 import 'package:chic_secret/api/entry_tag_api.dart';
 import 'package:chic_secret/api/tag_api.dart';
+import 'package:chic_secret/api/user_api.dart';
 import 'package:chic_secret/api/vault_api.dart';
 import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/custom_field_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/service/entry_tag_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
+import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +29,17 @@ class SynchronizationProvider with ChangeNotifier {
 
   /// Synchronize all the elements of the user in the local database and to the server
   Future<void> synchronize({bool isFullSynchronization = false}) async {
-    if (!_isSynchronizing) {
+    var canSynchronize = false;
+    var user = await Security.getCurrentUser();
+    if (user != null) {
+      user = await UserService.getUserById(user.id);
+
+      if (user != null && user.isSubscribed != null && user.isSubscribed!) {
+        canSynchronize = true;
+      }
+    }
+
+    if (!_isSynchronizing && canSynchronize) {
       if (await Security.isConnected()) {
         _isSynchronizing = true;
         notifyListeners();
@@ -74,6 +86,14 @@ class SynchronizationProvider with ChangeNotifier {
       }
     }
 
+    if (user != null) {
+      user = await UserService.getUserById(user.id);
+
+      if (user != null) {
+        await UserApi.sendUser(user);
+      }
+    }
+
     // Send the data to the server
     if (vaults.isNotEmpty) {
       await VaultApi.sendVaults(vaults);
@@ -102,6 +122,22 @@ class SynchronizationProvider with ChangeNotifier {
 
   /// Get all the data that changed from the server
   Future<void> _pull() async {
+    // Pull user
+    var user = await Security.getCurrentUser();
+    if (user != null) {
+      user = await UserService.getUserById(user.id);
+
+      if (user != null) {
+        var newUser = await UserApi.getCurrentUser();
+
+        if (newUser.updatedAt.millisecond > user.updatedAt.millisecond) {
+          await UserService.update(newUser);
+          await Security.setCurrentUser(user);
+        }
+      }
+    }
+
+    // Pull data
     await VaultApi.retrieveVaults(_lastSyncDate);
     await CategoryApi.retrieveCategories(_lastSyncDate);
     await EntryApi.retrieveEntries(_lastSyncDate);

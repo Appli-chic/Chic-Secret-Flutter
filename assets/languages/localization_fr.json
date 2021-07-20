@@ -93,6 +93,7 @@
   "weak": "Faible",
   "duplicated": "Dupliqué",
   "subscription": "Abonnement",
+  "no_subscription_synchronization": "Impossible de synchroniser, pas d'abonnement",
 
   "general": "Général",
   "email": "Courriel",

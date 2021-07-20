@@ -1,3 +1,4 @@
+import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 import 'package:intl/intl.dart';
 
@@ -85,7 +86,9 @@ class User {
       createdAt: createdAtString,
       updatedAt: updatedAtString,
       deletedAt: deletedAtString,
-      isSubscribed: data[columnUserIsSubscribed],
+      isSubscribed: data[columnUserIsSubscribed] != null
+          ? transformIntToBool(data[columnUserIsSubscribed])
+          : null,
       subscription: data[columnUserSubscription],
     );
   }
@@ -96,9 +99,14 @@ class User {
     String createdAtString = dateFormatter.format(createdAt);
     String updatedAtString = dateFormatter.format(updatedAt);
     String? deletedAtString;
+    int isSubscribedInt = 0;
 
     if (this.deletedAt != null) {
       deletedAtString = dateFormatter.format(deletedAt!);
+    }
+
+    if (isSubscribed != null) {
+      isSubscribedInt = isSubscribed! ? 1 : 0;
     }
 
     return {
@@ -107,7 +115,7 @@ class User {
       columnCreatedAt: createdAtString,
       columnUpdatedAt: updatedAtString,
       columnDeletedAt: deletedAtString,
-      columnUserIsSubscribed: isSubscribed,
+      columnUserIsSubscribed: isSubscribedInt,
       columnUserSubscription: subscription,
     };
   }

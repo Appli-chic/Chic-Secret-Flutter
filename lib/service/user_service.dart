@@ -29,4 +29,20 @@ class UserService {
 
     return maps.isNotEmpty;
   }
+
+  /// Retrieve the user by ID
+  static Future<User?> getUserById(String userId) async {
+    List<Map<String, dynamic>> maps = await db.query(
+      userTable,
+      where:
+      "$columnId = '$userId'",
+      limit: 1,
+    );
+
+    if (maps.length > 0) {
+      return User.fromMap(maps[0]);
+    }
+
+    return null;
+  }
 }

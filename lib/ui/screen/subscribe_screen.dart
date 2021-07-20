@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 
@@ -31,18 +34,20 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
 
   @override
   void initState() {
-    final Stream<List<PurchaseDetails>> purchaseUpdated =
-        InAppPurchase.instance.purchaseStream;
+    if(!ChicPlatform.isDesktop()) {
+      final Stream<List<PurchaseDetails>> purchaseUpdated =
+          InAppPurchase.instance.purchaseStream;
 
-    _loadProducts();
+      _loadProducts();
 
-    _subscription = purchaseUpdated.listen((purchaseDetailsList) {
-      _listenToPurchaseUpdated(purchaseDetailsList);
-    }, onDone: () {
-      _subscription.cancel();
-    }, onError: (error) {
-      print(error);
-    });
+      _subscription = purchaseUpdated.listen((purchaseDetailsList) {
+        _listenToPurchaseUpdated(purchaseDetailsList);
+      }, onDone: () {
+        _subscription.cancel();
+      }, onError: (error) {
+        print(error);
+      });
+    }
 
     super.initState();
   }
@@ -94,15 +99,34 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
 
   /// Buy a subscription
   _buyProduct(ProductDetails productDetails) async {
-    final PurchaseParam purchaseParam =
-        PurchaseParam(productDetails: productDetails);
+    EasyLoading.show();
 
-    var isBought = await InAppPurchase.instance
-        .buyNonConsumable(purchaseParam: purchaseParam);
+    // final PurchaseParam purchaseParam =
+    //     PurchaseParam(productDetails: productDetails);
+    //
+    // var isBought = await InAppPurchase.instance
+    //     .buyNonConsumable(purchaseParam: purchaseParam);
+    //
+    // if (isBought) {
+    //   // Save the information locally and send it to the server
+    // }
 
-    if (isBought) {
-      // Save the information locally and send it to the server
+    // Update user which subscribed
+    var user = await Security.getCurrentUser();
+    if (user != null) {
+      user = await UserService.getUserById(user.id);
+
+      if (user != null) {
+        user.isSubscribed = true;
+        user.subscription = productDetails.id;
+        user.updatedAt = DateTime.now();
+        await UserService.update(user);
+      }
     }
+
+    // Synchronize with the server
+
+    EasyLoading.dismiss();
   }
 
   @override

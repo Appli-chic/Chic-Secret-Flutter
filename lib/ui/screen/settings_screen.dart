@@ -180,7 +180,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   ),
                   title:
                       Text(AppTranslations.of(context).text("synchronizing")),
-                  subtitle: lastSyncDate != null ? Text(lastSyncDate) : null,
+                  subtitle: _displaysSynchronizationSubtitle(lastSyncDate),
                   onTap: _synchronize,
                 )
               : SizedBox.shrink(),
@@ -208,14 +208,34 @@ class _SettingsScreenState extends State<SettingsScreen>
               : SizedBox.shrink(),
           _user != null
               ? SettingItem(
-                  leading: Icon(Icons.logout),
-                  title: Text(AppTranslations.of(context).text("logout")),
+                  backgroundColor: Colors.red[500],
+                  leading: Icon(Icons.logout,
+                      color: ChicPlatform.isDesktop() ? Colors.red[500] : null),
+                  title: Text(
+                    AppTranslations.of(context).text("logout"),
+                    style: TextStyle(
+                        color:
+                            ChicPlatform.isDesktop() ? Colors.red[500] : null),
+                  ),
                   onTap: _logout,
                 )
               : SizedBox.shrink(),
         ],
       ),
     );
+  }
+
+  Widget? _displaysSynchronizationSubtitle(String? lastSyncDate) {
+    if (_user!.isSubscribed != null && _user!.isSubscribed!) {
+      if (lastSyncDate != null) {
+        return Text(lastSyncDate);
+      }
+
+      return null;
+    } else {
+      return Text(
+          AppTranslations.of(context).text("no_subscription_synchronization"));
+    }
   }
 
   /// On subscribe clicked move to the subscribe page

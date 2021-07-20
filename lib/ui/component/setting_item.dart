@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SettingItem extends StatelessWidget {
+  final Color? backgroundColor;
   final Widget? leading;
   final Widget? title;
   final Widget? subtitle;
   final Function()? onTap;
 
   const SettingItem({
+    this.backgroundColor,
     this.leading,
     this.title,
     this.subtitle,
@@ -31,7 +33,9 @@ class SettingItem extends StatelessWidget {
     } else {
       return Card(
         margin: EdgeInsets.only(left: 8, right: 8, top: 8),
-        color: themeProvider.secondBackgroundColor,
+        color: backgroundColor != null
+            ? backgroundColor
+            : themeProvider.secondBackgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(6.0),
         ),

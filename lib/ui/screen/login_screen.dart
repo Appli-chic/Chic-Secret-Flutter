@@ -160,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
       EasyLoading.show();
 
       try {
-        await AuthApi.askCodeToLogin(_emailController.text);
+        await AuthApi.askCodeToLogin(_emailController.text.toLowerCase());
         EasyLoading.dismiss();
 
         setState(() {
@@ -182,10 +182,11 @@ class _LoginScreenState extends State<LoginScreen> {
       EasyLoading.show();
 
       try {
-        await AuthApi.login(_emailController.text, _codeController.text);
+        await AuthApi.login(
+            _emailController.text.toLowerCase(), _codeController.text);
         var user = await UserApi.getCurrentUser();
 
-        if(await UserService.exists(user.id)) {
+        if (await UserService.exists(user.id)) {
           await UserService.update(user);
         } else {
           await UserService.save(user);
