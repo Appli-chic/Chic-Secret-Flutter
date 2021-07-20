@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chic_secret/localization/app_translations.dart';
+import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
@@ -21,6 +22,7 @@ class SubscribeScreen extends StatefulWidget {
 
 class _SubscribeScreenState extends State<SubscribeScreen> {
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
+  final String freeId = "free";
   final Set<String> _kIds = <String>{
     '1_month_subscription',
     '6_months_subscription',
@@ -28,13 +30,16 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
   };
 
   late ThemeProvider _themeProvider;
+  late SynchronizationProvider _synchronizationProvider;
   List<ProductDetails> _subscriptions = [];
-  String _currentSubscriptionId = "free";
+  String _currentSubscriptionId = "";
   late StreamSubscription<List<PurchaseDetails>> _subscription;
 
   @override
   void initState() {
-    if(!ChicPlatform.isDesktop()) {
+    _currentSubscriptionId = freeId;
+
+    if (!ChicPlatform.isDesktop()) {
       final Stream<List<PurchaseDetails>> purchaseUpdated =
           InAppPurchase.instance.purchaseStream;
 
@@ -49,7 +54,23 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
       });
     }
 
+    _getSubscription();
+
     super.initState();
+  }
+
+  /// Get the subscription from the local database
+  void _getSubscription() async {
+    var user = await Security.getCurrentUser();
+    if (user != null) {
+      user = await UserService.getUserById(user.id);
+
+      if (user != null && user.subscription != null) {
+        setState(() {
+          _currentSubscriptionId = user!.subscription!;
+        });
+      }
+    }
   }
 
   /// Listen to the purchases for Android/iOS
@@ -73,7 +94,7 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
     });
 
     if (!hasItemPurchased) {
-      _currentSubscriptionId = "free";
+      _currentSubscriptionId = freeId;
       setState(() {});
     }
   }
@@ -120,11 +141,42 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
         user.isSubscribed = true;
         user.subscription = productDetails.id;
         user.updatedAt = DateTime.now();
+        user.subscriptionStartDate = DateTime.now();
         await UserService.update(user);
       }
     }
 
     // Synchronize with the server
+    await _synchronizationProvider.synchronize(isFullSynchronization: true);
+
+    setState(() {
+      _currentSubscriptionId = productDetails.id;
+    });
+
+    EasyLoading.dismiss();
+  }
+
+  /// Cancel the current subscription
+  _cancelSubscription() async {
+    EasyLoading.show();
+
+    // Update user which unsubscribed
+    var user = await Security.getCurrentUser();
+    if (user != null) {
+      user = await UserService.getUserById(user.id);
+
+      if (user != null) {
+        user.isSubscribed = false;
+        user.subscription = freeId;
+        user.updatedAt = DateTime.now();
+        user.subscriptionEndDate = DateTime.now();
+        await UserService.update(user);
+      }
+    }
+
+    setState(() {
+      _currentSubscriptionId = freeId;
+    });
 
     EasyLoading.dismiss();
   }
@@ -132,6 +184,8 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
   @override
   Widget build(BuildContext context) {
     _themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+    _synchronizationProvider =
+        Provider.of<SynchronizationProvider>(context, listen: true);
 
     if (ChicPlatform.isDesktop()) {
       return _displaysDesktopInModal();
@@ -191,7 +245,7 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _displaysSubscriptionWidget(
-            "free",
+            freeId,
             "Free",
             isFree: true,
           ),
@@ -207,6 +261,13 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
             "1_year_subscription",
             "1 Year Subscription",
           ),
+          SizedBox(height: 40),
+          ChicPlatform.isDesktop()
+              ? Text(
+                  AppTranslations.of(context).text("desktop_no_payment"),
+                  style: TextStyle(fontSize: 12),
+                )
+              : SizedBox.shrink(),
         ],
       ),
     );
@@ -226,11 +287,16 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
     }
 
     return ListTile(
-      onTap: () {
-        if (productDetails != null) {
-          _buyProduct(productDetails);
-        }
-      },
+      onTap: ChicPlatform.isDesktop()
+          ? null
+          : () {
+              if (productDetails != null &&
+                  _currentSubscriptionId != productDetails.id) {
+                _buyProduct(productDetails);
+              } else if (isFree) {
+                _cancelSubscription();
+              }
+            },
       title: Text(
         title,
         style: TextStyle(color: _themeProvider.textColor),

@@ -93,7 +93,8 @@
   "weak": "Faible",
   "duplicated": "Dupliqué",
   "subscription": "Abonnement",
-  "no_subscription_synchronization": "Impossible de synchroniser, pas d'abonnement",
+  "no_subscription_synchronization": "Impossible de synchroniser sans abonnement",
+  "desktop_no_payment": "Impossible de changer l'abonnement sur ordinateur, cela n'est seulement possible sur Android et iOS.",
 
   "general": "Général",
   "email": "Courriel",

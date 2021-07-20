@@ -93,7 +93,8 @@
   "weak": "Weak",
   "duplicated": "Duplicated",
   "subscription": "Subscription",
-  "no_subscription_synchronization": "Can't synchronize, no subscription",
+  "no_subscription_synchronization": "Can't synchronize without a subscription",
+  "desktop_no_payment": "Can't change the subscription on Desktop, it can only be done from an android or an iOS.",
 
   "general": "General",
   "email": "Email",

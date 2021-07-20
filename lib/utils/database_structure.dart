@@ -21,7 +21,9 @@ $columnCreatedAt DATETIME NOT NULL,
 $columnUpdatedAt DATETIME NOT NULL, 
 $columnDeletedAt DATETIME, 
 $columnUserIsSubscribed INTEGER, 
-$columnUserSubscription TEXT
+$columnUserSubscription TEXT,
+$columnUserSubscriptionStartDate DATETIME,
+$columnUserSubscriptionEndDate DATETIME
 )
 ''';
 

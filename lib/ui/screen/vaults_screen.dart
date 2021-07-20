@@ -578,15 +578,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
         backgroundColor: themeProvider.secondBackgroundColor,
         brightness: themeProvider.getBrightness(),
         title: Text(AppTranslations.of(context).text("vaults")),
-        leading: !_isUserLoggedIn
-            ? IconButton(
-                icon: Icon(
-                  Icons.person,
-                  color: themeProvider.textColor,
-                ),
-                onPressed: _onLogin,
-              )
-            : null,
+        leading: _displaysAppBarLeadingIcon(themeProvider),
         actions: [
           IconButton(
             icon: Icon(
@@ -600,6 +592,42 @@ class _VaultsScreenState extends State<VaultsScreen> {
     } else {
       return null;
     }
+  }
+
+  /// Displays the app bar leading icon for mobile
+  Widget _displaysAppBarLeadingIcon(ThemeProvider themeProvider) {
+    if (!_isUserLoggedIn) {
+      return IconButton(
+        icon: Icon(
+          Icons.person,
+          color: themeProvider.textColor,
+        ),
+        onPressed: _onLogin,
+      );
+    } else {
+      return IconButton(
+        icon: Icon(
+          Icons.settings,
+          color: themeProvider.textColor,
+        ),
+        onPressed: _onStartSettings,
+      );
+    }
+  }
+
+  /// Starts the settings page for the mobile
+  _onStartSettings() async {
+    await ChicNavigator.push(
+      context,
+      SettingsScreen(hasVaultLinked: false),
+    );
+
+    EasyLoading.show();
+
+    await _synchronizationProvider.synchronize(isFullSynchronization: true);
+    _loadVaults();
+
+    EasyLoading.dismiss();
   }
 
   /// Go the [LoginScreen] to synchronize the vaults

@@ -34,8 +34,14 @@ class SynchronizationProvider with ChangeNotifier {
     if (user != null) {
       user = await UserService.getUserById(user.id);
 
-      if (user != null && user.isSubscribed != null && user.isSubscribed!) {
-        canSynchronize = true;
+      if (user != null) {
+        if (user.isSubscribed != null && user.isSubscribed!) {
+          canSynchronize = true;
+        } else if (user.subscriptionEndDate != null &&
+            user.subscriptionEndDate!.millisecond >
+                DateTime.now().millisecond) {
+          canSynchronize = true;
+        }
       }
     }
 

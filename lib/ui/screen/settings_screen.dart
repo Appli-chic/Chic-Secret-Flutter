@@ -22,9 +22,11 @@ import 'login_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Function()? onDataChanged;
+  final bool hasVaultLinked;
 
   SettingsScreen({
     this.onDataChanged,
+    this.hasVaultLinked = false,
   });
 
   @override
@@ -199,7 +201,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                   onTap: _importData,
                 )
               : SizedBox.shrink(),
-          !ChicPlatform.isDesktop() && _isBiometricsSupported
+          !ChicPlatform.isDesktop() &&
+                  _isBiometricsSupported &&
+                  widget.hasVaultLinked
               ? SettingItem(
                   leading: Icon(Icons.fingerprint),
                   title: Text(AppTranslations.of(context).text("biometry")),

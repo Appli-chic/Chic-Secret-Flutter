@@ -53,6 +53,10 @@ _onUpgrade(Database db, int oldVersion, int newVersion) async {
   } else if (oldVersion <= 3) {
     batch.execute("ALTER TABLE $userTable ADD $columnUserIsSubscribed INTEGER");
     batch.execute("ALTER TABLE $userTable ADD $columnUserSubscription TEXT");
+    batch.execute(
+        "ALTER TABLE $userTable ADD $columnUserSubscriptionStartDate DATETIME");
+    batch.execute(
+        "ALTER TABLE $userTable ADD $columnUserSubscriptionEndDate DATETIME");
   }
 
   await batch.commit();
