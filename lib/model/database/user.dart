@@ -12,6 +12,8 @@ class User {
   DateTime createdAt;
   DateTime updatedAt;
   DateTime? deletedAt;
+  bool? isSubscribed;
+  String? subscription;
 
   User({
     required this.id,
@@ -19,6 +21,8 @@ class User {
     required this.createdAt,
     required this.updatedAt,
     this.deletedAt,
+    this.isSubscribed,
+    this.subscription,
   });
 
   /// Transform a json to a user
@@ -37,6 +41,8 @@ class User {
       createdAt: createdAtString,
       updatedAt: updatedAtString,
       deletedAt: deletedAtString,
+      isSubscribed: json['IsSubscribed'],
+      subscription: json['Subscription'],
     );
   }
 
@@ -57,6 +63,8 @@ class User {
     data['CreatedAt'] = createdAtString;
     data['UpdatedAt'] = updatedAtString;
     data['DeletedAt'] = deletedAtString;
+    data['IsSubscribed'] = isSubscribed;
+    data['Subscription'] = subscription;
 
     return data;
   }
@@ -77,6 +85,8 @@ class User {
       createdAt: createdAtString,
       updatedAt: updatedAtString,
       deletedAt: deletedAtString,
+      isSubscribed: data[columnUserIsSubscribed],
+      subscription: data[columnUserSubscription],
     );
   }
 
@@ -97,6 +107,8 @@ class User {
       columnCreatedAt: createdAtString,
       columnUpdatedAt: updatedAtString,
       columnDeletedAt: deletedAtString,
+      columnUserIsSubscribed: isSubscribed,
+      columnUserSubscription: subscription,
     };
   }
 }
