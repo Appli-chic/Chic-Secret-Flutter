@@ -13,6 +13,11 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 
+const String freeId = "free";
+const String oneMonthId = "1_month_subscription";
+const String sixMonthsId = "6_months_subscription";
+const String oneYearId = "1_year_subscription";
+
 class SubscribeScreen extends StatefulWidget {
   const SubscribeScreen({Key? key}) : super(key: key);
 
@@ -22,10 +27,6 @@ class SubscribeScreen extends StatefulWidget {
 
 class _SubscribeScreenState extends State<SubscribeScreen> {
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
-  final String freeId = "free";
-  final String oneMonthId = "1_month_subscription";
-  final String sixMonthsId = "6_months_subscription";
-  final String oneYearId = "1_year_subscription";
   late final Set<String> _kIds;
 
   late ThemeProvider _themeProvider;
@@ -79,9 +80,12 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
 
   /// Listen to the purchases for Android/iOS
   void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
+    EasyLoading.show();
     var hasItemPurchased = false;
 
     purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      var productId = purchaseDetails.productID;
+
       if (purchaseDetails.status == PurchaseStatus.pending) {
         // Pending
       } else {
@@ -90,6 +94,26 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
         } else if (purchaseDetails.status == PurchaseStatus.purchased ||
             purchaseDetails.status == PurchaseStatus.restored) {
           // Item purchased
+          var user = await Security.getCurrentUser();
+          if (user != null) {
+            user = await UserService.getUserById(user.id);
+
+            if (user != null) {
+              user.isSubscribed = true;
+              user.subscription = productId;
+              user.updatedAt = DateTime.now();
+              user.subscriptionStartDate = DateTime.now();
+              await UserService.update(user);
+            }
+          }
+
+          // Synchronize with the server
+          await _synchronizationProvider.synchronize(
+              isFullSynchronization: true);
+
+          setState(() {
+            _currentSubscriptionId = productId;
+          });
         }
         if (purchaseDetails.pendingCompletePurchase) {
           await InAppPurchase.instance.completePurchase(purchaseDetails);
@@ -101,6 +125,8 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
       _currentSubscriptionId = freeId;
       setState(() {});
     }
+
+    EasyLoading.dismiss();
   }
 
   /// Load the subscriptions to display
@@ -124,40 +150,10 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
 
   /// Buy a subscription
   _buyProduct(ProductDetails productDetails) async {
-    EasyLoading.show();
+    final PurchaseParam purchaseParam =
+        PurchaseParam(productDetails: productDetails);
 
-    // final PurchaseParam purchaseParam =
-    //     PurchaseParam(productDetails: productDetails);
-    //
-    // var isBought = await InAppPurchase.instance
-    //     .buyNonConsumable(purchaseParam: purchaseParam);
-    //
-    // if (isBought) {
-    //   // Save the information locally and send it to the server
-    // }
-
-    // Update user which subscribed
-    var user = await Security.getCurrentUser();
-    if (user != null) {
-      user = await UserService.getUserById(user.id);
-
-      if (user != null) {
-        user.isSubscribed = true;
-        user.subscription = productDetails.id;
-        user.updatedAt = DateTime.now();
-        user.subscriptionStartDate = DateTime.now();
-        await UserService.update(user);
-      }
-    }
-
-    // Synchronize with the server
-    await _synchronizationProvider.synchronize(isFullSynchronization: true);
-
-    setState(() {
-      _currentSubscriptionId = productDetails.id;
-    });
-
-    EasyLoading.dismiss();
+    await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
   }
 
   /// Cancel the current subscription
@@ -169,11 +165,25 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
     if (user != null) {
       user = await UserService.getUserById(user.id);
 
-      if (user != null) {
+      if (user != null && user.subscription != null) {
+        switch (user.subscription!) {
+          case oneMonthId:
+            user.subscriptionEndDate = DateTime.now();
+            break;
+          case sixMonthsId:
+            user.subscriptionEndDate = DateTime.now();
+            break;
+          case oneYearId:
+            user.subscriptionEndDate = DateTime.now();
+            break;
+          default:
+            return;
+        }
+
         user.isSubscribed = false;
         user.subscription = freeId;
         user.updatedAt = DateTime.now();
-        user.subscriptionEndDate = DateTime.now();
+
         await UserService.update(user);
       }
     }
@@ -297,7 +307,7 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
               if (productDetails != null &&
                   _currentSubscriptionId != productDetails.id) {
                 _buyProduct(productDetails);
-              } else if (isFree) {
+              } else if (isFree && _currentSubscriptionId != freeId) {
                 _cancelSubscription();
               }
             },
