@@ -14,6 +14,7 @@ import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -22,6 +23,7 @@ const String lastDateSyncKey = "lastDateSyncKey";
 class SynchronizationProvider with ChangeNotifier {
   bool _isSynchronizing = false;
   DateTime? _lastSyncDate;
+  List<PurchaseDetails> _purchaseDetailsList = [];
 
   SynchronizationProvider() {
     _getLastSyncDate();
@@ -179,9 +181,18 @@ class SynchronizationProvider with ChangeNotifier {
     _getLastSyncDate();
   }
 
+  /// Set the list of purchased items
+  addPurchasedItem(PurchaseDetails purchaseDetails) {
+    _purchaseDetailsList.add(purchaseDetails);
+    notifyListeners();
+  }
+
   /// Get the last sync date
   DateTime? get lastSyncDate => _lastSyncDate;
 
   /// Is it synchronizing
   bool get isSynchronizing => _isSynchronizing;
+
+  /// List of subscriptions purchased
+  List<PurchaseDetails> get purchaseDetailsList => _purchaseDetailsList;
 }

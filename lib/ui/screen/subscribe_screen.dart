@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
@@ -11,6 +12,8 @@ import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/billing_client_wrappers.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:provider/provider.dart';
 
 const String freeId = "free";
@@ -33,7 +36,6 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
   late SynchronizationProvider _synchronizationProvider;
   List<ProductDetails> _subscriptions = [];
   String _currentSubscriptionId = "";
-  late StreamSubscription<List<PurchaseDetails>> _subscription;
 
   @override
   void initState() {
@@ -44,22 +46,8 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
       oneYearId,
     };
 
-    if (!ChicPlatform.isDesktop()) {
-      final Stream<List<PurchaseDetails>> purchaseUpdated =
-          InAppPurchase.instance.purchaseStream;
-
-      _loadProducts();
-
-      _subscription = purchaseUpdated.listen((purchaseDetailsList) {
-        _listenToPurchaseUpdated(purchaseDetailsList);
-      }, onDone: () {
-        _subscription.cancel();
-      }, onError: (error) {
-        print(error);
-      });
-    }
-
     _getSubscription();
+    _loadProducts();
 
     super.initState();
   }
@@ -76,57 +64,6 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
         });
       }
     }
-  }
-
-  /// Listen to the purchases for Android/iOS
-  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
-    EasyLoading.show();
-    var hasItemPurchased = false;
-
-    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
-      var productId = purchaseDetails.productID;
-
-      if (purchaseDetails.status == PurchaseStatus.pending) {
-        // Pending
-      } else {
-        if (purchaseDetails.status == PurchaseStatus.error) {
-          print(purchaseDetails.error!);
-        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-            purchaseDetails.status == PurchaseStatus.restored) {
-          // Item purchased
-          var user = await Security.getCurrentUser();
-          if (user != null) {
-            user = await UserService.getUserById(user.id);
-
-            if (user != null) {
-              user.isSubscribed = true;
-              user.subscription = productId;
-              user.updatedAt = DateTime.now();
-              user.subscriptionStartDate = DateTime.now();
-              await UserService.update(user);
-            }
-          }
-
-          // Synchronize with the server
-          await _synchronizationProvider.synchronize(
-              isFullSynchronization: true);
-
-          setState(() {
-            _currentSubscriptionId = productId;
-          });
-        }
-        if (purchaseDetails.pendingCompletePurchase) {
-          await InAppPurchase.instance.completePurchase(purchaseDetails);
-        }
-      }
-    });
-
-    if (!hasItemPurchased) {
-      _currentSubscriptionId = freeId;
-      setState(() {});
-    }
-
-    EasyLoading.dismiss();
   }
 
   /// Load the subscriptions to display
@@ -150,49 +87,32 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
 
   /// Buy a subscription
   _buyProduct(ProductDetails productDetails) async {
-    final PurchaseParam purchaseParam =
-        PurchaseParam(productDetails: productDetails);
+    PurchaseParam purchaseParam;
 
-    await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
-  }
+    if (Platform.isAndroid) {
+      var oldSubscriptions = _synchronizationProvider.purchaseDetailsList
+          .where((s) => s.productID == _currentSubscriptionId)
+          .toList();
+      GooglePlayPurchaseDetails? oldSubscription;
 
-  /// Cancel the current subscription
-  _cancelSubscription() async {
-    EasyLoading.show();
-
-    // Update user which unsubscribed
-    var user = await Security.getCurrentUser();
-    if (user != null) {
-      user = await UserService.getUserById(user.id);
-
-      if (user != null && user.subscription != null) {
-        switch (user.subscription!) {
-          case oneMonthId:
-            user.subscriptionEndDate = DateTime.now();
-            break;
-          case sixMonthsId:
-            user.subscriptionEndDate = DateTime.now();
-            break;
-          case oneYearId:
-            user.subscriptionEndDate = DateTime.now();
-            break;
-          default:
-            return;
-        }
-
-        user.isSubscribed = false;
-        user.subscription = freeId;
-        user.updatedAt = DateTime.now();
-
-        await UserService.update(user);
+      if (oldSubscriptions.isNotEmpty) {
+        oldSubscription = oldSubscriptions[0] as GooglePlayPurchaseDetails?;
       }
+
+      purchaseParam = GooglePlayPurchaseParam(
+          productDetails: productDetails,
+          applicationUserName: null,
+          changeSubscriptionParam: oldSubscription != null
+              ? ChangeSubscriptionParam(
+                  oldPurchaseDetails: oldSubscription,
+                  prorationMode: ProrationMode.immediateWithTimeProration,
+                )
+              : null);
+    } else {
+      purchaseParam = PurchaseParam(productDetails: productDetails);
     }
 
-    setState(() {
-      _currentSubscriptionId = freeId;
-    });
-
-    EasyLoading.dismiss();
+    await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
   }
 
   @override
@@ -307,8 +227,6 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
               if (productDetails != null &&
                   _currentSubscriptionId != productDetails.id) {
                 _buyProduct(productDetails);
-              } else if (isFree && _currentSubscriptionId != freeId) {
-                _cancelSubscription();
               }
             },
       title: Text(
@@ -341,11 +259,5 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/screen/landing_screen.dart';
