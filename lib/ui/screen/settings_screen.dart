@@ -190,13 +190,13 @@ class _SettingsScreenState extends State<SettingsScreen>
                   onTap: _synchronize,
                 )
               : SizedBox.shrink(),
-          _user != null
-              ? SettingItem(
-                  leading: Icon(Icons.subscriptions),
-                  title: Text(AppTranslations.of(context).text("subscription")),
-                  onTap: _onSubscribeClicked,
-                )
-              : SizedBox.shrink(),
+          // _user != null
+          //     ? SettingItem(
+          //         leading: Icon(Icons.subscriptions),
+          //         title: Text(AppTranslations.of(context).text("subscription")),
+          //         onTap: _onSubscribeClicked,
+          //       )
+          //     : SizedBox.shrink(),
           selectedVault != null
               ? SettingItem(
                   leading: Icon(Icons.import_export_outlined),

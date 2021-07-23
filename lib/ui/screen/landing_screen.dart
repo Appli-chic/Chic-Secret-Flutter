@@ -22,7 +22,6 @@ class _LandingScreenState extends State<LandingScreen> {
   MainDesktopScreenController _mainDesktopScreenController =
       MainDesktopScreenController();
   SynchronizationProvider? _synchronizationProvider;
-  late StreamSubscription<List<PurchaseDetails>> _subscription;
 
   didChangeDependencies() {
     super.didChangeDependencies();
@@ -32,19 +31,6 @@ class _LandingScreenState extends State<LandingScreen> {
           Provider.of<SynchronizationProvider>(context, listen: true);
 
       _firstSynchronization();
-    }
-
-    if (!ChicPlatform.isDesktop()) {
-      final Stream<List<PurchaseDetails>> purchaseUpdated =
-          InAppPurchase.instance.purchaseStream;
-
-      _subscription = purchaseUpdated.listen((purchaseDetailsList) {
-        _listenToPurchaseUpdated(purchaseDetailsList);
-      }, onDone: () {
-        _subscription.cancel();
-      }, onError: (error) {
-        print(error);
-      });
     }
   }
 
@@ -71,90 +57,6 @@ class _LandingScreenState extends State<LandingScreen> {
     if (_vaultScreenController.reloadTags != null) {
       _vaultScreenController.reloadTags!();
     }
-  }
-
-  /// Listen to the purchases for Android/iOS
-  void _listenToPurchaseUpdated(
-      List<PurchaseDetails> purchaseDetailsList) async {
-    EasyLoading.show();
-    bool hasSubscription = false;
-
-    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
-      var productId = purchaseDetails.productID;
-
-      if (purchaseDetails.status == PurchaseStatus.pending) {
-        // Pending
-      } else {
-        if (purchaseDetails.status == PurchaseStatus.error) {
-          print(purchaseDetails.error!);
-        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-            purchaseDetails.status == PurchaseStatus.restored) {
-          // Item purchased
-          var user = await Security.getCurrentUser();
-          if (user != null) {
-            user = await UserService.getUserById(user.id);
-
-            if (_synchronizationProvider != null &&
-                user!.subscription != null &&
-                user.subscription == productId) {
-              _synchronizationProvider!.addPurchasedItem(purchaseDetails);
-              _synchronizationProvider!
-                  .setCurrentSubscription(purchaseDetails.productID);
-              hasSubscription = true;
-            }
-
-            if (user != null && user.subscription != productId) {
-              user.isSubscribed = true;
-              user.subscription = productId;
-              user.updatedAt = DateTime.now();
-              user.subscriptionStartDate = DateTime.now();
-              await UserService.update(user);
-            }
-          }
-
-          // Synchronize with the server
-          await _synchronizationProvider!
-              .synchronize(isFullSynchronization: true);
-        }
-
-        if (purchaseDetails.pendingCompletePurchase) {
-          await InAppPurchase.instance.completePurchase(purchaseDetails);
-        }
-      }
-    });
-
-    // Subscription had been canceled
-    if (!hasSubscription) {
-      var user = await Security.getCurrentUser();
-      if (user != null) {
-        user = await UserService.getUserById(user.id);
-
-        if (user != null && user.subscription != null) {
-          var today = DateTime.now();
-          switch (user.subscription!) {
-            case oneMonthId:
-              user.subscriptionEndDate = today.add(Duration(days: 30));
-              break;
-            case sixMonthsId:
-              user.subscriptionEndDate = today.add(Duration(days: 183));
-              break;
-            case oneYearId:
-              user.subscriptionEndDate = today.add(Duration(days: 365));
-              break;
-            default:
-              return;
-          }
-
-          user.isSubscribed = false;
-          user.subscription = freeId;
-          user.updatedAt = DateTime.now();
-
-          await UserService.update(user);
-        }
-      }
-    }
-
-    EasyLoading.dismiss();
   }
 
   /// Displays the next screen depending if the application is launched on
@@ -185,11 +87,5 @@ class _LandingScreenState extends State<LandingScreen> {
   @override
   Widget build(BuildContext context) {
     return Container();
-  }
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
   }
 }

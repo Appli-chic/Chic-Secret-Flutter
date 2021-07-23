@@ -10,10 +10,12 @@ import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/billing_client_wrappers.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const String freeId = "free";
 const String oneMonthId = "1_month_subscription";
@@ -34,7 +36,9 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
   late ThemeProvider _themeProvider;
   late SynchronizationProvider _synchronizationProvider;
   List<ProductDetails> _subscriptions = [];
-  String _currentSubscriptionId = "";
+  List<PurchaseDetails> _purchases = [];
+  String _currentSubscriptionId = freeId;
+  late StreamSubscription<List<PurchaseDetails>> _subscription;
 
   @override
   void initState() {
@@ -45,13 +49,73 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
       oneYearId,
     };
 
-    if (ChicPlatform.isDesktop()) {
-      _getSubscription();
+    if (!ChicPlatform.isDesktop()) {
+      final Stream<List<PurchaseDetails>> purchaseUpdated =
+          InAppPurchase.instance.purchaseStream;
+
+      _subscription = purchaseUpdated.listen((purchaseDetailsList) {
+        _listenToPurchaseUpdated(purchaseDetailsList);
+      }, onDone: () {
+        _subscription.cancel();
+      }, onError: (error) {
+        print(error);
+      });
     }
 
+    _getSubscription();
     _loadProducts();
 
     super.initState();
+  }
+
+  /// Listen to the purchases for Android/iOS
+  void _listenToPurchaseUpdated(
+      List<PurchaseDetails> purchaseDetailsList) async {
+    EasyLoading.show();
+    bool hasSubscription = false;
+
+    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      var productId = purchaseDetails.productID;
+
+      if (purchaseDetails.status == PurchaseStatus.pending) {
+        // Pending
+      } else {
+        if (purchaseDetails.status == PurchaseStatus.error) {
+          print(purchaseDetails.error!);
+        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+            purchaseDetails.status == PurchaseStatus.restored) {
+          // Item purchased
+          var user = await Security.getCurrentUser();
+          if (user != null) {
+            user = await UserService.getUserById(user.id);
+
+            if (user != null) {
+              _purchases.add(purchaseDetails);
+              _currentSubscriptionId = purchaseDetails.productID;
+              hasSubscription = true;
+
+              user.isSubscribed = true;
+              user.subscription = productId;
+              user.updatedAt = DateTime.now();
+              user.subscriptionStartDate = DateTime.now();
+              await UserService.update(user);
+            }
+          }
+
+          // Synchronize with the server
+          await _synchronizationProvider.synchronize(
+              isFullSynchronization: true);
+        }
+
+        if (purchaseDetails.pendingCompletePurchase) {
+          await InAppPurchase.instance.completePurchase(purchaseDetails);
+        }
+      }
+    });
+
+    setState(() {});
+
+    EasyLoading.dismiss();
   }
 
   /// Get the subscription from the local database
@@ -60,7 +124,9 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
     if (user != null) {
       user = await UserService.getUserById(user.id);
 
-      if (user != null && user.subscription != null) {
+      if (user != null &&
+          user.subscription != null &&
+          user.subscription!.isNotEmpty) {
         setState(() {
           _currentSubscriptionId = user!.subscription!;
         });
@@ -91,14 +157,9 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
   _buyProduct(ProductDetails productDetails) async {
     PurchaseParam purchaseParam;
 
-    String subscriptionId = _synchronizationProvider.currentSubscription;
-    if (subscriptionId == freeId) {
-      subscriptionId = _currentSubscriptionId;
-    }
-
     if (Platform.isAndroid) {
-      var oldSubscriptions = _synchronizationProvider.purchaseDetailsList
-          .where((s) => s.productID == subscriptionId)
+      var oldSubscriptions = _purchases
+          .where((s) => s.productID == _currentSubscriptionId)
           .toList();
       GooglePlayPurchaseDetails? oldSubscription;
 
@@ -227,19 +288,21 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
       productDetails = filteredSubscriptionList[0];
     }
 
-    String subscriptionId = _synchronizationProvider.currentSubscription;
-    if (subscriptionId == freeId) {
-      subscriptionId = _currentSubscriptionId;
-    }
-
     return ListTile(
       onTap: ChicPlatform.isDesktop()
           ? null
-          : () {
+          : () async {
               if (productDetails != null &&
-                  subscriptionId != productDetails.id) {
+                  _currentSubscriptionId != productDetails.id) {
                 _buyProduct(productDetails);
-              } else if (isFree && subscriptionId != freeId) {}
+              } else if (isFree && _currentSubscriptionId != freeId) {
+                if (Platform.isAndroid) {
+                  await launch(
+                      "https://play.google.com/store/account/subscriptions?package=com.applichic.chic_secret");
+                } else if (Platform.isIOS) {
+                  await launch("https://apps.apple.com/account/subscriptions");
+                }
+              }
             },
       title: Text(
         title,
@@ -261,7 +324,7 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
           Container(
             width: 20,
             margin: EdgeInsets.only(left: 20),
-            child: id == subscriptionId
+            child: id == _currentSubscriptionId
                 ? Icon(
                     Icons.check,
                     color: _themeProvider.primaryColor,
@@ -271,5 +334,11 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 }

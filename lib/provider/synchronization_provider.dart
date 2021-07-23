@@ -24,8 +24,6 @@ const String lastDateSyncKey = "lastDateSyncKey";
 class SynchronizationProvider with ChangeNotifier {
   bool _isSynchronizing = false;
   DateTime? _lastSyncDate;
-  List<PurchaseDetails> _purchaseDetailsList = [];
-  String _currentSubscription = freeId;
 
   SynchronizationProvider() {
     _getLastSyncDate();
@@ -33,23 +31,7 @@ class SynchronizationProvider with ChangeNotifier {
 
   /// Synchronize all the elements of the user in the local database and to the server
   Future<void> synchronize({bool isFullSynchronization = false}) async {
-    var canSynchronize = false;
-    var user = await Security.getCurrentUser();
-    if (user != null) {
-      user = await UserService.getUserById(user.id);
-
-      if (user != null) {
-        if (user.isSubscribed != null && user.isSubscribed!) {
-          canSynchronize = true;
-        } else if (user.subscriptionEndDate != null &&
-            user.subscriptionEndDate!.millisecond >
-                DateTime.now().millisecond) {
-          canSynchronize = true;
-        }
-      }
-    }
-
-    if (!_isSynchronizing && canSynchronize) {
+    if (!_isSynchronizing) {
       if (await Security.isConnected()) {
         _isSynchronizing = true;
         notifyListeners();
@@ -183,27 +165,9 @@ class SynchronizationProvider with ChangeNotifier {
     _getLastSyncDate();
   }
 
-  /// Set the list of purchased items
-  addPurchasedItem(PurchaseDetails purchaseDetails) {
-    _purchaseDetailsList.add(purchaseDetails);
-    notifyListeners();
-  }
-
-  /// Set current subscription
-  setCurrentSubscription(String currentSubscription) {
-    _currentSubscription = currentSubscription;
-    notifyListeners();
-  }
-
   /// Get the last sync date
   DateTime? get lastSyncDate => _lastSyncDate;
 
   /// Is it synchronizing
   bool get isSynchronizing => _isSynchronizing;
-
-  /// List of subscriptions purchased
-  List<PurchaseDetails> get purchaseDetailsList => _purchaseDetailsList;
-
-  /// Current subscription purchased
-  String get currentSubscription => _currentSubscription;
 }

@@ -46,6 +46,7 @@ dependencies:
   file_selector_windows: ^0.0.2
   file_selector_linux: ^0.0.2
   in_app_purchase: ^1.0.6
+  url_launcher: ^6.0.9
 
 dev_dependencies:
   flutter_test:
