@@ -98,6 +98,8 @@ class _LandingScreenState extends State<LandingScreen> {
                 user!.subscription != null &&
                 user.subscription == productId) {
               _synchronizationProvider!.addPurchasedItem(purchaseDetails);
+              _synchronizationProvider!
+                  .setCurrentSubscription(purchaseDetails.productID);
               hasSubscription = true;
             }
 
@@ -128,15 +130,16 @@ class _LandingScreenState extends State<LandingScreen> {
         user = await UserService.getUserById(user.id);
 
         if (user != null && user.subscription != null) {
+          var today = DateTime.now();
           switch (user.subscription!) {
             case oneMonthId:
-              user.subscriptionEndDate = DateTime.now();
+              user.subscriptionEndDate = today.add(Duration(days: 30));
               break;
             case sixMonthsId:
-              user.subscriptionEndDate = DateTime.now();
+              user.subscriptionEndDate = today.add(Duration(days: 183));
               break;
             case oneYearId:
-              user.subscriptionEndDate = DateTime.now();
+              user.subscriptionEndDate = today.add(Duration(days: 365));
               break;
             default:
               return;

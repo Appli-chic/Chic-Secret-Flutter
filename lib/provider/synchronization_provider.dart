@@ -12,6 +12,7 @@ import 'package:chic_secret/service/entry_tag_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
+import 'package:chic_secret/ui/screen/subscribe_screen.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -24,6 +25,7 @@ class SynchronizationProvider with ChangeNotifier {
   bool _isSynchronizing = false;
   DateTime? _lastSyncDate;
   List<PurchaseDetails> _purchaseDetailsList = [];
+  String _currentSubscription = freeId;
 
   SynchronizationProvider() {
     _getLastSyncDate();
@@ -187,6 +189,12 @@ class SynchronizationProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  /// Set current subscription
+  setCurrentSubscription(String currentSubscription) {
+    _currentSubscription = currentSubscription;
+    notifyListeners();
+  }
+
   /// Get the last sync date
   DateTime? get lastSyncDate => _lastSyncDate;
 
@@ -195,4 +203,7 @@ class SynchronizationProvider with ChangeNotifier {
 
   /// List of subscriptions purchased
   List<PurchaseDetails> get purchaseDetailsList => _purchaseDetailsList;
+
+  /// Current subscription purchased
+  String get currentSubscription => _currentSubscription;
 }

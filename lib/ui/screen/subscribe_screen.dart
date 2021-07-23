@@ -10,7 +10,6 @@ import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/billing_client_wrappers.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
@@ -46,7 +45,10 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
       oneYearId,
     };
 
-    _getSubscription();
+    if (ChicPlatform.isDesktop()) {
+      _getSubscription();
+    }
+
     _loadProducts();
 
     super.initState();
@@ -89,9 +91,14 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
   _buyProduct(ProductDetails productDetails) async {
     PurchaseParam purchaseParam;
 
+    String subscriptionId = _synchronizationProvider.currentSubscription;
+    if (subscriptionId == freeId) {
+      subscriptionId = _currentSubscriptionId;
+    }
+
     if (Platform.isAndroid) {
       var oldSubscriptions = _synchronizationProvider.purchaseDetailsList
-          .where((s) => s.productID == _currentSubscriptionId)
+          .where((s) => s.productID == subscriptionId)
           .toList();
       GooglePlayPurchaseDetails? oldSubscription;
 
@@ -220,14 +227,19 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
       productDetails = filteredSubscriptionList[0];
     }
 
+    String subscriptionId = _synchronizationProvider.currentSubscription;
+    if (subscriptionId == freeId) {
+      subscriptionId = _currentSubscriptionId;
+    }
+
     return ListTile(
       onTap: ChicPlatform.isDesktop()
           ? null
           : () {
               if (productDetails != null &&
-                  _currentSubscriptionId != productDetails.id) {
+                  subscriptionId != productDetails.id) {
                 _buyProduct(productDetails);
-              }
+              } else if (isFree && subscriptionId != freeId) {}
             },
       title: Text(
         title,
@@ -249,7 +261,7 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
           Container(
             width: 20,
             margin: EdgeInsets.only(left: 20),
-            child: id == _currentSubscriptionId
+            child: id == subscriptionId
                 ? Icon(
                     Icons.check,
                     color: _themeProvider.primaryColor,
