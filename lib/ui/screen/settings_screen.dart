@@ -233,17 +233,13 @@ class _SettingsScreenState extends State<SettingsScreen>
     );
   }
 
+  /// Displays the last time it synchronized
   Widget? _displaysSynchronizationSubtitle(String? lastSyncDate) {
-    if (_user!.isSubscribed != null && _user!.isSubscribed!) {
-      if (lastSyncDate != null) {
-        return Text(lastSyncDate);
-      }
-
-      return null;
-    } else {
-      return Text(
-          AppTranslations.of(context).text("no_subscription_synchronization"));
+    if (lastSyncDate != null) {
+      return Text(lastSyncDate);
     }
+
+    return null;
   }
 
   /// On subscribe clicked move to the subscribe page
