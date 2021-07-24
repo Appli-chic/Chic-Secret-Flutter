@@ -102,6 +102,7 @@
   "free": "Free",
   "share_optional": "Share (Optional)",
   "users_email": "User email",
+  "login_code_message": "A login code had been sent to your email.",
 
   "general": "General",
   "email": "Email",

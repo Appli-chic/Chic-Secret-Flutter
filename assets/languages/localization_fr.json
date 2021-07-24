@@ -102,6 +102,7 @@
   "free": "Gratuit",
   "share_optional": "Partager (Facultatif)",
   "users_email": "Courriel utilisateur",
+  "login_code_message": "Un code de connexion a été envoyé à votre courriel.",
 
   "general": "Général",
   "email": "Courriel",

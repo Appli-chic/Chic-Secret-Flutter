@@ -9,7 +9,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:path/path.dart';
 
-const int version = 4;
+const int version = 5;
 late Database db;
 
 /// Init the local database for all the platforms
@@ -57,6 +57,8 @@ _onUpgrade(Database db, int oldVersion, int newVersion) async {
         "ALTER TABLE $userTable ADD $columnUserSubscriptionStartDate DATETIME");
     batch.execute(
         "ALTER TABLE $userTable ADD $columnUserSubscriptionEndDate DATETIME");
+  } else if (oldVersion <= 4) {
+    batch.execute(createVaultUserTable);
   }
 
   await batch.commit();
@@ -72,6 +74,7 @@ _onCreate(Database db, int version) async {
   batch.execute(createTagTable);
   batch.execute(createEntryTagTable);
   batch.execute(createCustomFieldTable);
+  batch.execute(createVaultUserTable);
   await batch.commit();
 }
 

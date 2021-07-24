@@ -5,6 +5,7 @@ import 'package:chic_secret/model/database/entry_tag.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/model/database/user.dart';
 import 'package:chic_secret/model/database/vault.dart';
+import 'package:chic_secret/model/database/vault_user.dart';
 
 const String columnId = "id";
 const String columnCreatedAt = "created_at";
@@ -109,5 +110,18 @@ $columnCreatedAt DATETIME NOT NULL,
 $columnUpdatedAt DATETIME NOT NULL, 
 $columnDeletedAt DATETIME,
 FOREIGN KEY($columnCustomFieldEntryId) REFERENCES $entryTable($columnId)
+)
+''';
+
+const String createVaultUserTable = '''
+CREATE TABLE IF NOT EXISTS $vaultUserTable(
+$columnVaultUserVaultId TEXT NOT NULL, 
+$columnVaultUserUserId TEXT NOT NULL, 
+$columnCreatedAt DATETIME NOT NULL, 
+$columnUpdatedAt DATETIME NOT NULL, 
+$columnDeletedAt DATETIME,
+FOREIGN KEY($columnVaultUserVaultId) REFERENCES $vaultTable($columnId)
+FOREIGN KEY($columnVaultUserUserId) REFERENCES $userTable($columnId)
+PRIMARY KEY($columnVaultUserVaultId, $columnVaultUserUserId)
 )
 ''';

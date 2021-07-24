@@ -148,6 +148,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     validating: (String text) => text.isNotEmpty,
                   )
                 : SizedBox.shrink(),
+            !_isAskingCode ? SizedBox(height: 16.0) : SizedBox.shrink(),
+            !_isAskingCode
+                ? Text(
+                    AppTranslations.of(context).text("login_code_message"),
+                    style: TextStyle(
+                      color: themeProvider.secondTextColor,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  )
+                : SizedBox.shrink(),
           ],
         ),
       ),
