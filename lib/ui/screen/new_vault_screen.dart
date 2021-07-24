@@ -1,9 +1,11 @@
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
+import 'package:chic_secret/model/database/user.dart';
 import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
+import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
@@ -32,6 +34,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
   late SynchronizationProvider _synchronizationProvider;
 
   final _formKey = GlobalKey<FormState>();
+  User? _user;
 
   var _nameController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -54,7 +57,18 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
       _nameController = TextEditingController(text: widget.vault!.name);
     }
 
+    _getUser();
+
     super.initState();
+  }
+
+  /// Retrieve the user information
+  _getUser() async {
+    _user = await Security.getCurrentUser();
+    if (_user != null) {
+      _user = await UserService.getUserById(_user!.id);
+    }
+    setState(() {});
   }
 
   @override
@@ -210,23 +224,27 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
                       ),
                     )
                   : SizedBox.shrink(),
-              SizedBox(height: 32.0),
-              Text(
-                AppTranslations.of(context).text("share_optional"),
-                style: TextStyle(
-                  color: themeProvider.textColor,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 17,
-                ),
-              ),
-              SizedBox(height: 16.0),
-              ChicTextField(
-                controller: _usersController,
-                focus: _usersFocusNode,
-                desktopFocus: _desktopUsersFocusNode,
-                textCapitalization: TextCapitalization.characters,
-                hint: AppTranslations.of(context).text("users_email"),
-              ),
+              _user != null ? SizedBox(height: 32.0) : SizedBox.shrink(),
+              _user != null
+                  ? Text(
+                      AppTranslations.of(context).text("share_optional"),
+                      style: TextStyle(
+                        color: themeProvider.textColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 17,
+                      ),
+                    )
+                  : SizedBox.shrink(),
+              _user != null ? SizedBox(height: 16.0) : SizedBox.shrink(),
+              _user != null
+                  ? ChicTextField(
+                      controller: _usersController,
+                      focus: _usersFocusNode,
+                      desktopFocus: _desktopUsersFocusNode,
+                      textCapitalization: TextCapitalization.characters,
+                      hint: AppTranslations.of(context).text("users_email"),
+                    )
+                  : SizedBox.shrink(),
             ],
           ),
         ),

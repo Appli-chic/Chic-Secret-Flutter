@@ -5,6 +5,7 @@ import 'package:chic_secret/api/entry_tag_api.dart';
 import 'package:chic_secret/api/tag_api.dart';
 import 'package:chic_secret/api/user_api.dart';
 import 'package:chic_secret/api/vault_api.dart';
+import 'package:chic_secret/api/vault_user_api.dart';
 import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/custom_field_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
@@ -12,6 +13,7 @@ import 'package:chic_secret/service/entry_tag_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
+import 'package:chic_secret/service/vault_user_service.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -67,6 +69,8 @@ class SynchronizationProvider with ChangeNotifier {
     var tags = await TagService.getTagsToSynchronize(_lastSyncDate);
     var entryTags =
         await EntryTagService.getEntryTagsToSynchronize(_lastSyncDate);
+    var vaultUsers =
+        await VaultUserService.getVaultUsersToSynchronize(_lastSyncDate);
 
     // Check if vaults have a user ID before to synchronize
     for (var vault in vaults) {
@@ -108,6 +112,10 @@ class SynchronizationProvider with ChangeNotifier {
     if (entryTags.isNotEmpty) {
       await EntryTagApi.sendEntryTags(entryTags);
     }
+
+    if (vaultUsers.isNotEmpty) {
+      await VaultUserApi.sendVaultUsers(vaultUsers);
+    }
   }
 
   /// Get all the data that changed from the server
@@ -128,12 +136,14 @@ class SynchronizationProvider with ChangeNotifier {
     }
 
     // Pull data
+    await UserApi.retrieveUsers(_lastSyncDate);
     await VaultApi.retrieveVaults(_lastSyncDate);
     await CategoryApi.retrieveCategories(_lastSyncDate);
     await EntryApi.retrieveEntries(_lastSyncDate);
     await CustomFieldApi.retrieveCustomFields(_lastSyncDate);
     await TagApi.retrieveTags(_lastSyncDate);
     await EntryTagApi.retrieveEntryTags(_lastSyncDate);
+    await VaultUserApi.retrieveVaultUsers(_lastSyncDate);
   }
 
   /// Get the last date of synchronization
