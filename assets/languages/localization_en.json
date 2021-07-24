@@ -19,6 +19,7 @@
   "tags": "Tags",
   "unlock": "Unlock",
   "unlock_vault": "Unlock Vault",
+  "edit_vault": "Edit Vault",
   "security": "Security",
   "settings": "Settings",
   "new_category": "New Category",
@@ -99,6 +100,8 @@
   "6_months_subscription": "6 Months Subscription",
   "1_year_subscription": "1 Year Subscription",
   "free": "Free",
+  "share_optional": "Share (Optional)",
+  "users_email": "User email",
 
   "general": "General",
   "email": "Email",

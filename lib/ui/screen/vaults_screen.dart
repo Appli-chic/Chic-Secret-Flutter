@@ -225,7 +225,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
   _onOptionsClicked() async {
     var haveToReload = await ChicNavigator.push(
       context,
-      SettingsScreen(onDataChanged: _onSynchronized),
+      SettingsScreen(hasVaultLinked: true, onDataChanged: _onSynchronized),
       isModal: true,
     );
 
@@ -280,6 +280,9 @@ class _VaultsScreenState extends State<VaultsScreen> {
             return VaultItem(
               isSelected: isSelected,
               vault: _vaults[index],
+              onVaultChanged: () {
+                widget.onVaultChange();
+              },
               onTap: (vault) async {
                 var unlockingPassword;
 

@@ -77,6 +77,7 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
             Container(),
             SecurityScreen(),
             SettingsScreen(
+              hasVaultLinked: true,
               onDataChanged: () {
                 if (_passwordScreenController.reloadPasswords != null) {
                   _passwordScreenController.reloadPasswords!();

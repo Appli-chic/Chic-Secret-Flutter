@@ -225,7 +225,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         Container(
           margin: EdgeInsets.only(left: 8, bottom: 8),
           child: ChicTextIconButton(
-            onPressed: _addEntry,
+            onPressed: _save,
             icon: Icon(
               Icons.save,
               color: themeProvider.textColor,
@@ -261,7 +261,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
         actions: [
           ChicTextButton(
             child: Text(AppTranslations.of(context).text("save").toUpperCase()),
-            onPressed: _addEntry,
+            onPressed: _save,
           ),
         ],
       ),
@@ -690,8 +690,8 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     }
   }
 
-  /// Save a new entry in the local database
-  _addEntry() async {
+  /// Save or update an entry in the local database
+  _save() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       if (_category == null) {
         return;

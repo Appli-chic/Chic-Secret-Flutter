@@ -72,7 +72,6 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
   void _listenToPurchaseUpdated(
       List<PurchaseDetails> purchaseDetailsList) async {
     EasyLoading.show();
-    bool hasSubscription = false;
 
     purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
       var productId = purchaseDetails.productID;
@@ -92,7 +91,6 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
             if (user != null) {
               _purchases.add(purchaseDetails);
               _currentSubscriptionId = purchaseDetails.productID;
-              hasSubscription = true;
 
               user.isSubscribed = true;
               user.subscription = productId;

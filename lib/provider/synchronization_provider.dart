@@ -12,10 +12,8 @@ import 'package:chic_secret/service/entry_tag_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
-import 'package:chic_secret/ui/screen/subscribe_screen.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 

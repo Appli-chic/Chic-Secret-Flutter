@@ -1,15 +1,10 @@
 import 'dart:async';
 
 import 'package:chic_secret/provider/synchronization_provider.dart';
-import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/ui/screen/main_desktop_screen.dart';
-import 'package:chic_secret/ui/screen/subscribe_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
-import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 
 class LandingScreen extends StatefulWidget {

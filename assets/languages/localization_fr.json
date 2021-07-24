@@ -19,6 +19,7 @@
   "tags": "Tags",
   "unlock": "Déverrouiller",
   "unlock_vault": "Déverrouiller le coffre",
+  "edit_vault": "Modifier le coffre",
   "security": "Sécurité",
   "settings": "Options",
   "new_category": "Nouvelle Catégorie",
@@ -99,6 +100,8 @@
   "6_months_subscription": "6 mois d'abonnement",
   "1_year_subscription": "1 an d'abonnement",
   "free": "Gratuit",
+  "share_optional": "Partager (Facultatif)",
+  "users_email": "Courriel utilisateur",
 
   "general": "Général",
   "email": "Courriel",

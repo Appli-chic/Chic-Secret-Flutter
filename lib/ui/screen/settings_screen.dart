@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import 'login_screen.dart';
+import 'new_vault_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Function()? onDataChanged;
@@ -214,6 +215,13 @@ class _SettingsScreenState extends State<SettingsScreen>
                   onTap: _onBiometryClicked,
                 )
               : SizedBox.shrink(),
+          widget.hasVaultLinked && selectedVault != null
+              ? SettingItem(
+                  leading: Icon(Icons.edit),
+                  title: Text(AppTranslations.of(context).text("edit_vault")),
+                  onTap: _onEditVaultClicked,
+                )
+              : SizedBox.shrink(),
           _user != null
               ? SettingItem(
                   backgroundColor: Colors.red[500],
@@ -231,6 +239,19 @@ class _SettingsScreenState extends State<SettingsScreen>
         ],
       ),
     );
+  }
+
+  /// On subscribe clicked move to the subscribe page
+  _onEditVaultClicked() async {
+    await ChicNavigator.push(
+      context,
+      NewVaultScreen(vault: selectedVault),
+      isModal: true,
+    );
+
+    if (widget.onDataChanged != null) {
+      widget.onDataChanged!();
+    }
   }
 
   /// Displays the last time it synchronized
