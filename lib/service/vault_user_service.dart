@@ -56,4 +56,16 @@ class VaultUserService {
       return VaultUser.fromMap(maps[i]);
     });
   }
+
+  /// Delete a vault user from the local database
+  static Future<void> delete(String vaultId, String userId) async {
+    var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    String deleteDate = dateFormatter.format(DateTime.now());
+
+    await db.rawUpdate("""
+      UPDATE $vaultUserTable 
+      SET $columnDeletedAt = '$deleteDate' 
+      WHERE $columnVaultUserVaultId = '$vaultId' AND $columnVaultUserUserId = '$userId'
+    """);
+  }
 }

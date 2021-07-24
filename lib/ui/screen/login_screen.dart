@@ -197,13 +197,16 @@ class _LoginScreenState extends State<LoginScreen> {
             _emailController.text.toLowerCase(), _codeController.text);
         var user = await UserApi.getCurrentUser();
 
-        if (await UserService.exists(user.id)) {
-          await UserService.update(user);
-        } else {
-          await UserService.save(user);
+        if (user != null) {
+          if (await UserService.exists(user.id)) {
+            await UserService.update(user);
+          } else {
+            await UserService.save(user);
+          }
+
+          await Security.setCurrentUser(user);
         }
 
-        await Security.setCurrentUser(user);
         EasyLoading.dismiss();
 
         Navigator.pop(context, true);

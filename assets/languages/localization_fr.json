@@ -103,6 +103,8 @@
   "share_optional": "Partager (Facultatif)",
   "users_email": "Courriel utilisateur",
   "login_code_message": "Un code de connexion a été envoyé à votre courriel.",
+  "error_user_dont_exist": "Ce courriel n'est lié à aucun compte Chic Secret.",
+  "error_user_cant_be_you": "Le courriel doit être différent de celui lié à votre compte.",
 
   "general": "Général",
   "email": "Courriel",

@@ -128,7 +128,8 @@ class SynchronizationProvider with ChangeNotifier {
       if (user != null) {
         var newUser = await UserApi.getCurrentUser();
 
-        if (newUser.updatedAt.millisecond > user.updatedAt.millisecond) {
+        if (newUser != null &&
+            newUser.updatedAt.millisecond > user.updatedAt.millisecond) {
           await UserService.update(newUser);
           await Security.setCurrentUser(user);
         }

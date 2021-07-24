@@ -43,9 +43,13 @@ class UserApi {
   }
 
   /// Get the current user logged in
-  static Future<User> getCurrentUser() async {
+  static Future<User?> getCurrentUser() async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
+
+    if (accessToken == null || accessToken.isEmpty) {
+      return null;
+    }
 
     var response = await client.get(
       Uri.parse("$url$getUser"),
@@ -54,6 +58,30 @@ class UserApi {
 
     if (response.statusCode == 200) {
       return User.fromJson(json.decode(response.body)["user"]);
+    } else {
+      throw ApiError.fromJson(json.decode(response.body));
+    }
+  }
+
+  /// Get the user by email
+  static Future<User?> getUserByEmail(String email) async {
+    var client = http.Client();
+    var accessToken = await Security.getAccessToken();
+
+    if (accessToken == null || accessToken.isEmpty) {
+      return null;
+    }
+
+    var response = await client.get(
+      Uri.parse("$url$getUser/$email"),
+      headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"},
+    );
+
+    if (response.statusCode == 200) {
+      return User.fromJson(json.decode(response.body)["user"]);
+    } else if (response.statusCode == 401) {
+      await AuthApi.refreshAccessToken();
+      return await getUserByEmail(email);
     } else {
       throw ApiError.fromJson(json.decode(response.body));
     }
@@ -81,7 +109,7 @@ class UserApi {
     );
 
     if (response.statusCode == 200) {
-      List<dynamic> dataList = json.decode(response.body)["vaults"];
+      List<dynamic> dataList = json.decode(response.body)["users"];
 
       for (var data in dataList) {
         var user = User.fromJson(data);

@@ -62,7 +62,7 @@ class VaultUserApi {
     );
 
     if (response.statusCode == 200) {
-      List<dynamic> dataList = json.decode(response.body)["entry_tags"];
+      List<dynamic> dataList = json.decode(response.body)["vault_users"];
 
       for (var data in dataList) {
         var vaultUser = VaultUser.fromJson(data);

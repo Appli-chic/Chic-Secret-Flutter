@@ -1,21 +1,26 @@
+import 'package:chic_secret/api/user_api.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/user.dart';
 import 'package:chic_secret/model/database/vault.dart';
+import 'package:chic_secret/model/database/vault_user.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
+import 'package:chic_secret/service/vault_user_service.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
+import 'package:chic_secret/ui/component/tag_chip.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -51,15 +56,30 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
   var _desktopVerifyPasswordFocusNode = FocusNode();
   var _desktopUsersFocusNode = FocusNode();
 
+  List<String> _emails = [];
+  List<User> _users = [];
+
   @override
   void initState() {
     if (widget.vault != null) {
       _nameController = TextEditingController(text: widget.vault!.name);
+      _loadUsers();
     }
 
     _getUser();
 
     super.initState();
+  }
+
+  /// Load the users linked to the vault
+  _loadUsers() async {
+    _users = await UserService.getUsersByVault(widget.vault!.id);
+
+    for (var user in _users) {
+      _emails.add(user.email);
+    }
+
+    setState(() {});
   }
 
   /// Retrieve the user information
@@ -243,6 +263,13 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
                       desktopFocus: _desktopUsersFocusNode,
                       textCapitalization: TextCapitalization.characters,
                       hint: AppTranslations.of(context).text("users_email"),
+                      onSubmitted: _checkEmailExists,
+                    )
+                  : SizedBox.shrink(),
+              _user != null ? SizedBox(height: 16.0) : SizedBox.shrink(),
+              _user != null
+                  ? Wrap(
+                      children: _createChipsList(themeProvider),
                     )
                   : SizedBox.shrink(),
             ],
@@ -252,10 +279,73 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     );
   }
 
+  /// Displays the list of chips for each email
+  List<Widget> _createChipsList(ThemeProvider themeProvider) {
+    List<Widget> chips = [];
+
+    for (var tagIndex = 0; tagIndex < _emails.length; tagIndex++) {
+      chips.add(
+        TagChip(
+          name: _emails[tagIndex],
+          index: tagIndex,
+          onDelete: (int index) {
+            _emails.removeAt(tagIndex);
+            setState(() {});
+          },
+        ),
+      );
+    }
+
+    return chips;
+  }
+
+  /// Check the email is linked to a user in the server
+  _checkEmailExists(String text) async {
+    EasyLoading.show();
+
+    try {
+      var user = await UserApi.getUserByEmail(text);
+
+      if (_user != null && _user!.email == text) {
+        await EasyLoading.showError(
+          AppTranslations.of(context).text("error_user_cant_be_you"),
+          duration: const Duration(milliseconds: 4000),
+          dismissOnTap: true,
+        );
+      } else {
+        if (user != null) {
+          _emails.add(text);
+          _usersController.clear();
+          setState(() {});
+          EasyLoading.dismiss();
+
+          if (await UserService.exists(user.id)) {
+            UserService.update(user);
+          } else {
+            UserService.save(user);
+          }
+        } else {
+          await EasyLoading.showError(
+            AppTranslations.of(context).text("error_user_dont_exist"),
+            duration: const Duration(milliseconds: 4000),
+            dismissOnTap: true,
+          );
+        }
+      }
+    } catch (e) {
+      print(e);
+
+      await EasyLoading.showError(
+        AppTranslations.of(context).text("error_user_dont_exist"),
+        duration: const Duration(milliseconds: 4000),
+        dismissOnTap: true,
+      );
+    }
+  }
+
   /// Save or update a vault in the local database
   _save() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-      var user = await Security.getCurrentUser();
       Vault vault;
 
       if (widget.vault != null) {
@@ -271,7 +361,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
           id: Uuid().v4(),
           name: _nameController.text,
           signature: Security.encrypt(_passwordController.text, signature),
-          userId: user != null ? user.id : null,
+          userId: _user != null ? _user!.id : null,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         );
@@ -308,6 +398,31 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
         // Select the vault and keep the password in memory
         selectedVault = vault;
         currentPassword = _passwordController.text;
+      }
+
+      // Save all the users linked to the vault
+      for (var email in _emails) {
+        // Check if the user linked to the vault already exist in the database
+        var user = await UserService.getUserByEmail(email);
+
+        // Save the Vault user if the user isn't already linked to it
+        if (_users.where((u) => u.email == user!.email).isEmpty) {
+          var vaultUser = VaultUser(
+            vaultId: vault.id,
+            userId: user!.id,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          );
+
+          await VaultUserService.save(vaultUser);
+        }
+      }
+
+      // Delete the tags if they are not linked to the entry anymore
+      for (var user in _users) {
+        if (_emails.where((u) => u == user.email).isEmpty) {
+          await VaultUserService.delete(vault.id, user.id);
+        }
       }
 
       _synchronizationProvider.synchronize();
