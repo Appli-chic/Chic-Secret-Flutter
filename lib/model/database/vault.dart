@@ -1,3 +1,4 @@
+import 'package:chic_secret/model/database/vault_user.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 import 'package:intl/intl.dart';
 
@@ -14,6 +15,8 @@ class Vault {
   DateTime createdAt;
   DateTime updatedAt;
   DateTime? deletedAt;
+
+  List<VaultUser> vaultUsers = [];
 
   Vault({
     required this.id,

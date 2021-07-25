@@ -1,4 +1,5 @@
 import 'package:chic_secret/model/database/vault.dart';
+import 'package:chic_secret/model/database/vault_user.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 import 'package:intl/intl.dart';
@@ -36,14 +37,40 @@ class VaultService {
   /// Retrieve all the vaults
   static Future<List<Vault>> getAll() async {
     List<Vault> vaults = [];
-    List<Map<String, dynamic>> maps = await db.query(
-      vaultTable,
-      where: "$columnDeletedAt IS NULL"
-    );
 
+    var query = """
+    SELECT DISTINCT v.$columnId, v.$columnVaultName, v.$columnVaultSignature,
+    v.$columnVaultUserId, v.$columnCreatedAt, v.$columnUpdatedAt, v.$columnDeletedAt,
+    
+    vu.$columnVaultUserVaultId as vu_$columnVaultUserVaultId, 
+    vu.$columnVaultUserUserId as vu_$columnVaultUserUserId,
+    vu.$columnCreatedAt as vu_$columnCreatedAt, 
+    vu.$columnUpdatedAt as vu_$columnUpdatedAt, 
+    vu.$columnDeletedAt as vu_$columnDeletedAt
+    
+    FROM $vaultTable as v
+    LEFT JOIN $vaultUserTable as vu ON vu.$columnVaultUserVaultId = v.$columnId
+    WHERE v.$columnDeletedAt IS NULL
+    AND vu.$columnDeletedAt IS NULL
+    
+    ORDER BY v.$columnId, v.$columnCreatedAt
+    """;
+
+    var maps = await db.rawQuery(query);
     if (maps.isNotEmpty) {
       for (var map in maps) {
-        vaults.add(Vault.fromMap(map));
+        var vault = Vault.fromMap(map);
+
+        var vaultQueried = vaults.where((v) => v.id == vault.id).toList();
+        if (vaultQueried.isEmpty) {
+          if (map["vu_" + columnVaultUserVaultId] != null) {
+            vault.vaultUsers.add(VaultUser.fromMap(map, prefix: "vu_"));
+          }
+
+          vaults.add(vault);
+        } else {
+          vaultQueried[0].vaultUsers.add(VaultUser.fromMap(map, prefix: "vu_"));
+        }
       }
     }
 

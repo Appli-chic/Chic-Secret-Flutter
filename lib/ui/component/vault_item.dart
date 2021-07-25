@@ -58,6 +58,12 @@ class _VaultItemState extends State<VaultItem> {
           Icons.lock,
           color: themeProvider.textColor,
         ),
+        trailing: widget.vault.vaultUsers.isNotEmpty
+            ? Icon(
+                Icons.group,
+                color: themeProvider.textColor,
+              )
+            : null,
         title: Text(
           widget.vault.name,
           style: TextStyle(
@@ -107,19 +113,30 @@ class _VaultItemState extends State<VaultItem> {
                         : themeProvider.secondTextColor,
                     size: 13,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Text(
-                      widget.vault.name,
-                      style: TextStyle(
-                        color: widget.isSelected
-                            ? themeProvider.textColor
-                            : themeProvider.secondTextColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Text(
+                        widget.vault.name,
+                        style: TextStyle(
+                          color: widget.isSelected
+                              ? themeProvider.textColor
+                              : themeProvider.secondTextColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
+                  widget.vault.vaultUsers.isNotEmpty
+                      ? Icon(
+                          Icons.group,
+                          color: widget.isSelected
+                              ? themeProvider.textColor
+                              : themeProvider.secondTextColor,
+                          size: 13,
+                        )
+                      : SizedBox.shrink(),
                 ],
               ),
             ),

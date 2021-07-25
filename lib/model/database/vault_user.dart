@@ -60,18 +60,31 @@ class VaultUser {
   }
 
   /// Transform a map of [data] into a vault user
-  factory VaultUser.fromMap(Map<String, dynamic> data) {
-    var createdAtString = DateTime.parse(data[columnCreatedAt]);
-    var updatedAtString = DateTime.parse(data[columnUpdatedAt]);
+  factory VaultUser.fromMap(Map<String, dynamic> data, {String? prefix}) {
+    var createdAtString = DateTime.parse(prefix != null
+        ? data[prefix + columnCreatedAt]
+        : data[columnCreatedAt]);
+    var updatedAtString = DateTime.parse(prefix != null
+        ? data[prefix + columnUpdatedAt]
+        : data[columnUpdatedAt]);
     var deletedAtString;
 
-    if (data[columnDeletedAt] != null) {
-      deletedAtString = DateTime.parse(data[columnDeletedAt]);
+    var deletedDate =
+        prefix != null ? data[prefix + columnDeletedAt] : data[columnDeletedAt];
+
+    if (deletedDate != null) {
+      deletedAtString = DateTime.parse(prefix != null
+          ? data[prefix + columnDeletedAt]
+          : data[columnDeletedAt]);
     }
 
     return VaultUser(
-      vaultId: data[columnVaultUserVaultId],
-      userId: data[columnVaultUserUserId],
+      vaultId: prefix != null
+          ? data[prefix + columnVaultUserVaultId]
+          : data[columnVaultUserVaultId],
+      userId: prefix != null
+          ? data[prefix + columnVaultUserUserId]
+          : data[columnVaultUserUserId],
       createdAt: createdAtString,
       updatedAt: updatedAtString,
       deletedAt: deletedAtString,
