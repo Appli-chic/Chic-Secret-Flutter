@@ -105,6 +105,8 @@
   "login_code_message": "A login code had been sent to your email.",
   "error_user_dont_exist": "This email isn't linked to any Chic Secret user.",
   "error_user_cant_be_you": "The email must be different to the one linked to your account.",
+  "cant_delete_vault_not_owner": "Only the owner of this vault can delete it.",
+  "warning_message_delete_vault": "Are you sure to delete definitely the {} vault ?\nAll the passwords, categories, tags in this vault are going to be definitively deleted.",
 
   "general": "General",
   "email": "Email",

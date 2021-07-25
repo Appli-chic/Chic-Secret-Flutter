@@ -1,3 +1,4 @@
+import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/entry_tag.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
@@ -56,6 +57,18 @@ class EntryTagService {
       UPDATE $entryTagTable 
       SET $columnDeletedAt = '$date', $columnUpdatedAt = '$date' 
       WHERE $columnEntryTagEntryId = '$entryId'
+      """);
+  }
+
+  /// Delete all the links between tags and the vault
+  static Future<void> deleteAllFromVault(String vaultId) async {
+    var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    String date = dateFormatter.format(DateTime.now());
+
+    await db.rawUpdate("""
+      UPDATE $entryTagTable 
+      SET $columnDeletedAt = '$date', $columnUpdatedAt = '$date' 
+      WHERE $columnEntryTagEntryId IN (SELECT $columnId FROM $entryTable WHERE $columnEntryVaultId = '$vaultId')
       """);
   }
 

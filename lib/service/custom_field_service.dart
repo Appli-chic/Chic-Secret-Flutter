@@ -1,4 +1,5 @@
 import 'package:chic_secret/model/database/custom_field.dart';
+import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 import 'package:intl/intl.dart';
@@ -70,6 +71,18 @@ class CustomFieldService {
       UPDATE $customFieldTable 
       SET $columnDeletedAt = '$date', $columnUpdatedAt = '$date' 
       WHERE $columnCustomFieldEntryId = '$entryId'
+      """);
+  }
+
+  /// Delete all the custom fields of a vault
+  static Future<void> deleteAllFromVault(String vaultId) async {
+    var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    String date = dateFormatter.format(DateTime.now());
+
+    await db.rawUpdate("""
+      UPDATE $customFieldTable
+      SET $columnDeletedAt = '$date', $columnUpdatedAt = '$date' 
+      WHERE $columnCustomFieldEntryId IN (SELECT $columnId FROM $entryTable WHERE $columnEntryVaultId = '$vaultId')
       """);
   }
 

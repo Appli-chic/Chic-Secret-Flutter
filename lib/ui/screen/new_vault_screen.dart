@@ -7,6 +7,10 @@ import 'package:chic_secret/model/database/vault_user.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
+import 'package:chic_secret/service/custom_field_service.dart';
+import 'package:chic_secret/service/entry_service.dart';
+import 'package:chic_secret/service/entry_tag_service.dart';
+import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
 import 'package:chic_secret/service/vault_user_service.dart';
@@ -26,9 +30,11 @@ import 'package:uuid/uuid.dart';
 
 class NewVaultScreen extends StatefulWidget {
   final Vault? vault;
+  final bool isFromSettings;
 
   NewVaultScreen({
     this.vault,
+    this.isFromSettings = false,
   });
 
   @override
@@ -119,6 +125,19 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
             },
           ),
         ),
+        widget.vault != null &&
+                _user != null &&
+                widget.vault!.userId == _user!.id &&
+                widget.isFromSettings
+            ? Container(
+                margin: EdgeInsets.only(right: 8, bottom: 8),
+                child: ChicElevatedButton(
+                  child: Text(AppTranslations.of(context).text("delete")),
+                  backgroundColor: Colors.red,
+                  onPressed: _delete,
+                ),
+              )
+            : SizedBox(),
         Container(
           margin: EdgeInsets.only(right: 8, bottom: 8),
           child: ChicElevatedButton(
@@ -153,6 +172,18 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
         brightness: themeProvider.getBrightness(),
         title: Text(AppTranslations.of(context).text("new_vault")),
         actions: [
+          widget.vault != null &&
+                  _user != null &&
+                  widget.vault!.userId == _user!.id &&
+                  widget.isFromSettings
+              ? IconButton(
+                  icon: Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                  ),
+                  onPressed: _delete,
+                )
+              : SizedBox(),
           ChicTextButton(
             child: Text(AppTranslations.of(context).text("save").toUpperCase()),
             onPressed: _save,
@@ -341,6 +372,77 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
         dismissOnTap: true,
       );
     }
+  }
+
+  /// Delete the vault and all the content the data
+  _delete() async {
+    if (widget.vault != null && widget.vault!.userId == _user!.id) {
+      // Check if the user is willing to delete the vault
+      var toDelete = await _displaysDialogSureToDelete();
+      if (toDelete) {
+        // Delete all the data
+        EasyLoading.show();
+
+        try {
+          await VaultUserService.deleteFromVault(widget.vault!.id);
+          await EntryTagService.deleteAllFromVault(widget.vault!.id);
+          await TagService.deleteAllFromVault(widget.vault!.id);
+          await CustomFieldService.deleteAllFromVault(widget.vault!.id);
+          await CategoryService.deleteAllFromVault(widget.vault!.id);
+          await EntryService.deleteAllFromVault(widget.vault!.id);
+          await VaultService.delete(widget.vault!);
+
+          selectedVault = null;
+          currentPassword = null;
+          _synchronizationProvider.synchronize();
+        } catch (e) {
+          print(e);
+        }
+
+        Navigator.pop(context, true);
+      }
+
+      EasyLoading.dismiss();
+    } else {
+      await EasyLoading.showError(
+        AppTranslations.of(context).text("cant_delete_vault_not_owner"),
+        duration: const Duration(milliseconds: 4000),
+        dismissOnTap: true,
+      );
+    }
+  }
+
+  Future<bool> _displaysDialogSureToDelete() async {
+    return await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(AppTranslations.of(context).text("warning")),
+            content: Text(
+              AppTranslations.of(context).textWithArgument(
+                  "warning_message_delete_vault", widget.vault!.name),
+            ),
+            actions: [
+              TextButton(
+                child: Text(
+                  AppTranslations.of(context).text("cancel"),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              TextButton(
+                child: Text(
+                  AppTranslations.of(context).text("delete"),
+                  style: TextStyle(color: Colors.red),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ],
+          );
+        });
   }
 
   /// Save or update a vault in the local database

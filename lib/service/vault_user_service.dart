@@ -67,4 +67,16 @@ class VaultUserService {
       WHERE $columnVaultUserVaultId = '$vaultId' AND $columnVaultUserUserId = '$userId'
     """);
   }
+
+  /// Delete a vault user from a vault
+  static Future<void> deleteFromVault(String vaultId) async {
+    var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    String date = dateFormatter.format(DateTime.now());
+
+    await db.rawUpdate("""
+      UPDATE $vaultUserTable 
+      SET $columnDeletedAt = '$date', $columnUpdatedAt = '$date' 
+      WHERE $columnVaultUserVaultId = '$vaultId'
+    """);
+  }
 }

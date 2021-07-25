@@ -36,6 +36,18 @@ class VaultService {
     return data.isNotEmpty;
   }
 
+  /// Delete a [vault] from the local database
+  static Future<void> delete(Vault vault) async {
+    vault.deletedAt = DateTime.now();
+    vault.updatedAt = DateTime.now();
+
+    await db.update(
+      vaultTable,
+      vault.toMap(),
+      where: "$columnId = '${vault.id}'",
+    );
+  }
+
   /// Retrieve all the vaults the user has access to
   static Future<List<Vault>> getAll() async {
     List<Vault> allVaults = [];

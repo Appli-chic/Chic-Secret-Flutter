@@ -552,6 +552,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
               // Move to the main screen
               await ChicNavigator.push(context, MainMobileScreen());
 
+              _loadVaults();
               _isUserLogged();
             }
           },
@@ -675,6 +676,8 @@ class _VaultsScreenState extends State<VaultsScreen> {
 
       if (!ChicPlatform.isDesktop()) {
         await ChicNavigator.push(context, MainMobileScreen());
+        _isUserLogged();
+        _loadVaults();
       }
     }
   }

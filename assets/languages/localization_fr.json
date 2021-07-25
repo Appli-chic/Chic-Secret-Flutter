@@ -105,6 +105,8 @@
   "login_code_message": "Un code de connexion a été envoyé à votre courriel.",
   "error_user_dont_exist": "Ce courriel n'est lié à aucun compte Chic Secret.",
   "error_user_cant_be_you": "Le courriel doit être différent de celui lié à votre compte.",
+  "cant_delete_vault_not_owner": "Seul le propriétaire de ce coffre peut le supprimer.",
+  "warning_message_delete_vault": "Êtes-vous certains de vouloir supprimer le coffre {} ?\nTous les mots de passe, catégories et tags de ce coffre seront définitivement supprimés.",
 
   "general": "Général",
   "email": "Courriel",

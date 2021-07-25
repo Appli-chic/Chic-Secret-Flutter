@@ -45,6 +45,18 @@ class CategoryService {
     return data.isNotEmpty;
   }
 
+  /// Delete all the categories from the vault
+  static Future<void> deleteAllFromVault(String vaultId) async {
+    var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    String date = dateFormatter.format(DateTime.now());
+
+    await db.rawUpdate("""
+      UPDATE $categoryTable
+      SET $columnDeletedAt = '$date', $columnUpdatedAt = '$date' 
+      WHERE $columnCategoryVaultId = '$vaultId'
+      """);
+  }
+
   /// Retrieve the trash category linked to a vault
   static Future<Category?> getTrashByVault(String vaultId) async {
     List<Map<String, dynamic>> maps = await db.query(

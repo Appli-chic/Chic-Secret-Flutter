@@ -58,6 +58,18 @@ class EntryService {
     return data.isNotEmpty;
   }
 
+  /// Delete all the entries from the vault
+  static Future<void> deleteAllFromVault(String vaultId) async {
+    var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    String date = dateFormatter.format(DateTime.now());
+
+    await db.rawUpdate("""
+      UPDATE $entryTable
+      SET $columnDeletedAt = '$date', $columnUpdatedAt = '$date', $columnEntryHash = 'deleted'
+      WHERE $columnEntryVaultId = '$vaultId'
+      """);
+  }
+
   /// Hard delete of the entry
   static Future<void> deleteDefinitively(Entry entry) async {
     await EntryTagService.deleteAllFromEntry(entry.id);

@@ -1,3 +1,4 @@
+import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/entry_tag.dart';
 import 'package:chic_secret/model/database/tag.dart';
 import 'package:chic_secret/utils/database.dart';
@@ -60,6 +61,20 @@ class TagService {
     }
 
     return null;
+  }
+
+  /// Delete all the tags from the vault
+  static Future<void> deleteAllFromVault(String vaultId) async {
+    var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    String date = dateFormatter.format(DateTime.now());
+
+    await db.rawUpdate("""
+      UPDATE $tagTable
+      SET $columnDeletedAt = '$date', $columnUpdatedAt = '$date' 
+      WHERE $columnId IN (SELECT $columnEntryTagTagId FROM $entryTagTable 
+        LEFT JOIN $entryTable ON $entryTable.$columnId = $entryTagTable.$columnEntryTagEntryId
+        WHERE $entryTable.$columnEntryVaultId = '$vaultId')
+      """);
   }
 
   /// Retrieve all the tags linked to a vault

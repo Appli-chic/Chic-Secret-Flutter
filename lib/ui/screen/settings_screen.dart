@@ -243,14 +243,20 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   /// On subscribe clicked move to the subscribe page
   _onEditVaultClicked() async {
-    await ChicNavigator.push(
+    var isDeleted = await ChicNavigator.push(
       context,
-      NewVaultScreen(vault: selectedVault),
+      NewVaultScreen(vault: selectedVault, isFromSettings: true),
       isModal: true,
     );
 
     if (widget.onDataChanged != null) {
       widget.onDataChanged!();
+    }
+
+    if (isDeleted != null && isDeleted) {
+      if (!ChicPlatform.isDesktop()) {
+        Navigator.pop(context, true);
+      }
     }
   }
 
