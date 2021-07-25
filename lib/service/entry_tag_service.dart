@@ -38,11 +38,11 @@ class EntryTagService {
   /// Delete a [entryTag] from the local database
   static Future<void> delete(String entryId, String tagId) async {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-    String deleteDate = dateFormatter.format(DateTime.now());
+    String date = dateFormatter.format(DateTime.now());
 
     await db.rawUpdate("""
       UPDATE $entryTagTable 
-      SET $columnDeletedAt = '$deleteDate' 
+      SET $columnDeletedAt = '$date', $columnUpdatedAt = '$date' 
       WHERE $columnEntryTagEntryId = '$entryId' and $columnEntryTagTagId = '$tagId'
     """);
   }
@@ -50,11 +50,11 @@ class EntryTagService {
   /// Delete all the links between tags and the entry
   static Future<void> deleteAllFromEntry(String entryId) async {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-    String deleteDate = dateFormatter.format(DateTime.now());
+    String date = dateFormatter.format(DateTime.now());
 
     await db.rawUpdate("""
       UPDATE $entryTagTable 
-      SET $columnDeletedAt = '$deleteDate' 
+      SET $columnDeletedAt = '$date', $columnUpdatedAt = '$date' 
       WHERE $columnEntryTagEntryId = '$entryId'
       """);
   }
@@ -62,11 +62,11 @@ class EntryTagService {
   /// Delete all the links between tags and the entry
   static Future<void> deleteAllFromTag(String tagId) async {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-    String deleteDate = dateFormatter.format(DateTime.now());
+    String date = dateFormatter.format(DateTime.now());
 
     await db.rawUpdate("""
       UPDATE $entryTagTable 
-      SET $columnDeletedAt = '$deleteDate' 
+      SET $columnDeletedAt = '$date', $columnUpdatedAt = '$date' 
       WHERE $columnEntryTagTagId = '$tagId'
       """);
   }

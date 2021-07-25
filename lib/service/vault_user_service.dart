@@ -1,4 +1,3 @@
-import 'package:chic_secret/model/database/entry_tag.dart';
 import 'package:chic_secret/model/database/vault_user.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
@@ -60,11 +59,11 @@ class VaultUserService {
   /// Delete a vault user from the local database
   static Future<void> delete(String vaultId, String userId) async {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-    String deleteDate = dateFormatter.format(DateTime.now());
+    String date = dateFormatter.format(DateTime.now());
 
     await db.rawUpdate("""
       UPDATE $vaultUserTable 
-      SET $columnDeletedAt = '$deleteDate' 
+      SET $columnDeletedAt = '$date', $columnUpdatedAt = '$date' 
       WHERE $columnVaultUserVaultId = '$vaultId' AND $columnVaultUserUserId = '$userId'
     """);
   }

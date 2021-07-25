@@ -64,6 +64,7 @@ class EntryService {
     await CustomFieldService.deleteAllFromEntry(entry.id);
 
     entry.deletedAt = DateTime.now();
+    entry.updatedAt = DateTime.now();
     entry.hash = "deleted";
 
     await db.update(

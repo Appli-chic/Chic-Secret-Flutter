@@ -36,6 +36,7 @@ class CustomFieldService {
   /// Delete a [customField] from the local database
   static Future<void> delete(CustomField customField) async {
     customField.deletedAt = DateTime.now();
+    customField.updatedAt = DateTime.now();
 
     await db.update(
       customFieldTable,
@@ -63,11 +64,11 @@ class CustomFieldService {
   /// Delete all the custom fields of an entry
   static Future<void> deleteAllFromEntry(String entryId) async {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-    String deleteDate = dateFormatter.format(DateTime.now());
+    String date = dateFormatter.format(DateTime.now());
 
     await db.rawUpdate("""
       UPDATE $customFieldTable 
-      SET $columnDeletedAt = '$deleteDate' 
+      SET $columnDeletedAt = '$date', $columnUpdatedAt = '$date' 
       WHERE $columnCustomFieldEntryId = '$entryId'
       """);
   }

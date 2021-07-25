@@ -69,7 +69,7 @@ class UserService {
     SELECT u.$columnId, u.$columnUserEmail, u.$columnCreatedAt, 
     u.$columnUpdatedAt, u.$columnDeletedAt
     FROM $userTable as u
-    LEFT JOIN $vaultUserTable vu et ON vu.$columnVaultUserUserId = u.$columnId
+    LEFT JOIN $vaultUserTable as vu ON vu.$columnVaultUserUserId = u.$columnId
     WHERE vu.$columnVaultUserVaultId = '$vaultId' AND vu.$columnDeletedAt IS NULL 
     AND u.$columnDeletedAt IS NULL
     """;

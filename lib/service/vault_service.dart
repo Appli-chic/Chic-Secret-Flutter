@@ -1,7 +1,9 @@
 import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/model/database/vault_user.dart';
+import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
+import 'package:chic_secret/utils/security.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -34,8 +36,9 @@ class VaultService {
     return data.isNotEmpty;
   }
 
-  /// Retrieve all the vaults
+  /// Retrieve all the vaults the user has access to
   static Future<List<Vault>> getAll() async {
+    List<Vault> allVaults = [];
     List<Vault> vaults = [];
 
     var query = """
@@ -51,25 +54,38 @@ class VaultService {
     FROM $vaultTable as v
     LEFT JOIN $vaultUserTable as vu ON vu.$columnVaultUserVaultId = v.$columnId
     WHERE v.$columnDeletedAt IS NULL
-    AND vu.$columnDeletedAt IS NULL
     
     ORDER BY v.$columnId, v.$columnCreatedAt
     """;
 
+    // Get the list of vaults
     var maps = await db.rawQuery(query);
     if (maps.isNotEmpty) {
       for (var map in maps) {
         var vault = Vault.fromMap(map);
 
-        var vaultQueried = vaults.where((v) => v.id == vault.id).toList();
+        var vaultQueried = allVaults.where((v) => v.id == vault.id).toList();
         if (vaultQueried.isEmpty) {
           if (map["vu_" + columnVaultUserVaultId] != null) {
             vault.vaultUsers.add(VaultUser.fromMap(map, prefix: "vu_"));
           }
 
-          vaults.add(vault);
+          allVaults.add(vault);
         } else {
           vaultQueried[0].vaultUsers.add(VaultUser.fromMap(map, prefix: "vu_"));
+        }
+      }
+    }
+
+    // Check our access to the vaults
+    var user = await Security.getCurrentUser();
+    if (user != null) {
+      for (var vault in allVaults) {
+        if (vault.userId == user.id ||
+            vault.vaultUsers
+                .where((v) => v.userId == user.id && v.deletedAt == null)
+                .isNotEmpty) {
+          vaults.add(vault);
         }
       }
     }

@@ -9,6 +9,7 @@ class TagService {
   /// Delete a [tag] from the local database
   static Future<void> delete(Tag tag) async {
     tag.deletedAt = DateTime.now();
+    tag.updatedAt = DateTime.now();
 
     await db.update(
       tagTable,

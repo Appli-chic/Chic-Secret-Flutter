@@ -8,6 +8,7 @@ class CategoryService {
   /// Delete a [category] from the local database
   static Future<void> delete(Category category) async {
     category.deletedAt = DateTime.now();
+    category.updatedAt = DateTime.now();
 
     await db.update(
       categoryTable,
