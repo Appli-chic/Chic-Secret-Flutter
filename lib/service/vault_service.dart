@@ -1,6 +1,5 @@
 import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/model/database/vault_user.dart';
-import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 import 'package:chic_secret/utils/security.dart';

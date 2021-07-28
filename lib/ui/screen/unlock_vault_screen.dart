@@ -42,7 +42,7 @@ class _UnlockVaultScreenState extends State<UnlockVaultScreen> {
     super.initState();
   }
 
-  /// Unlock
+  /// Unlock the vault with Face ID or fingerprint
   _unlockWithBiometry() async {
     var isUsingBiometry =
         await Security.isPasswordSavedForBiometry(widget.vault);
