@@ -132,6 +132,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         r"A-Z0-9]+\.[a-zA-Z]+")
                     .hasMatch(_emailController.text);
               },
+              onSubmitted: (String text) {
+                _codeFocusNode.requestFocus();
+              },
             ),
             !_isAskingCode ? SizedBox(height: 16.0) : SizedBox.shrink(),
             !_isAskingCode
@@ -139,13 +142,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _codeController,
                     focus: _codeFocusNode,
                     desktopFocus: _desktopCodeFocusNode,
-                    autoFocus: true,
+                    autoFocus: false,
                     textCapitalization: TextCapitalization.none,
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.number,
                     hint: AppTranslations.of(context).text("code"),
                     errorMessage:
                         AppTranslations.of(context).text("error_code"),
                     validating: (String text) => text.isNotEmpty,
+                    onSubmitted: (String text) {
+                      if (_isAskingCode) {
+                        _onAskingLoginCode();
+                      } else {
+                        _onLogin();
+                      }
+                    },
                   )
                 : SizedBox.shrink(),
             !_isAskingCode ? SizedBox(height: 16.0) : SizedBox.shrink(),

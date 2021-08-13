@@ -99,6 +99,8 @@ class VaultService {
           vaults.add(vault);
         }
       }
+    } else {
+      vaults.addAll(allVaults);
     }
 
     return vaults;
