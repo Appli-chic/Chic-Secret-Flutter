@@ -167,7 +167,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
               ),
             ),
           ),
-          !_isUserLoggedIn
+          !_isUserLoggedIn && selectedVault == null
               ? Container(
                   margin: EdgeInsets.only(left: 16, bottom: 8, top: 6),
                   child: ChicTextIconButton(

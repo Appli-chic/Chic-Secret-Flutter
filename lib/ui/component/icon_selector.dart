@@ -68,7 +68,7 @@ class _IconSelectorState extends State<IconSelector> {
     if (ChicPlatform.isDesktop() && _iconsListSize != 9) {
       _iconsListSize = 9;
       _onIconChange(widget.icon);
-    } else if (shortestSide > 600 && _iconsListSize != 12) {
+    } else if (!ChicPlatform.isDesktop() && shortestSide > 600 && _iconsListSize != 12) {
       _iconsListSize = 12;
       _onIconChange(widget.icon);
     }

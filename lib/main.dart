@@ -72,13 +72,14 @@ class _AppState extends State<App> {
         ],
         supportedLocales: [
           const Locale('en', ''), // English
-          const Locale('fr', ''), // French
-          const Locale('es', ''), // Spanish
+          // const Locale('fr', ''), // French
+          // const Locale('es', ''), // Spanish
         ],
         localeListResolutionCallback:
             (List<Locale>? locales, Iterable<Locale> supportedLocales) {
           if (locales != null) {
             for (final locale in locales) {
+              
               var localeFiltered = supportedLocales
                   .where((l) => l.languageCode == locale.languageCode);
 
