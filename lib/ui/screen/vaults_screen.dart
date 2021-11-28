@@ -15,6 +15,7 @@ import 'package:chic_secret/ui/component/category_item.dart';
 import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
+import 'package:chic_secret/ui/component/desktop_expandable_menu.dart';
 import 'package:chic_secret/ui/component/tag_item.dart';
 import 'package:chic_secret/ui/component/vault_item.dart';
 import 'package:chic_secret/ui/screen/login_screen.dart';
@@ -244,33 +245,12 @@ class _VaultsScreenState extends State<VaultsScreen> {
 
   /// Displays the list of vaults for the desktop version
   Widget _displaysVaults(ThemeProvider themeProvider) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              margin: EdgeInsets.only(left: 8),
-              child: Text(
-                AppTranslations.of(context).text("vaults"),
-                style: TextStyle(
-                  color: themeProvider.labelColor,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 13,
-                ),
-              ),
-            ),
-            ChicIconButton(
-              icon: Icons.add,
-              size: 17,
-              color: themeProvider.textColor,
-              onPressed: _onAddVaultClicked,
-            ),
-          ],
-        ),
-        ListView.builder(
+    return Container(
+      margin: EdgeInsets.only(top: 8),
+      child: DesktopExpandableMenu(
+        title: AppTranslations.of(context).text("vaults"),
+        onAddButtonClicked: _onAddVaultClicked,
+        child: ListView.builder(
           shrinkWrap: true,
           itemCount: _vaults.length,
           itemBuilder: (context, index) {
@@ -283,95 +263,74 @@ class _VaultsScreenState extends State<VaultsScreen> {
               onVaultChanged: () {
                 widget.onVaultChange();
               },
-              onTap: (vault) async {
-                var unlockingPassword;
-
-                if (vaultPasswordMap[vault.id] != null) {
-                  // The vault is already unlocked
-                  unlockingPassword = vaultPasswordMap[vault.id];
-                } else {
-                  // The vault need to be unlocked
-                  unlockingPassword = await _isVaultUnlocking(vault);
-
-                  // If the vault haven't been unlocked then we stop it there
-                  if (unlockingPassword == null) {
-                    return;
-                  }
-
-                  // We just unlocked the vault so we save this information
-                  vaultPasswordMap[vault.id] = unlockingPassword;
-                }
-
-                // Set the selected category back to null
-                selectedCategory = null;
-                selectedVault = vault;
-                currentPassword = unlockingPassword;
-
-                // Set the entry length if they don't have one
-                var entriesWithoutPasswordLength =
-                    await EntryService.getEntriesWithoutPasswordLength();
-
-                Future(() async {
-                  for (var entry in entriesWithoutPasswordLength) {
-                    try {
-                      var password =
-                          Security.decrypt(currentPassword!, entry.hash);
-
-                      entry.passwordSize = password.length;
-                      entry.updatedAt = DateTime.now();
-                      await EntryService.update(entry);
-                    } catch (e) {
-                      print(e);
-                    }
-                  }
-
-                  _checkPasswordSecurity();
-                });
-
-                // Reload the data for this vault
-                _checkPasswordSecurity();
-                widget.onVaultChange();
-                _loadCategories();
-                _loadTags();
-
-                setState(() {});
-              },
+              onTap: _onAddVaultDesktop,
             );
           },
         ),
-      ],
+      ),
     );
+  }
+
+  /// On clicking to add a vault on desktop
+  _onAddVaultDesktop(Vault vault) async {
+    var unlockingPassword;
+
+    if (vaultPasswordMap[vault.id] != null) {
+      // The vault is already unlocked
+      unlockingPassword = vaultPasswordMap[vault.id];
+    } else {
+      // The vault need to be unlocked
+      unlockingPassword = await _isVaultUnlocking(vault);
+
+      // If the vault haven't been unlocked then we stop it there
+      if (unlockingPassword == null) {
+        return;
+      }
+
+      // We just unlocked the vault so we save this information
+      vaultPasswordMap[vault.id] = unlockingPassword;
+    }
+
+    // Set the selected category back to null
+    selectedCategory = null;
+    selectedVault = vault;
+    currentPassword = unlockingPassword;
+
+    // Set the entry length if they don't have one
+    var entriesWithoutPasswordLength =
+        await EntryService.getEntriesWithoutPasswordLength();
+
+    Future(() async {
+      for (var entry in entriesWithoutPasswordLength) {
+        try {
+          var password = Security.decrypt(currentPassword!, entry.hash);
+
+          entry.passwordSize = password.length;
+          entry.updatedAt = DateTime.now();
+          await EntryService.update(entry);
+        } catch (e) {
+          print(e);
+        }
+      }
+
+      _checkPasswordSecurity();
+    });
+
+    // Reload the data for this vault
+    _checkPasswordSecurity();
+    widget.onVaultChange();
+    _loadCategories();
+    _loadTags();
+
+    setState(() {});
   }
 
   /// Displays the categories for the desktop version
   Widget _displaysCategories(ThemeProvider themeProvider) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              margin: EdgeInsets.only(left: 8),
-              child: Text(
-                AppTranslations.of(context).text("categories"),
-                style: TextStyle(
-                  color: themeProvider.labelColor,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 13,
-                ),
-              ),
-            ),
-            ChicIconButton(
-              icon: Icons.add,
-              size: 17,
-              color: themeProvider.textColor,
-              onPressed: _onAddCategoryClicked,
-            ),
-          ],
-        ),
-        ListView.builder(
+    return DesktopExpandableMenu(
+        title: AppTranslations.of(context).text("categories"),
+        onAddButtonClicked: _onAddCategoryClicked,
+        child: ListView.builder(
           shrinkWrap: true,
           itemCount: _categories.length + 1,
           itemBuilder: (context, index) {
@@ -437,78 +396,63 @@ class _VaultsScreenState extends State<VaultsScreen> {
               );
             }
           },
-        ),
-      ],
-    );
+        ));
   }
 
   /// Displays the list of tags for the desktop version
   Widget _displaysTags(ThemeProvider themeProvider) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: EdgeInsets.only(left: 8, bottom: 12, top: 8),
-          child: Text(
-            AppTranslations.of(context).text("tags"),
-            style: TextStyle(
-              color: themeProvider.labelColor,
-              fontWeight: FontWeight.w500,
-              fontSize: 13,
-            ),
-          ),
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: _tags.length + 1,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              // Displays a "no tag" to stop the filter on tags
-              return TagItem(
-                isSelected: selectedTag == null,
-                onTap: (Tag? tag) {
+    return DesktopExpandableMenu(
+      title: AppTranslations.of(context).text("tags"),
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: _tags.length + 1,
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            // Displays a "no tag" to stop the filter on tags
+            return TagItem(
+              isSelected: selectedTag == null,
+              onTap: (Tag? tag) {
+                selectedTag = null;
+
+                if (widget.onTagChange != null) {
+                  widget.onTagChange!();
+                }
+
+                setState(() {});
+              },
+            );
+          } else {
+            // Display a tag
+            return TagItem(
+              tag: _tags[index - 1],
+              isSelected:
+                  selectedTag != null && selectedTag!.id == _tags[index - 1].id,
+              onTagChanged: (Tag tag, bool isDeleted) async {
+                if (tag == selectedTag && isDeleted) {
                   selectedTag = null;
+                }
 
-                  if (widget.onTagChange != null) {
-                    widget.onTagChange!();
-                  }
+                await _loadTags();
+                widget.onVaultChange();
+                if (widget.onTagChange != null) {
+                  widget.onTagChange!();
+                }
 
-                  setState(() {});
-                },
-              );
-            } else {
-              // Display a tag
-              return TagItem(
-                tag: _tags[index - 1],
-                isSelected: selectedTag != null &&
-                    selectedTag!.id == _tags[index - 1].id,
-                onTagChanged: (Tag tag, bool isDeleted) async {
-                  if (tag == selectedTag && isDeleted) {
-                    selectedTag = null;
-                  }
+                setState(() {});
+              },
+              onTap: (Tag? tag) {
+                selectedTag = tag;
 
-                  await _loadTags();
-                  widget.onVaultChange();
-                  if (widget.onTagChange != null) {
-                    widget.onTagChange!();
-                  }
+                if (widget.onTagChange != null) {
+                  widget.onTagChange!();
+                }
 
-                  setState(() {});
-                },
-                onTap: (Tag? tag) {
-                  selectedTag = tag;
-
-                  if (widget.onTagChange != null) {
-                    widget.onTagChange!();
-                  }
-
-                  setState(() {});
-                },
-              );
-            }
-          },
-        ),
-      ],
+                setState(() {});
+              },
+            );
+          }
+        },
+      ),
     );
   }
 

@@ -21,10 +21,13 @@ class ChicIconButtonType {
 
 class ChicIconButton extends StatelessWidget {
   final IconData icon;
-  final Function() onPressed;
+  final Function()? onPressed;
   final Color? color;
   final ChicIconButtonType type;
   final double? size;
+  final EdgeInsetsGeometry padding;
+  final double? width;
+  final double? height;
 
   ChicIconButton({
     required this.icon,
@@ -32,6 +35,9 @@ class ChicIconButton extends StatelessWidget {
     this.color,
     this.type = ChicIconButtonType.noBackground,
     this.size,
+    this.padding = const EdgeInsets.all(8.0),
+    this.width,
+    this.height,
   });
 
   @override
@@ -39,17 +45,22 @@ class ChicIconButton extends StatelessWidget {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
     if (type == ChicIconButtonType.noBackground) {
-      return IconButton(
-        splashColor: ChicPlatform.isDesktop() ? Colors.transparent : null,
-        focusColor: ChicPlatform.isDesktop() ? Colors.transparent : null,
-        highlightColor: ChicPlatform.isDesktop() ? Colors.transparent : null,
-        hoverColor: ChicPlatform.isDesktop() ? Colors.transparent : null,
-        icon: Icon(
-          icon,
-          color: color != null ? color! : themeProvider.textColor,
-          size: size,
+      return SizedBox(
+        width: width,
+        height: height,
+        child: IconButton(
+          padding: padding,
+          splashColor: ChicPlatform.isDesktop() ? Colors.transparent : null,
+          focusColor: ChicPlatform.isDesktop() ? Colors.transparent : null,
+          highlightColor: ChicPlatform.isDesktop() ? Colors.transparent : null,
+          hoverColor: ChicPlatform.isDesktop() ? Colors.transparent : null,
+          icon: Icon(
+            icon,
+            color: color != null ? color! : themeProvider.textColor,
+            size: size,
+          ),
+          onPressed: onPressed,
         ),
-        onPressed: onPressed,
       );
     }
     if (type == ChicIconButtonType.filledCircle) {
