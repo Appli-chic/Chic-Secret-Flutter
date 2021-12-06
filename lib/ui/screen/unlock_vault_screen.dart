@@ -129,7 +129,6 @@ class _UnlockVaultScreenState extends State<UnlockVaultScreen> {
     if (!ChicPlatform.isDesktop()) {
       return AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
-        brightness: themeProvider.getBrightness(),
         title: Text(AppTranslations.of(context).text("unlock_vault")),
         actions: [
           ChicTextButton(

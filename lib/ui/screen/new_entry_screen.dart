@@ -254,7 +254,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       backgroundColor: themeProvider.backgroundColor,
       appBar: AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
-        brightness: themeProvider.getBrightness(),
         title: widget.entry != null
             ? Text(widget.entry!.name)
             : Text(AppTranslations.of(context).text("new_password")),

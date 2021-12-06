@@ -111,7 +111,6 @@ class _ImportScreenState extends State<ImportScreen> {
       backgroundColor: themeProvider.backgroundColor,
       appBar: AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
-        brightness: themeProvider.getBrightness(),
         title: Text(AppTranslations.of(context).text("migration")),
         actions: [
           ChicTextButton(

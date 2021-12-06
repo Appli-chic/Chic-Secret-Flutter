@@ -53,7 +53,6 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
       backgroundColor: themeProvider.backgroundColor,
       appBar: AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
-        brightness: themeProvider.getBrightness(),
         title: Text(widget.category.name),
         actions: [
           IconButton(

@@ -169,7 +169,6 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     if (!ChicPlatform.isDesktop()) {
       return AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
-        brightness: themeProvider.getBrightness(),
         title: Text(AppTranslations.of(context).text("new_vault")),
         actions: [
           widget.vault != null &&

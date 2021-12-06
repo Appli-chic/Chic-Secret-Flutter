@@ -92,7 +92,6 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!ChicPlatform.isDesktop()) {
       return AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
-        brightness: themeProvider.getBrightness(),
         title: Text(AppTranslations.of(context).text("login")),
         actions: [
           ChicTextButton(

@@ -7,7 +7,6 @@ import 'package:chic_secret/ui/screen/new_vault_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 class VaultItem extends StatefulWidget {

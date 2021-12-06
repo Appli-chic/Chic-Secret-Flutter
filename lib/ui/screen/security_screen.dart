@@ -44,7 +44,6 @@ class _SecurityScreenState extends State<SecurityScreen> {
       backgroundColor: themeProvider.backgroundColor,
       appBar: AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
-        brightness: themeProvider.getBrightness(),
         title: Text(AppTranslations.of(context).text("security")),
       ),
       body: GestureDetector(

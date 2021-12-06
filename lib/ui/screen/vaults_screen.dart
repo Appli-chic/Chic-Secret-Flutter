@@ -12,7 +12,6 @@ import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
 import 'package:chic_secret/ui/component/category_item.dart';
-import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/desktop_expandable_menu.dart';
@@ -524,18 +523,8 @@ class _VaultsScreenState extends State<VaultsScreen> {
     if (!ChicPlatform.isDesktop()) {
       return AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
-        brightness: themeProvider.getBrightness(),
         title: Text(AppTranslations.of(context).text("vaults")),
         leading: _displaysAppBarLeadingIcon(themeProvider),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              color: themeProvider.textColor,
-            ),
-            onPressed: _onAddVaultClicked,
-          )
-        ],
       );
     } else {
       return null;

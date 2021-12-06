@@ -219,7 +219,6 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
       backgroundColor: _themeProvider.backgroundColor,
       appBar: AppBar(
         backgroundColor: _themeProvider.secondBackgroundColor,
-        brightness: _themeProvider.getBrightness(),
         title: Text(
           AppTranslations.of(context).text("subscription"),
         ),

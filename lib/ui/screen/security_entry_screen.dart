@@ -59,7 +59,6 @@ class _SecurityEntryScreenState extends State<SecurityEntryScreen> {
       backgroundColor: themeProvider.backgroundColor,
       appBar: AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
-        brightness: themeProvider.getBrightness(),
         title: Text(widget.title),
       ),
       body: GestureDetector(

@@ -65,7 +65,7 @@
   "move_to_trash": "Déplacer vers la poubelle",
   "warning_message_delete_multiple_entry": "Êtes-vous certains de vouloir supprimer ces mots de passe ?",
   "warning_message_delete_multiple_entry_definitely": "Êtes-vous certains de vouloir supprimer ces mots de passe définitivement ?\nAucune restauration ne sera possible.",
-  "import_buttercup": "Importer de Buttercup",
+  "import_export": "Import / Export",
   "migration": "Migration",
   "category_imported": "Catégorie importée",
   "category_corresponding": "Catégorie correspondante",

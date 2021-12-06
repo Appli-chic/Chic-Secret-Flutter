@@ -79,7 +79,6 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
       backgroundColor: themeProvider.backgroundColor,
       appBar: AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
-        brightness: themeProvider.getBrightness(),
         title: Text(AppTranslations.of(context).text("select_category")),
         actions: [
           ChicTextButton(

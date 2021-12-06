@@ -65,7 +65,7 @@
   "move_to_trash": "Move to the trash",
   "warning_message_delete_multiple_entry": "Are you sure to delete these passwords ?",
   "warning_message_delete_multiple_entry_definitely": "Are you sure to delete definitely these passwords ?\nNo restore will be possible.",
-  "import_buttercup": "Import from Buttercup",
+  "import_export": "Import / Export",
   "migration": "Migration",
   "category_imported": "Category imported",
   "category_corresponding": "Corresponding Category",

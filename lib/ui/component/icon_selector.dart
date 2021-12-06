@@ -3,7 +3,6 @@ import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 import 'common/chic_text_button.dart';

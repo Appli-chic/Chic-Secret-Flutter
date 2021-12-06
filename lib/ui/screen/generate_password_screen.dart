@@ -111,7 +111,6 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
       backgroundColor: themeProvider.backgroundColor,
       appBar: AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
-        brightness: themeProvider.getBrightness(),
         title: Text(AppTranslations.of(context).text("generate_password")),
         actions: [
           ChicTextButton(

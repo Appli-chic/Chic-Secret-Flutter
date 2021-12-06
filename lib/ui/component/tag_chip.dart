@@ -1,6 +1,5 @@
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 class TagChip extends StatefulWidget {

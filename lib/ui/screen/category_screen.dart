@@ -62,7 +62,6 @@ class _CategoriesScreenState extends State<CategoriesScreen>
       backgroundColor: themeProvider.backgroundColor,
       appBar: AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
-        brightness: themeProvider.getBrightness(),
         title: Text(AppTranslations.of(context).text("categories")),
         actions: [
           IconButton(

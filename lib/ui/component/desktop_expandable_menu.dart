@@ -1,4 +1,3 @@
-import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

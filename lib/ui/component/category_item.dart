@@ -10,7 +10,6 @@ import 'package:chic_secret/ui/screen/new_category_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/color.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 class CategoryItem extends StatefulWidget {
