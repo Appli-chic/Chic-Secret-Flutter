@@ -53,7 +53,7 @@ class EntryScreen extends StatefulWidget {
 }
 
 class _EntryScreenState extends State<EntryScreen>
-    with AutomaticKeepAliveClientMixin<EntryScreen> {
+    with AutomaticKeepAliveClientMixin<EntryScreen>, TickerProviderStateMixin {
   late SynchronizationProvider _synchronizationProvider;
 
   List<Entry> _entries = [];
@@ -74,6 +74,26 @@ class _EntryScreenState extends State<EntryScreen>
   ScrollController _desktopScrollController = ScrollController();
   final int _extraScrollSpeed = 80;
 
+  late final AnimationController _animationSlideController =
+      AnimationController(
+    duration: const Duration(milliseconds: 300),
+    vsync: this,
+  );
+
+  late final Animation<Offset> _offsetSlideAnimation = Tween<Offset>(
+    begin: const Offset(1.5, 0.0),
+    end: Offset.zero,
+  ).animate(CurvedAnimation(
+    parent: _animationSlideController,
+    curve: Curves.easeIn,
+  ));
+
+  late final AnimationController _animationOpacityController =
+      AnimationController(
+    duration: const Duration(milliseconds: 500),
+    vsync: this,
+  );
+
   @override
   void initState() {
     if (!Platform.isMacOS) {
@@ -92,6 +112,9 @@ class _EntryScreenState extends State<EntryScreen>
           _desktopScrollController.jumpTo(scrollEnd);
         }
       });
+
+      _animationOpacityController.forward();
+      _animationSlideController.forward();
     }
 
     if (widget.passwordScreenController != null) {
@@ -143,6 +166,10 @@ class _EntryScreenState extends State<EntryScreen>
 
     await _searchPassword(_searchController.text);
     _checkPasswordSecurity();
+    _animationOpacityController.reset();
+    _animationOpacityController.forward();
+    _animationSlideController.reset();
+    _animationSlideController.forward();
   }
 
   /// Search the entries that have a field containing the text
@@ -254,22 +281,29 @@ class _EntryScreenState extends State<EntryScreen>
               controller: _desktopScrollController,
               itemCount: _entries.length,
               itemBuilder: (context, index) {
-                return EntryItem(
-                  entry: _entries[index],
-                  isSelected: _isDesktopEntrySelected(index),
-                  onTap: _onEntrySelected,
-                  onMovingEntryToTrash: _onMovingEntryToTrash,
-                  onMovingToCategory: _onMovingToCategory,
-                  isControlKeyDown: _isControlKeyDown,
-                  isWeakPassword: _weakPasswordEntries
-                      .where((e) => e.id == _entries[index].id)
-                      .isNotEmpty,
-                  isOldPassword: _oldEntries
-                      .where((e) => e.id == _entries[index].id)
-                      .isNotEmpty,
-                  isDuplicatedPassword: _duplicatedEntries
-                      .where((e) => e.id == _entries[index].id)
-                      .isNotEmpty,
+                return FadeTransition(
+                  opacity: _animationOpacityController
+                      .drive(CurveTween(curve: Curves.easeOut)),
+                  child: SlideTransition(
+                    position: _offsetSlideAnimation,
+                    child: EntryItem(
+                      entry: _entries[index],
+                      isSelected: _isDesktopEntrySelected(index),
+                      onTap: _onEntrySelected,
+                      onMovingEntryToTrash: _onMovingEntryToTrash,
+                      onMovingToCategory: _onMovingToCategory,
+                      isControlKeyDown: _isControlKeyDown,
+                      isWeakPassword: _weakPasswordEntries
+                          .where((e) => e.id == _entries[index].id)
+                          .isNotEmpty,
+                      isOldPassword: _oldEntries
+                          .where((e) => e.id == _entries[index].id)
+                          .isNotEmpty,
+                      isDuplicatedPassword: _duplicatedEntries
+                          .where((e) => e.id == _entries[index].id)
+                          .isNotEmpty,
+                    ),
+                  ),
                 );
               },
             ),
@@ -441,6 +475,7 @@ class _EntryScreenState extends State<EntryScreen>
     _searchFocusNode.dispose();
     _desktopSearchFocusNode.dispose();
     _shortcutsFocusNode.dispose();
+    _animationSlideController.dispose();
 
     super.dispose();
   }
