@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/utils/rich_text_editing_controller.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+
+Timer? clipboardTimer;
 
 class EntryDetailInputController {
   Function()? hidePassword;
@@ -119,10 +124,22 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
           onPressed: () {
             FlutterClipboard.copy(widget.text!);
             _displaysTextCopiedToast(themeProvider);
+            _clearClipboard();
           },
         ),
       ),
     );
+  }
+
+  /// Clear the clipboard 1min after the password had been copied
+  void _clearClipboard() {
+    if (clipboardTimer != null) {
+      clipboardTimer!.cancel();
+    }
+
+    clipboardTimer = Timer(const Duration(minutes: 1), () {
+      Clipboard.setData(ClipboardData());
+    });
   }
 
   /// Show a toast to attest the text had been copied in the clipboard

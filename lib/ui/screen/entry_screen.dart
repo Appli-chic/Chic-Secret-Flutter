@@ -76,19 +76,23 @@ class _EntryScreenState extends State<EntryScreen>
 
   @override
   void initState() {
-    _desktopScrollController.addListener(() {
-      ScrollDirection scrollDirection =
-          _desktopScrollController.position.userScrollDirection;
-      if (scrollDirection != ScrollDirection.idle) {
-        double scrollEnd = _desktopScrollController.offset +
-            (scrollDirection == ScrollDirection.reverse
-                ? _extraScrollSpeed
-                : -_extraScrollSpeed);
-        scrollEnd = min(_desktopScrollController.position.maxScrollExtent,
-            max(_desktopScrollController.position.minScrollExtent, scrollEnd));
-        _desktopScrollController.jumpTo(scrollEnd);
-      }
-    });
+    if (!Platform.isMacOS) {
+      _desktopScrollController.addListener(() {
+        ScrollDirection scrollDirection =
+            _desktopScrollController.position.userScrollDirection;
+        if (scrollDirection != ScrollDirection.idle) {
+          double scrollEnd = _desktopScrollController.offset +
+              (scrollDirection == ScrollDirection.reverse
+                  ? _extraScrollSpeed
+                  : -_extraScrollSpeed);
+          scrollEnd = min(
+              _desktopScrollController.position.maxScrollExtent,
+              max(_desktopScrollController.position.minScrollExtent,
+                  scrollEnd));
+          _desktopScrollController.jumpTo(scrollEnd);
+        }
+      });
+    }
 
     if (widget.passwordScreenController != null) {
       widget.passwordScreenController!.reloadPasswords = _loadPassword;
