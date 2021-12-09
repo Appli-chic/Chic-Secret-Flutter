@@ -248,7 +248,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
               AppTranslations.of(context).text("delete"),
               style: TextStyle(color: themeProvider.textColor),
             ),
-            backgroundColor: themeProvider.selectionBackground,
+            backgroundColor: Colors.red,
             padding: EdgeInsets.only(
               top: 13,
               bottom: 13,

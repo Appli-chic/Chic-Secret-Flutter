@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
@@ -18,6 +19,7 @@ import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
@@ -69,8 +71,25 @@ class _EntryScreenState extends State<EntryScreen>
   bool _isCommandKeyDown = false;
   bool _isControlKeyDown = false;
 
+  ScrollController _desktopScrollController = ScrollController();
+  final int _extraScrollSpeed = 80;
+
   @override
   void initState() {
+    _desktopScrollController.addListener(() {
+      ScrollDirection scrollDirection =
+          _desktopScrollController.position.userScrollDirection;
+      if (scrollDirection != ScrollDirection.idle) {
+        double scrollEnd = _desktopScrollController.offset +
+            (scrollDirection == ScrollDirection.reverse
+                ? _extraScrollSpeed
+                : -_extraScrollSpeed);
+        scrollEnd = min(_desktopScrollController.position.maxScrollExtent,
+            max(_desktopScrollController.position.minScrollExtent, scrollEnd));
+        _desktopScrollController.jumpTo(scrollEnd);
+      }
+    });
+
     if (widget.passwordScreenController != null) {
       widget.passwordScreenController!.reloadPasswords = _loadPassword;
       widget.passwordScreenController!.selectEntry = _selectEntry;
@@ -228,6 +247,7 @@ class _EntryScreenState extends State<EntryScreen>
           ),
           Expanded(
             child: ListView.builder(
+              controller: _desktopScrollController,
               itemCount: _entries.length,
               itemBuilder: (context, index) {
                 return EntryItem(
@@ -311,6 +331,26 @@ class _EntryScreenState extends State<EntryScreen>
           color: themeProvider.placeholder,
         ),
       ),
+      suffix: _searchController.text.isNotEmpty
+          ? Container(
+              margin: EdgeInsets.only(right: 4),
+              child: IconButton(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                iconSize: 16,
+                icon: Icon(
+                  Icons.clear,
+                  color: themeProvider.secondTextColor,
+                ),
+                onPressed: () {
+                  _searchController.clear();
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                  _searchPassword("");
+                },
+              ),
+            )
+          : null,
       onTextChanged: (String text) {
         _searchPassword(text);
       },
