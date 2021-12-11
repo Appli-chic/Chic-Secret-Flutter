@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/rich_text_editing_controller.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
@@ -133,13 +135,21 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
 
   /// Clear the clipboard 1min after the password had been copied
   void _clearClipboard() {
-    if (clipboardTimer != null) {
-      clipboardTimer!.cancel();
-    }
+    try {
+      if (clipboardTimer != null) {
+        clipboardTimer!.cancel();
+      }
 
-    clipboardTimer = Timer(const Duration(minutes: 1), () {
-      Clipboard.setData(ClipboardData());
-    });
+      clipboardTimer = Timer(const Duration(minutes: 1), () {
+        if (Platform.isWindows) {
+          FlutterClipboard.copy(" ");
+        } else {
+          Clipboard.setData(ClipboardData());
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   /// Show a toast to attest the text had been copied in the clipboard
