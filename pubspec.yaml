@@ -104,7 +104,7 @@ msix_config:
   publisher_display_name: hidden
   identity_name: hidden
   publisher: hidden
-  msix_version: 1.0.1.0
+  msix_version: 1.0.2.0
   languages: "en, fr"
   vs_generated_images_folder_path: C:\chic_secret_windows_assets\
   icons_background_color: transparent

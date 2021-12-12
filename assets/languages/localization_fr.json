@@ -66,6 +66,8 @@
   "warning_message_delete_multiple_entry": "Êtes-vous certains de vouloir supprimer ces mots de passe ?",
   "warning_message_delete_multiple_entry_definitely": "Êtes-vous certains de vouloir supprimer ces mots de passe définitivement ?\nAucune restauration ne sera possible.",
   "import_export": "Import / Export",
+  "import_buttercup": "Importer de buttercup",
+  "export": "Export",
   "migration": "Migration",
   "category_imported": "Catégorie importée",
   "category_corresponding": "Catégorie correspondante",

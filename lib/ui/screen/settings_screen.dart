@@ -2,18 +2,27 @@ import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/user.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/category_service.dart';
+import 'package:chic_secret/service/custom_field_service.dart';
+import 'package:chic_secret/service/entry_service.dart';
+import 'package:chic_secret/service/entry_tag_service.dart';
+import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/service/user_service.dart';
+import 'package:chic_secret/service/vault_service.dart';
+import 'package:chic_secret/service/vault_user_service.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/component/setting_item.dart';
 import 'package:chic_secret/ui/screen/biometry_screen.dart';
+import 'package:chic_secret/ui/screen/import_export_choice_screen.dart';
 import 'package:chic_secret/ui/screen/import_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/import_export.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -192,9 +201,9 @@ class _SettingsScreenState extends State<SettingsScreen>
           selectedVault != null
               ? SettingItem(
                   leading: Icon(Icons.import_export_outlined),
-                  title: Text(
-                      AppTranslations.of(context).text("import_export")),
-                  onTap: _importData,
+                  title:
+                      Text(AppTranslations.of(context).text("import_export")),
+                  onTap: _goToImportExportScreen,
                 )
               : SizedBox.shrink(),
           !ChicPlatform.isDesktop() &&
@@ -211,6 +220,22 @@ class _SettingsScreenState extends State<SettingsScreen>
                   leading: Icon(Icons.edit),
                   title: Text(AppTranslations.of(context).text("edit_vault")),
                   onTap: _onEditVaultClicked,
+                )
+              : SizedBox.shrink(),
+          selectedVault != null &&
+                  _user != null &&
+                  selectedVault!.userId == _user!.id
+              ? SettingItem(
+                  backgroundColor: Colors.red[500],
+                  leading: Icon(Icons.delete_forever,
+                      color: ChicPlatform.isDesktop() ? Colors.red[500] : null),
+                  title: Text(
+                    AppTranslations.of(context).text("delete"),
+                    style: TextStyle(
+                        color:
+                            ChicPlatform.isDesktop() ? Colors.red[500] : null),
+                  ),
+                  onTap: _delete,
                 )
               : SizedBox.shrink(),
           _user != null
@@ -230,6 +255,77 @@ class _SettingsScreenState extends State<SettingsScreen>
         ],
       ),
     );
+  }
+
+  /// Delete the vault and all the content the data
+  _delete() async {
+    if (selectedVault != null && selectedVault!.userId == _user!.id) {
+      // Check if the user is willing to delete the vault
+      var toDelete = await _displaysDialogSureToDelete();
+      if (toDelete) {
+        // Delete all the data
+        EasyLoading.show();
+
+        try {
+          await VaultUserService.deleteFromVault(selectedVault!.id);
+          await EntryTagService.deleteAllFromVault(selectedVault!.id);
+          await TagService.deleteAllFromVault(selectedVault!.id);
+          await CustomFieldService.deleteAllFromVault(selectedVault!.id);
+          await CategoryService.deleteAllFromVault(selectedVault!.id);
+          await EntryService.deleteAllFromVault(selectedVault!.id);
+          await VaultService.delete(selectedVault!);
+
+          selectedVault = null;
+          currentPassword = null;
+          _synchronizationProvider.synchronize();
+        } catch (e) {
+          print(e);
+        }
+
+        Navigator.pop(context, true);
+      }
+
+      EasyLoading.dismiss();
+    } else {
+      await EasyLoading.showError(
+        AppTranslations.of(context).text("cant_delete_vault_not_owner"),
+        duration: const Duration(milliseconds: 4000),
+        dismissOnTap: true,
+      );
+    }
+  }
+
+  Future<bool> _displaysDialogSureToDelete() async {
+    return await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(AppTranslations.of(context).text("warning")),
+            content: Text(
+              AppTranslations.of(context).textWithArgument(
+                  "warning_message_delete_vault", selectedVault!.name),
+            ),
+            actions: [
+              TextButton(
+                child: Text(
+                  AppTranslations.of(context).text("cancel"),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              TextButton(
+                child: Text(
+                  AppTranslations.of(context).text("delete"),
+                  style: TextStyle(color: Colors.red),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ],
+          );
+        });
   }
 
   /// On subscribe clicked move to the subscribe page
@@ -293,27 +389,13 @@ class _SettingsScreenState extends State<SettingsScreen>
     }
   }
 
-  /// Import the data from another password manager
-  _importData() async {
-    var data = await importFromFile(ImportType.Buttercup);
-
-    if (data != null) {
-      await ChicNavigator.push(
-        context,
-        ImportScreen(importData: data),
-        isModal: true,
-      );
-
-      if (widget.onDataChanged != null) {
-        widget.onDataChanged!();
-      }
-
-      _synchronizationProvider.synchronize(isFullSynchronization: true);
-
-      if (ChicPlatform.isDesktop()) {
-        Navigator.pop(context, true);
-      }
-    }
+  /// Move to the import/export screen
+  _goToImportExportScreen() async {
+    await ChicNavigator.push(
+      context,
+      ImportExportChoiceScreen(onDataChanged: widget.onDataChanged),
+      isModal: true,
+    );
   }
 
   /// Send to the biometry page to activate or deactivate the biometry
