@@ -26,6 +26,10 @@ enum ImportType {
   Buttercup,
 }
 
+Future<void> exportVaultData() async {
+
+}
+
 /// Import a file from the type of import
 Future<ImportData?> importFromFile(ImportType importType) async {
   if (ChicPlatform.isDesktop()) {

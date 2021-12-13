@@ -91,11 +91,11 @@ class _ImportExportChoiceScreenState extends State<ImportExportChoiceScreen> {
             title: Text(AppTranslations.of(context).text("import_buttercup")),
             onTap: _importDataFromButtercup,
           ),
-          Divider(),
-          SettingItem(
-            title: Text(AppTranslations.of(context).text("export")),
-            onTap: _exportData,
-          ),
+          // Divider(),
+          // SettingItem(
+          //   title: Text(AppTranslations.of(context).text("export")),
+          //   onTap: _exportData,
+          // ),
         ],
       ),
     );
@@ -103,7 +103,7 @@ class _ImportExportChoiceScreenState extends State<ImportExportChoiceScreen> {
 
   /// Export the data from the vault in a csv file
   _exportData() async {
-
+    await exportVaultData();
   }
 
   /// Import the data from buttercup
