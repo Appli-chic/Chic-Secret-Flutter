@@ -35,13 +35,25 @@ Future<void> initDatabase() async {
     databaseFactory = databaseFactoryFfi;
   }
 
-  if (Platform.isWindows || Platform.isLinux) {
+  if (Platform.isWindows) {
     sqfliteFfiInit();
 
     var factoryDb = databaseFactoryFfi;
     final dbPath = await _getDatabasePath();
     db = await factoryDb.openDatabase(
       join(dbPath, databaseName),
+      options: OpenDatabaseOptions(
+        version: version,
+        onCreate: _onCreate,
+        onUpgrade: _onUpgrade,
+      ),
+    );
+  } else if (Platform.isLinux) {
+    sqfliteFfiInit();
+
+    var factoryDb = databaseFactoryFfi;
+    db = await factoryDb.openDatabase(
+      databaseName,
       options: OpenDatabaseOptions(
         version: version,
         onCreate: _onCreate,
