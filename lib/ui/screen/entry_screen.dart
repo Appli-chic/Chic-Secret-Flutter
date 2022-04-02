@@ -386,6 +386,7 @@ class _EntryScreenState extends State<EntryScreen>
       desktopFocus: _desktopSearchFocusNode,
       focus: _searchFocusNode,
       type: ChicTextFieldType.filledRounded,
+      floatingLabelBehavior: FloatingLabelBehavior.never,
       prefix: Container(
         margin: EdgeInsets.only(left: 8, right: 8),
         child: Icon(
@@ -393,26 +394,6 @@ class _EntryScreenState extends State<EntryScreen>
           color: themeProvider.placeholder,
         ),
       ),
-      suffix: _searchController.text.isNotEmpty
-          ? Container(
-              margin: EdgeInsets.only(right: 4),
-              child: IconButton(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                iconSize: 16,
-                icon: Icon(
-                  Icons.clear,
-                  color: themeProvider.secondTextColor,
-                ),
-                onPressed: () {
-                  _searchController.clear();
-                  FocusScope.of(context).requestFocus(new FocusNode());
-                  _searchPassword("");
-                },
-              ),
-            )
-          : null,
       onTextChanged: (String text) {
         _searchPassword(text);
       },

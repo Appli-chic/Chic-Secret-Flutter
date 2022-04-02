@@ -38,6 +38,7 @@ class ChicTextField extends StatefulWidget {
   final int? maxLines;
   final Function(String)? onTextChanged;
   final TextInputType? keyboardType;
+  final FloatingLabelBehavior floatingLabelBehavior;
 
   ChicTextField({
     required this.controller,
@@ -62,6 +63,7 @@ class ChicTextField extends StatefulWidget {
     this.maxLines = 1,
     this.onTextChanged,
     this.keyboardType,
+    this.floatingLabelBehavior = FloatingLabelBehavior.auto,
   });
 
   @override
@@ -96,7 +98,6 @@ class _ChicTextFieldState extends State<ChicTextField> {
     }
   }
 
-  /// Displays the text field input
   Widget _displayInput(ThemeProvider themeProvider) {
     return RawKeyboardListener(
       focusNode: widget.desktopFocus,
@@ -141,17 +142,24 @@ class _ChicTextFieldState extends State<ChicTextField> {
           }
         },
         decoration: InputDecoration(
+          focusColor: themeProvider.primaryColor,
           isDense: ChicPlatform.isDesktop(),
           filled: widget.type == ChicTextFieldType.filledRounded,
           fillColor: ChicPlatform.isDesktop()
               ? themeProvider.inputBackgroundColor
               : themeProvider.secondBackgroundColor,
           border: _getInputBorder(themeProvider.placeholder),
-          focusedBorder: _getInputBorder(themeProvider.primaryColor),
+          focusedBorder:
+              _getInputBorder(themeProvider.primaryColor, isFocused: true),
           errorBorder: _getInputBorder(Colors.red),
+          focusedErrorBorder: _getInputBorder(Colors.red, isFocused: true),
           enabledBorder: _getInputBorder(themeProvider.placeholder),
-          hintText: widget.hint,
-          hintStyle: TextStyle(
+          labelText: widget.hint,
+          floatingLabelStyle: TextStyle(
+            color: themeProvider.secondTextColor,
+          ),
+          floatingLabelBehavior: widget.floatingLabelBehavior,
+          labelStyle: TextStyle(
             color: themeProvider.placeholder,
           ),
           suffixIcon: _displaysSuffixIcon(themeProvider),
@@ -164,8 +172,6 @@ class _ChicTextFieldState extends State<ChicTextField> {
     );
   }
 
-  /// Displays a strength indicator, only for passwords and if the
-  /// [widget.hasStrengthIndicator] is set to true.
   Widget _displayStrengthIndicator(ThemeProvider themeProvider) {
     var value = 0.0;
     Color color = Colors.red;
@@ -202,11 +208,15 @@ class _ChicTextFieldState extends State<ChicTextField> {
     );
   }
 
-  /// Defines the border [color] of the input
-  InputBorder? _getInputBorder(Color color) {
+  InputBorder? _getInputBorder(Color color, {isFocused = false}) {
+    var borderWidth = isFocused ? 2.0 : 1.0;
+
     if (widget.type == ChicTextFieldType.outlineBorder) {
       return OutlineInputBorder(
-        borderSide: BorderSide(color: color),
+        borderSide: BorderSide(color: color, width: borderWidth),
+        borderRadius: const BorderRadius.all(
+          const Radius.circular(14),
+        ),
       );
     } else {
       return OutlineInputBorder(
@@ -218,8 +228,6 @@ class _ChicTextFieldState extends State<ChicTextField> {
     }
   }
 
-  /// Manages getting the focus of the next input
-  /// Only for Windows/MacOs/Linux
   _onNext(RawKeyEvent event) {
     if (widget.nextFocus == null) {
       return;
@@ -268,8 +276,6 @@ class _ChicTextFieldState extends State<ChicTextField> {
     }
   }
 
-  /// Displays a custom [widget.suffix] icon
-  /// Or the password icon visibility if [widget.isPassword] is set to true
   Widget? _displaysSuffixIcon(ThemeProvider themeProvider) {
     if (widget.isPassword) {
       return Container(

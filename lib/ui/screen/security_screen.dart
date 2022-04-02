@@ -20,6 +20,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
   List<Entry> _weakPasswordEntries = [];
   List<Entry> _oldEntries = [];
   List<Entry> _duplicatedEntries = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -33,6 +34,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
     _weakPasswordEntries = data.item1;
     _oldEntries = data.item2;
     _duplicatedEntries = data.item3;
+    _isLoading = false;
     setState(() {});
   }
 
@@ -102,7 +104,8 @@ class _SecurityScreenState extends State<SecurityScreen> {
   Widget _securityImage() {
     if (_weakPasswordEntries.isEmpty &&
         _oldEntries.isEmpty &&
-        _duplicatedEntries.isEmpty) {
+        _duplicatedEntries.isEmpty &&
+        !_isLoading) {
       return Container(
         margin: EdgeInsets.only(left: 16, right: 16),
         child: SvgPicture.asset(
