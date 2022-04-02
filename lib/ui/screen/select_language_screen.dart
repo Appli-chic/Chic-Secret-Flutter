@@ -84,7 +84,7 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
         title: Text(AppTranslations.of(context).text("language")),
         actions: [
           ChicTextButton(
-            child: Text(AppTranslations.of(context).text("done").toUpperCase()),
+            child: Text(AppTranslations.of(context).text("done")),
             onPressed: () {
               var index = Application.supportedLanguages.indexOf(_language);
               Navigator.pop(context, Application.supportedLanguagesCodes[index]);

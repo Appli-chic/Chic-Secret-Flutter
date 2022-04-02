@@ -123,7 +123,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         ),
         actions: [
           ChicTextButton(
-            child: Text(AppTranslations.of(context).text("save").toUpperCase()),
+            child: Text(AppTranslations.of(context).text("save")),
             onPressed: _onAddingCategory,
           ),
         ],

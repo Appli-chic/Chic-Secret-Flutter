@@ -259,7 +259,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
             : Text(AppTranslations.of(context).text("new_password")),
         actions: [
           ChicTextButton(
-            child: Text(AppTranslations.of(context).text("save").toUpperCase()),
+            child: Text(AppTranslations.of(context).text("save")),
             onPressed: _save,
           ),
         ],

@@ -96,8 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
         actions: [
           ChicTextButton(
             child: Text(AppTranslations.of(context)
-                .text(_isAskingCode ? "next" : "done")
-                .toUpperCase()),
+                .text(_isAskingCode ? "next" : "done")),
             onPressed: _isAskingCode ? _onAskingLoginCode : _onLogin,
           ),
         ],

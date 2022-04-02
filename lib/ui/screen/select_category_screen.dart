@@ -100,7 +100,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
         title: Text(AppTranslations.of(context).text("select_category")),
         actions: [
           ChicTextButton(
-            child: Text(AppTranslations.of(context).text("done").toUpperCase()),
+            child: Text(AppTranslations.of(context).text("done")),
             onPressed: () {
               Navigator.pop(context, _category);
             },

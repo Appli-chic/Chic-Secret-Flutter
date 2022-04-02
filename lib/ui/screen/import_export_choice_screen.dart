@@ -66,7 +66,6 @@ class _ImportExportChoiceScreenState extends State<ImportExportChoiceScreen> {
       appBar: AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
         title: Text(AppTranslations.of(context).text("import_export")),
-        actions: [],
       ),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,

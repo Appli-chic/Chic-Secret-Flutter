@@ -184,7 +184,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
                 )
               : SizedBox(),
           ChicTextButton(
-            child: Text(AppTranslations.of(context).text("save").toUpperCase()),
+            child: Text(AppTranslations.of(context).text("save")),
             onPressed: _save,
           ),
         ],

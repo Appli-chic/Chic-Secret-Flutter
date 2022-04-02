@@ -114,7 +114,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
         title: Text(AppTranslations.of(context).text("generate_password")),
         actions: [
           ChicTextButton(
-            child: Text(AppTranslations.of(context).text("done").toUpperCase()),
+            child: Text(AppTranslations.of(context).text("done")),
             onPressed: () {
               Navigator.of(context).pop(_passwordController.text);
             },

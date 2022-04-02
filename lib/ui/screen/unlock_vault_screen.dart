@@ -133,7 +133,7 @@ class _UnlockVaultScreenState extends State<UnlockVaultScreen> {
         actions: [
           ChicTextButton(
             child:
-                Text(AppTranslations.of(context).text("unlock").toUpperCase()),
+                Text(AppTranslations.of(context).text("unlock")),
             onPressed: _unlockVault,
           ),
         ],
