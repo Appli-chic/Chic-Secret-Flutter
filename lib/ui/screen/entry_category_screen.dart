@@ -36,7 +36,6 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
     super.initState();
   }
 
-  /// Load the list of passwords linked to the current vault and category
   _loadPassword() async {
     if (selectedVault != null) {
       _entries = await EntryService.getAllByVault(selectedVault!.id,
@@ -55,20 +54,24 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
         backgroundColor: themeProvider.secondBackgroundColor,
         title: Text(widget.category.name),
         actions: [
-          IconButton(
-            icon: Icon(
-              Icons.edit,
-              color: themeProvider.textColor,
-            ),
-            onPressed: _onEditCategory,
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.delete,
-              color: themeProvider.textColor,
-            ),
-            onPressed: _onDeletingCategory,
-          ),
+          _category.isTrash
+              ? SizedBox.shrink()
+              : IconButton(
+                  icon: Icon(
+                    Icons.edit,
+                    color: themeProvider.textColor,
+                  ),
+                  onPressed: _onEditCategory,
+                ),
+          _category.isTrash
+              ? SizedBox.shrink()
+              : IconButton(
+                  icon: Icon(
+                    Icons.delete,
+                    color: themeProvider.textColor,
+                  ),
+                  onPressed: _onDeletingCategory,
+                ),
         ],
       ),
       body: ListView.builder(
@@ -85,13 +88,11 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
     );
   }
 
-  /// When the entry is selected by the user, it will display the user screen
   _onEntrySelected(Entry entry) async {
     await ChicNavigator.push(context, EntryDetailScreen(entry: entry));
     setState(() {});
   }
 
-  /// Call the [NewCategoryScreen] to edit the selected category
   void _onEditCategory() async {
     var category = await ChicNavigator.push(
       context,
@@ -106,7 +107,6 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
     }
   }
 
-  /// Ask if the category should be deleted and delete it with it's entries
   void _onDeletingCategory() async {
     var result = await showDialog(
       context: context,
