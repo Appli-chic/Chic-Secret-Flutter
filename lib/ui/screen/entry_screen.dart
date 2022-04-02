@@ -7,6 +7,7 @@ import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/entry_service.dart';
+import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
@@ -21,6 +22,7 @@ import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class EntryScreenController {
@@ -127,13 +129,11 @@ class _EntryScreenState extends State<EntryScreen>
     super.initState();
   }
 
-  /// Triggered when we ask to select an entry
   _selectEntry(Entry? entry) {
     _selectedEntry = entry;
     setState(() {});
   }
 
-  /// Load the list of passwords linked to the current vault
   _loadPassword({bool isClearingSearch = true}) async {
     if (isClearingSearch) {
       _searchController.clear();
@@ -172,7 +172,6 @@ class _EntryScreenState extends State<EntryScreen>
     _animationSlideController.forward();
   }
 
-  /// Search the entries that have a field containing the text
   _searchPassword(String text) async {
     if (selectedVault != null) {
       String? categoryId;
@@ -222,21 +221,11 @@ class _EntryScreenState extends State<EntryScreen>
     );
   }
 
-  /// Displays the appbar that is only appearing on the mobile version
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     if (!ChicPlatform.isDesktop()) {
       return AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
         title: Text(AppTranslations.of(context).text("passwords")),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              color: themeProvider.textColor,
-            ),
-            onPressed: _onAddEntryClicked,
-          ),
-        ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(60.0),
           child: Row(
@@ -263,73 +252,48 @@ class _EntryScreenState extends State<EntryScreen>
     }
   }
 
-  /// Displays the body of the screen for both Mobile and Desktop version
   Widget _displayBody(ThemeProvider themeProvider) {
     if (selectedVault == null) {
       return SizedBox.shrink();
     }
 
     if (ChicPlatform.isDesktop()) {
-      return Column(
+      return _displayDesktopBody(themeProvider);
+    } else {
+      return _displayMobileBody(themeProvider);
+    }
+  }
+
+  Widget _displayMobileBody(ThemeProvider themeProvider) {
+    if (_entries.isEmpty) {
+      return _displayMobileBodyEmpty(themeProvider);
+    } else {
+      return _displayMobileBodyFull(themeProvider);
+    }
+  }
+
+  Widget _displayMobileBodyEmpty(ThemeProvider themeProvider) {
+    return Container(
+      margin: EdgeInsets.only(left: 32, right: 32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            margin: EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 8),
-            child: _displaySearchBar(themeProvider),
+          SvgPicture.asset(
+            "assets/images/empty_passwords.svg",
+            semanticsLabel: 'Empty Password',
+            fit: BoxFit.fitWidth,
+            height: 200,
           ),
-          Expanded(
-            child: ListView.builder(
-              controller: _desktopScrollController,
-              itemCount: _entries.length,
-              itemBuilder: (context, index) {
-                return FadeTransition(
-                  opacity: _animationOpacityController
-                      .drive(CurveTween(curve: Curves.easeOut)),
-                  child: SlideTransition(
-                    position: _offsetSlideAnimation,
-                    child: EntryItem(
-                      entry: _entries[index],
-                      isSelected: _isDesktopEntrySelected(index),
-                      onTap: _onEntrySelected,
-                      onMovingEntryToTrash: _onMovingEntryToTrash,
-                      onMovingToCategory: _onMovingToCategory,
-                      isControlKeyDown: _isControlKeyDown,
-                      isWeakPassword: _weakPasswordEntries
-                          .where((e) => e.id == _entries[index].id)
-                          .isNotEmpty,
-                      isOldPassword: _oldEntries
-                          .where((e) => e.id == _entries[index].id)
-                          .isNotEmpty,
-                      isDuplicatedPassword: _duplicatedEntries
-                          .where((e) => e.id == _entries[index].id)
-                          .isNotEmpty,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            margin: EdgeInsets.only(bottom: 8, top: 10, left: 16, right: 16),
-            child: ChicTextIconButton(
-              onPressed: _onAddEntryClicked,
-              icon: Icon(
-                Icons.add,
-                color: themeProvider.textColor,
-                size: 20,
-              ),
-              label: Text(
-                AppTranslations.of(context).text("new_password"),
-                style: TextStyle(color: themeProvider.textColor),
-              ),
-              backgroundColor: themeProvider.selectionBackground,
-              padding: EdgeInsets.only(top: 10, bottom: 10),
-            ),
+          ChicElevatedButton(
+            child: Text(AppTranslations.of(context).text("new_password")),
+            onPressed: _onAddEntryClicked,
           ),
         ],
-      );
-    }
+      ),
+    );
+  }
 
+  Widget _displayMobileBodyFull(ThemeProvider themeProvider) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       child: ListView.builder(
@@ -354,7 +318,67 @@ class _EntryScreenState extends State<EntryScreen>
     );
   }
 
-  /// Displays the search bar for both mobile and desktop
+  Widget _displayDesktopBody(ThemeProvider themeProvider) {
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 8),
+          child: _displaySearchBar(themeProvider),
+        ),
+        Expanded(
+          child: ListView.builder(
+            controller: _desktopScrollController,
+            itemCount: _entries.length,
+            itemBuilder: (context, index) {
+              return FadeTransition(
+                opacity: _animationOpacityController
+                    .drive(CurveTween(curve: Curves.easeOut)),
+                child: SlideTransition(
+                  position: _offsetSlideAnimation,
+                  child: EntryItem(
+                    entry: _entries[index],
+                    isSelected: _isDesktopEntrySelected(index),
+                    onTap: _onEntrySelected,
+                    onMovingEntryToTrash: _onMovingEntryToTrash,
+                    onMovingToCategory: _onMovingToCategory,
+                    isControlKeyDown: _isControlKeyDown,
+                    isWeakPassword: _weakPasswordEntries
+                        .where((e) => e.id == _entries[index].id)
+                        .isNotEmpty,
+                    isOldPassword: _oldEntries
+                        .where((e) => e.id == _entries[index].id)
+                        .isNotEmpty,
+                    isDuplicatedPassword: _duplicatedEntries
+                        .where((e) => e.id == _entries[index].id)
+                        .isNotEmpty,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        Container(
+          width: double.infinity,
+          margin: EdgeInsets.only(bottom: 8, top: 10, left: 16, right: 16),
+          child: ChicTextIconButton(
+            onPressed: _onAddEntryClicked,
+            icon: Icon(
+              Icons.add,
+              color: themeProvider.textColor,
+              size: 20,
+            ),
+            label: Text(
+              AppTranslations.of(context).text("new_password"),
+              style: TextStyle(color: themeProvider.textColor),
+            ),
+            backgroundColor: themeProvider.selectionBackground,
+            padding: EdgeInsets.only(top: 10, bottom: 10),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _displaySearchBar(ThemeProvider themeProvider) {
     return ChicTextField(
       controller: _searchController,
@@ -395,8 +419,6 @@ class _EntryScreenState extends State<EntryScreen>
     );
   }
 
-  /// Returns for the desktop if the entry is selected or not
-  /// depending of the single or multi select
   bool _isDesktopEntrySelected(int index) {
     if (_selectedEntries.isNotEmpty) {
       // Multi select
@@ -407,7 +429,6 @@ class _EntryScreenState extends State<EntryScreen>
     }
   }
 
-  /// When the entry is selected by the user, it will display the user screen
   _onEntrySelected(Entry entry) async {
     if (_isCommandKeyDown) {
       // If it's a mutli select
@@ -444,7 +465,6 @@ class _EntryScreenState extends State<EntryScreen>
     }
   }
 
-  /// Call the [NewEntryScreen] screen to create a new entry
   _onAddEntryClicked() async {
     var data;
 
@@ -480,7 +500,6 @@ class _EntryScreenState extends State<EntryScreen>
     super.dispose();
   }
 
-  /// Check when a key is pressed and released to select different entries
   _onKeyChanged(RawKeyEvent event) {
     // Retrieve the code changing
     LogicalKeyboardKey keyCode;
@@ -506,7 +525,6 @@ class _EntryScreenState extends State<EntryScreen>
         return null;
     }
 
-    // Check the key changed
     var commandKeyIsConcerned = false;
     var controlKeyIsConcerned = false;
     var aKeyIsConcerned = false;
@@ -562,8 +580,6 @@ class _EntryScreenState extends State<EntryScreen>
     }
   }
 
-  /// Ask if the entry should be move to the trash
-  /// Move to the trash a selection of entry if many or selected
   _onMovingEntryToTrash(Entry entry) async {
     var isAlreadyInTrash = entry.category!.isTrash;
     var isMultiSelected = _selectedEntries.isNotEmpty;
@@ -670,8 +686,6 @@ class _EntryScreenState extends State<EntryScreen>
     }
   }
 
-  /// Call the [SelectCategoryScreen] to move to a new category
-  /// Move to a selection of entry if many or selected
   _onMovingToCategory(Entry entry) async {
     var isMultiSelected = _selectedEntries.isNotEmpty;
 
@@ -702,7 +716,6 @@ class _EntryScreenState extends State<EntryScreen>
     }
   }
 
-  /// Check the security of all the entries
   _checkPasswordSecurity() async {
     var data = await Security.retrievePasswordsSecurityInfo();
 

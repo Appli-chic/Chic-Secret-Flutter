@@ -465,8 +465,8 @@ class _VaultsScreenState extends State<VaultsScreen> {
             height: 200,
           ),
           ChicElevatedButton(
-            child: Text("New Vault"),
-            onPressed: () {},
+            child: Text(AppTranslations.of(context).text("new_vault")),
+            onPressed: _onAddVaultClicked,
           ),
         ],
       ),
