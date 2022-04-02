@@ -159,7 +159,7 @@ class _UnlockVaultScreenState extends State<UnlockVaultScreen> {
               autoFocus: true,
               isPassword: true,
               textInputAction: TextInputAction.done,
-              hint: AppTranslations.of(context).text("password"),
+              label: AppTranslations.of(context).text("password"),
               errorMessage:
                   AppTranslations.of(context).text("error_empty_password"),
               validating: (String text) {

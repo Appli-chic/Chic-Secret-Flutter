@@ -233,14 +233,17 @@ class _EntryScreenState extends State<EntryScreen>
               Expanded(
                 child: _displaySearchBar(themeProvider),
               ),
-              _searchController.text.isNotEmpty
-                  ? ChicTextButton(
-                      child: Text(AppTranslations.of(context).text("cancel")),
-                      onPressed: () {
-                        _searchController.clear();
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        _searchPassword("");
-                      },
+              _searchFocusNode.hasFocus
+                  ? Container(
+                      padding: EdgeInsets.only(right: 8),
+                      child: ChicTextButton(
+                        child: Text(AppTranslations.of(context).text("cancel")),
+                        onPressed: () {
+                          _searchController.clear();
+                          FocusScope.of(context).requestFocus(FocusNode());
+                          _searchPassword("");
+                        },
+                      ),
                     )
                   : SizedBox.shrink(),
             ],
@@ -382,6 +385,7 @@ class _EntryScreenState extends State<EntryScreen>
   Widget _displaySearchBar(ThemeProvider themeProvider) {
     return ChicTextField(
       controller: _searchController,
+      label: AppTranslations.of(context).text("search_passwords"),
       hint: AppTranslations.of(context).text("search_passwords"),
       desktopFocus: _desktopSearchFocusNode,
       focus: _searchFocusNode,
@@ -476,6 +480,7 @@ class _EntryScreenState extends State<EntryScreen>
     _searchFocusNode.dispose();
     _desktopSearchFocusNode.dispose();
     _shortcutsFocusNode.dispose();
+    _animationOpacityController.dispose();
     _animationSlideController.dispose();
 
     super.dispose();

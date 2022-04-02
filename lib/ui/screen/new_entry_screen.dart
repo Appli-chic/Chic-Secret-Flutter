@@ -306,7 +306,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
               nextFocus: _desktopUsernameFocusNode,
               autoFocus: true,
               textCapitalization: TextCapitalization.sentences,
-              hint: AppTranslations.of(context).text("name"),
+              label: AppTranslations.of(context).text("name"),
               errorMessage:
                   AppTranslations.of(context).text("error_name_empty"),
               validating: (String text) => _nameController.text.isNotEmpty,
@@ -323,7 +323,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
               autoFocus: false,
               textCapitalization: TextCapitalization.none,
               keyboardType: TextInputType.emailAddress,
-              hint: AppTranslations.of(context).text("username_email"),
+              label: AppTranslations.of(context).text("username_email"),
               errorMessage:
                   AppTranslations.of(context).text("error_username_empty"),
               validating: (String text) => _usernameController.text.isNotEmpty,
@@ -340,7 +340,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
               isPassword: true,
               hasStrengthIndicator: true,
               textCapitalization: TextCapitalization.none,
-              hint: AppTranslations.of(context).text("password"),
+              label: AppTranslations.of(context).text("password"),
               errorMessage:
                   AppTranslations.of(context).text("error_empty_password"),
               validating: (String text) => _passwordController.text.isNotEmpty,
@@ -376,7 +376,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
               autoFocus: false,
               isReadOnly: true,
               textCapitalization: TextCapitalization.sentences,
-              hint: AppTranslations.of(context).text("category"),
+              label: AppTranslations.of(context).text("category"),
               errorMessage:
                   AppTranslations.of(context).text("error_category_empty"),
               validating: (String text) => _categoryController.text.isNotEmpty,
@@ -482,7 +482,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
               maxLines: null,
               keyboardType: TextInputType.multiline,
               textCapitalization: TextCapitalization.sentences,
-              hint: AppTranslations.of(context).text("comment"),
+              label: AppTranslations.of(context).text("comment"),
             ),
           ],
         ),
@@ -541,7 +541,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                           _customFieldsValueDesktopFocusNode[customFieldIndex],
                       autoFocus: false,
                       textCapitalization: TextCapitalization.sentences,
-                      hint: AppTranslations.of(context).text("name"),
+                      label: AppTranslations.of(context).text("name"),
                       errorMessage:
                           AppTranslations.of(context).text("error_text_empty"),
                       validating: (String text) {
@@ -567,7 +567,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                           _customFieldsValueDesktopFocusNode[customFieldIndex],
                       autoFocus: false,
                       textCapitalization: TextCapitalization.sentences,
-                      hint: AppTranslations.of(context).text("value"),
+                      label: AppTranslations.of(context).text("value"),
                       errorMessage:
                           AppTranslations.of(context).text("error_text_empty"),
                       validating: (String text) {

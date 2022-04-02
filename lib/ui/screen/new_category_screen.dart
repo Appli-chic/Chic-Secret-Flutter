@@ -155,7 +155,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
               focus: _nameFocusNode,
               desktopFocus: _desktopNameFocusNode,
               textCapitalization: TextCapitalization.sentences,
-              hint: AppTranslations.of(context).text("name"),
+              label: AppTranslations.of(context).text("name"),
               errorMessage:
                   AppTranslations.of(context).text("error_name_empty"),
               validating: (String text) => _nameController.text.isNotEmpty,
@@ -218,7 +218,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
               autoFocus: false,
               isReadOnly: true,
               textCapitalization: TextCapitalization.sentences,
-              hint: AppTranslations.of(context).text("predefined_categories"),
+              label: AppTranslations.of(context).text("predefined_categories"),
               onTap: _selectPredefinedCategory,
             ),
           ],

@@ -317,75 +317,69 @@ class _VaultsScreenState extends State<VaultsScreen> {
 
   Widget _displaysCategories(ThemeProvider themeProvider) {
     return DesktopExpandableMenu(
-        title: AppTranslations.of(context).text("categories"),
-        onAddButtonClicked: _onAddCategoryClicked,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: _categories.length + 1,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              // Add a "Fake" category to display all the passwords
-              return CategoryItem(
-                isSelected: selectedCategory == null,
-                nbWeakPasswords: _weakPasswordEntries.length,
-                nbOldPasswords: _oldEntries.length,
-                nbDuplicatedPasswords: _duplicatedEntries.length,
-                onTap: (Category? category) {
-                  selectedCategory = category;
+      title: AppTranslations.of(context).text("categories"),
+      onAddButtonClicked: _onAddCategoryClicked,
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: _categories.length + 1,
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            // Add a "Fake" category to display all the passwords
+            return CategoryItem(
+              isSelected: selectedCategory == null,
+              nbWeakPasswords: _weakPasswordEntries.length,
+              nbOldPasswords: _oldEntries.length,
+              nbDuplicatedPasswords: _duplicatedEntries.length,
+              onTap: _onDesktopCategoryClicked,
+            );
+          } else {
+            return CategoryItem(
+              category: _categories[index - 1],
+              isSelected: selectedCategory != null &&
+                  selectedCategory!.id == _categories[index - 1].id,
+              nbWeakPasswords: !_categories[index - 1].isTrash
+                  ? _weakPasswordEntries
+                      .where((e) => e.category?.id == _categories[index - 1].id)
+                      .toList()
+                      .length
+                  : 0,
+              nbOldPasswords: !_categories[index - 1].isTrash
+                  ? _oldEntries
+                      .where((e) => e.category?.id == _categories[index - 1].id)
+                      .toList()
+                      .length
+                  : 0,
+              nbDuplicatedPasswords: !_categories[index - 1].isTrash
+                  ? _duplicatedEntries
+                      .where((e) => e.category?.id == _categories[index - 1].id)
+                      .toList()
+                      .length
+                  : 0,
+              onTap: _onDesktopCategoryClicked,
+              onCategoryChanged: () {
+                _loadCategories();
 
-                  if (widget.onCategoryChange != null) {
-                    widget.onCategoryChange!();
-                  }
+                if (widget.onCategoryChange != null) {
+                  widget.onCategoryChange!();
+                }
+              },
+            );
+          }
+        },
+      ),
+    );
+  }
 
-                  setState(() {});
-                },
-              );
-            } else {
-              return CategoryItem(
-                category: _categories[index - 1],
-                isSelected: selectedCategory != null &&
-                    selectedCategory!.id == _categories[index - 1].id,
-                nbWeakPasswords: !_categories[index - 1].isTrash
-                    ? _weakPasswordEntries
-                        .where(
-                            (e) => e.category?.id == _categories[index - 1].id)
-                        .toList()
-                        .length
-                    : 0,
-                nbOldPasswords: !_categories[index - 1].isTrash
-                    ? _oldEntries
-                        .where(
-                            (e) => e.category?.id == _categories[index - 1].id)
-                        .toList()
-                        .length
-                    : 0,
-                nbDuplicatedPasswords: !_categories[index - 1].isTrash
-                    ? _duplicatedEntries
-                        .where(
-                            (e) => e.category?.id == _categories[index - 1].id)
-                        .toList()
-                        .length
-                    : 0,
-                onTap: (Category? category) {
-                  selectedCategory = category;
+  _onDesktopCategoryClicked(Category? category) {
+    if (selectedCategory != category) {
+      selectedCategory = category;
 
-                  if (widget.onCategoryChange != null) {
-                    widget.onCategoryChange!();
-                  }
+      if (widget.onCategoryChange != null) {
+        widget.onCategoryChange!();
+      }
 
-                  setState(() {});
-                },
-                onCategoryChanged: () {
-                  _loadCategories();
-
-                  if (widget.onCategoryChange != null) {
-                    widget.onCategoryChange!();
-                  }
-                },
-              );
-            }
-          },
-        ));
+      setState(() {});
+    }
   }
 
   Widget _displaysTags(ThemeProvider themeProvider) {

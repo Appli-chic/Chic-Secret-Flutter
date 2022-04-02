@@ -122,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
               autoFocus: true,
               textCapitalization: TextCapitalization.none,
               keyboardType: TextInputType.emailAddress,
-              hint: AppTranslations.of(context).text("email"),
+              label: AppTranslations.of(context).text("email"),
               errorMessage: AppTranslations.of(context).text("error_email"),
               validating: (String text) {
                 return RegExp(
@@ -143,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     autoFocus: false,
                     textCapitalization: TextCapitalization.none,
                     keyboardType: TextInputType.number,
-                    hint: AppTranslations.of(context).text("code"),
+                    label: AppTranslations.of(context).text("code"),
                     errorMessage:
                         AppTranslations.of(context).text("error_code"),
                     validating: (String text) => text.isNotEmpty,

@@ -17,7 +17,8 @@ class ChicTextFieldType {
 
 class ChicTextField extends StatefulWidget {
   final TextEditingController controller;
-  final String hint;
+  final String label;
+  final String? hint;
   final bool isPassword;
   final Widget? suffix;
   final Widget? prefix;
@@ -42,8 +43,9 @@ class ChicTextField extends StatefulWidget {
 
   ChicTextField({
     required this.controller,
-    required this.hint,
+    required this.label,
     this.isPassword = false,
+    this.hint,
     this.suffix,
     this.prefix,
     required this.focus,
@@ -153,12 +155,16 @@ class _ChicTextFieldState extends State<ChicTextField> {
           errorBorder: _getInputBorder(Colors.red),
           focusedErrorBorder: _getInputBorder(Colors.red, isFocused: true),
           enabledBorder: _getInputBorder(themeProvider.placeholder),
-          labelText: widget.hint,
+          labelText: widget.label,
+          hintText: widget.hint,
           floatingLabelStyle: TextStyle(
             color: themeProvider.secondTextColor,
           ),
           floatingLabelBehavior: widget.floatingLabelBehavior,
           labelStyle: TextStyle(
+            color: themeProvider.placeholder,
+          ),
+          hintStyle: TextStyle(
             color: themeProvider.placeholder,
           ),
           suffixIcon: _displaysSuffixIcon(themeProvider),

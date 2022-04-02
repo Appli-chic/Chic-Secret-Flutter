@@ -54,7 +54,6 @@ class _CategoryItemState extends State<CategoryItem> {
     }
   }
 
-  /// Displays the mobile version of the [CategoryItem]
   Widget _buildMobileItem(ThemeProvider themeProvider) {
     if (widget.category == null) {
       return Container();
@@ -109,7 +108,6 @@ class _CategoryItemState extends State<CategoryItem> {
     );
   }
 
-  /// Displays the desktop version of the [CategoryItem]
   Widget _buildDesktopItem(BuildContext context, ThemeProvider themeProvider) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -177,63 +175,29 @@ class _CategoryItemState extends State<CategoryItem> {
     );
   }
 
-  /// Displays the number of entries that are too old, duplicated or weak passwords
   Widget _displaySecurity() {
     Widget weakPassword = SizedBox.shrink();
     Widget oldPassword = SizedBox.shrink();
     Widget duplicatedPassword = SizedBox.shrink();
 
     if (widget.nbWeakPasswords > 0) {
-      weakPassword = Container(
-        decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-        ),
-        padding: EdgeInsets.only(left: 4, right: 4),
-        margin: EdgeInsets.only(left: 4),
-        child: Text(
-          widget.nbWeakPasswords.toString(),
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-          ),
-        ),
+      weakPassword = _displaySecurityBubble(
+        Colors.red,
+        widget.nbWeakPasswords.toString(),
       );
     }
 
     if (widget.nbOldPasswords > 0) {
-      oldPassword = Container(
-        decoration: BoxDecoration(
-          color: Colors.deepOrange,
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-        ),
-        padding: EdgeInsets.only(left: 4, right: 4),
-        margin: EdgeInsets.only(left: 4),
-        child: Text(
-          widget.nbOldPasswords.toString(),
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-          ),
-        ),
+      oldPassword = _displaySecurityBubble(
+        Colors.deepOrange,
+        widget.nbOldPasswords.toString(),
       );
     }
 
     if (widget.nbDuplicatedPasswords > 0) {
-      duplicatedPassword = Container(
-        decoration: BoxDecoration(
-          color: Colors.orange,
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-        ),
-        padding: EdgeInsets.only(left: 4, right: 4),
-        margin: EdgeInsets.only(left: 4),
-        child: Text(
-          widget.nbDuplicatedPasswords.toString(),
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-          ),
-        ),
+      duplicatedPassword = _displaySecurityBubble(
+        Colors.orange,
+        widget.nbDuplicatedPasswords.toString(),
       );
     }
 
@@ -246,8 +210,24 @@ class _CategoryItemState extends State<CategoryItem> {
     );
   }
 
-  /// Retrieve the [CategoryItem]'s background color when the category is not selected
-  /// depending of the operating system.
+  Widget _displaySecurityBubble(Color color, String text) {
+    return Container(
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
+      padding: EdgeInsets.only(left: 6, right: 6, top: 2, bottom: 2),
+      margin: EdgeInsets.only(left: 4),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+        ),
+      ),
+    );
+  }
+
   Color _getNotSelectedBackgroundColor(ThemeProvider themeProvider) {
     if (ChicPlatform.isDesktop()) {
       return themeProvider.divider;
@@ -256,8 +236,6 @@ class _CategoryItemState extends State<CategoryItem> {
     }
   }
 
-  /// Retrieve the [CategoryItem]'s background color depending of
-  /// the operating system.
   Color _getSelectedBackgroundColor(ThemeProvider themeProvider) {
     if (widget.category != null) {
       return getColorFromHex(widget.category!.color);
@@ -266,7 +244,6 @@ class _CategoryItemState extends State<CategoryItem> {
     }
   }
 
-  /// Show a menu when the user do a right click on the category
   _onSecondaryClick(BuildContext context, ThemeProvider themeProvider) async {
     List<PopupMenuEntry> popupEntries = [
       ChicPopupMenuItem(
@@ -335,7 +312,6 @@ class _CategoryItemState extends State<CategoryItem> {
     }
   }
 
-  /// Call the [NewCategoryScreen] to edit the selected category
   void _onEditCategory() async {
     var category = await ChicNavigator.push(
       context,
@@ -350,7 +326,6 @@ class _CategoryItemState extends State<CategoryItem> {
     }
   }
 
-  /// Update the mouse location for the secondary click
   void _updateMouseLocation(PointerEvent details) {
     setState(() {
       _mousePosition = details.position;

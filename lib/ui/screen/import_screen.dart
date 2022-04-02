@@ -163,7 +163,7 @@ class _ImportScreenState extends State<ImportScreen> {
             desktopFocus: _desktopCategoryFocusNode,
             autoFocus: false,
             isReadOnly: true,
-            hint: AppTranslations.of(context).text("category"),
+            label: AppTranslations.of(context).text("category"),
           ),
           SizedBox(height: 32.0),
           Text(
@@ -182,7 +182,7 @@ class _ImportScreenState extends State<ImportScreen> {
             autoFocus: false,
             isReadOnly: true,
             textCapitalization: TextCapitalization.sentences,
-            hint: AppTranslations.of(context).text("category"),
+            label: AppTranslations.of(context).text("category"),
             errorMessage:
                 AppTranslations.of(context).text("error_category_empty"),
             validating: (String text) => _newCategoryController.text.isNotEmpty,

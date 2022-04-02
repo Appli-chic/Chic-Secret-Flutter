@@ -161,7 +161,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                     ),
                     ChicPlatform.isDesktop()
                         ? EntryDetailInput(
-                            label: AppTranslations.of(context).text("name"),
+                            label: AppTranslations.of(context).text("name_not_mandatory"),
                             text: widget.entry.name,
                           )
                         : SizedBox.shrink(),
@@ -177,7 +177,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                     EntryDetailInput(
                       entryDetailInputController:
                           _passwordEntryDetailController,
-                      label: AppTranslations.of(context).text("password"),
+                      label: AppTranslations.of(context).text("password_not_mandatory"),
                       text: password,
                       canCopy: true,
                       isPassword: true,

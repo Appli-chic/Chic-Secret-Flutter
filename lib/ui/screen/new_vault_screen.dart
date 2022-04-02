@@ -212,7 +212,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
                 nextFocus: _desktopPasswordFocusNode,
                 autoFocus: true,
                 textCapitalization: TextCapitalization.sentences,
-                hint: AppTranslations.of(context).text("name"),
+                label: AppTranslations.of(context).text("name"),
                 errorMessage:
                     AppTranslations.of(context).text("error_name_empty"),
                 validating: (String text) {
@@ -233,7 +233,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
                       focus: _passwordFocusNode,
                       desktopFocus: _desktopPasswordFocusNode,
                       nextFocus: _desktopVerifyPasswordFocusNode,
-                      hint: AppTranslations.of(context).text("password"),
+                      label: AppTranslations.of(context).text("password"),
                       isPassword: true,
                       hasStrengthIndicator: true,
                       errorMessage: AppTranslations.of(context)
@@ -253,7 +253,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
                       focus: _verifyPasswordFocusNode,
                       desktopFocus: _desktopVerifyPasswordFocusNode,
                       textInputAction: TextInputAction.done,
-                      hint: AppTranslations.of(context).text("verify_password"),
+                      label: AppTranslations.of(context).text("verify_password"),
                       isPassword: true,
                       errorMessage: AppTranslations.of(context)
                           .text("error_different_password"),
@@ -292,7 +292,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
                       focus: _usersFocusNode,
                       desktopFocus: _desktopUsersFocusNode,
                       textCapitalization: TextCapitalization.characters,
-                      hint: AppTranslations.of(context).text("users_email"),
+                      label: AppTranslations.of(context).text("users_email"),
                       onSubmitted: _checkEmailExists,
                     )
                   : SizedBox.shrink(),

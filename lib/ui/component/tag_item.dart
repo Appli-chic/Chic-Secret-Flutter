@@ -139,7 +139,7 @@ class _TagItemState extends State<TagItem> {
             desktopFocus: FocusNode(),
             autoFocus: true,
             textCapitalization: TextCapitalization.sentences,
-            hint: AppTranslations.of(context).text("name"),
+            label: AppTranslations.of(context).text("name"),
             errorMessage: AppTranslations.of(context).text("error_name_empty"),
             validating: (String text) {
               return text.isNotEmpty;
