@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/rich_text_editing_controller.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';

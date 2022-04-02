@@ -5,13 +5,11 @@ import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/user.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/database_structure.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart' as path;
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:sqflite_common_ffi/src/windows/setup_impl.dart';
-import 'package:path/path.dart';
 import 'package:sqlite3/open.dart';
-import 'package:sqlite3/sqlite3.dart' as s3;
-import 'package:path_provider/path_provider.dart' as path;
 
 const int version = 5;
 late Database db;
@@ -19,23 +17,8 @@ late Database db;
 /// Init the local database for all the platforms
 Future<void> initDatabase() async {
   if (Platform.isWindows) {
-    var location = findPackagePath(Directory.current.path);
-    if (location != null) {
-      var path = normalize(join(location, 'src', 'windows', 'sqlite3.dll'));
-      open.overrideFor(OperatingSystem.windows, () {
-        try {
-          return DynamicLibrary.open(path);
-        } catch (e) {
-          stderr.writeln('Failed to load sqlite3.dll at $path');
-          rethrow;
-        }
-      });
-    }
-    s3.sqlite3.openInMemory().dispose();
     databaseFactory = databaseFactoryFfi;
-  }
-
-  if (Platform.isWindows) {
+    open.overrideFor(OperatingSystem.windows, _openOnWindows);
     sqfliteFfiInit();
 
     var factoryDb = databaseFactoryFfi;
@@ -49,6 +32,7 @@ Future<void> initDatabase() async {
       ),
     );
   } else if (Platform.isLinux) {
+    open.overrideFor(OperatingSystem.linux, _openOnLinux);
     sqfliteFfiInit();
 
     var factoryDb = databaseFactoryFfi;
@@ -71,6 +55,18 @@ Future<void> initDatabase() async {
       onUpgrade: _onUpgrade,
     );
   }
+}
+
+DynamicLibrary _openOnLinux() {
+  final scriptDir = File(Platform.script.toFilePath()).parent;
+  final libraryNextToScript = File('${scriptDir.path}/sqlite3.so');
+  return DynamicLibrary.open(libraryNextToScript.path);
+}
+
+DynamicLibrary _openOnWindows() {
+  final scriptDir = File(Platform.script.toFilePath()).parent;
+  final libraryNextToScript = File('${scriptDir.path}/sqlite3.dll');
+  return DynamicLibrary.open(libraryNextToScript.path);
 }
 
 /// Get the database path

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/entry.dart';
@@ -12,6 +10,7 @@ import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
 import 'package:chic_secret/ui/component/category_item.dart';
+import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/desktop_expandable_menu.dart';
@@ -27,6 +26,7 @@ import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 Vault? selectedVault;
@@ -92,19 +92,16 @@ class _VaultsScreenState extends State<VaultsScreen> {
     super.initState();
   }
 
-  /// Get if the user is logged in
   _isUserLogged() async {
     _isUserLoggedIn = await Security.isConnected();
     setState(() {});
   }
 
-  /// Loads all the vaults from the database
   _loadVaults() async {
     _vaults = await VaultService.getAll();
     setState(() {});
   }
 
-  /// Loads the categories linked to the current vault
   _loadCategories() async {
     if (selectedVault != null) {
       _categories = await CategoryService.getAllByVault(selectedVault!.id);
@@ -117,7 +114,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
     }
   }
 
-  /// Loads the tags linked to the current vault
   _loadTags() async {
     if (selectedVault != null) {
       _tags = await TagService.getAllByVault(selectedVault!.id);
@@ -139,7 +135,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
       body: ChicPlatform.isDesktop()
           ? _displaysDesktopBody(themeProvider)
           : _displaysMobileBody(themeProvider),
-      floatingActionButton: _displaysFloatingActionButton(themeProvider),
     );
   }
 
@@ -209,7 +204,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
     );
   }
 
-  /// Reload the data after a synchronization
   _onSynchronized() async {
     widget.onVaultChange();
 
@@ -221,7 +215,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
     }
   }
 
-  /// Triggered when the options are clicked
   _onOptionsClicked() async {
     var haveToReload = await ChicNavigator.push(
       context,
@@ -242,7 +235,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
     }
   }
 
-  /// Displays the list of vaults for the desktop version
   Widget _displaysVaults(ThemeProvider themeProvider) {
     return Container(
       margin: EdgeInsets.only(top: 8),
@@ -270,7 +262,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
     );
   }
 
-  /// On clicking to add a vault on desktop
   _onAddVaultDesktop(Vault vault) async {
     var unlockingPassword;
 
@@ -324,7 +315,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
     setState(() {});
   }
 
-  /// Displays the categories for the desktop version
   Widget _displaysCategories(ThemeProvider themeProvider) {
     return DesktopExpandableMenu(
         title: AppTranslations.of(context).text("categories"),
@@ -398,7 +388,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
         ));
   }
 
-  /// Displays the list of tags for the desktop version
   Widget _displaysTags(ThemeProvider themeProvider) {
     return DesktopExpandableMenu(
       title: AppTranslations.of(context).text("tags"),
@@ -455,8 +444,36 @@ class _VaultsScreenState extends State<VaultsScreen> {
     );
   }
 
-  /// Displays the list of vaults only for the mobile version
   Widget _displaysMobileBody(ThemeProvider themeProvider) {
+    if (_vaults.isEmpty) {
+      return _displayMobileBodyEmpty(themeProvider);
+    } else {
+      return _displayMobileBodyFull(themeProvider);
+    }
+  }
+
+  Widget _displayMobileBodyEmpty(ThemeProvider themeProvider) {
+    return Container(
+      margin: EdgeInsets.only(left: 32, right: 32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            "assets/images/empty_vault.svg",
+            semanticsLabel: 'Empty Vault',
+            fit: BoxFit.fitWidth,
+            height: 200,
+          ),
+          ChicElevatedButton(
+            child: Text("New Vault"),
+            onPressed: () {},
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _displayMobileBodyFull(ThemeProvider themeProvider) {
     return ListView.builder(
       physics: BouncingScrollPhysics(),
       itemCount: _vaults.length,
@@ -504,34 +521,29 @@ class _VaultsScreenState extends State<VaultsScreen> {
     );
   }
 
-  /// Displays a floating action button only for the mobile version
-  /// to create new vaults.
-  Widget? _displaysFloatingActionButton(ThemeProvider themeProvider) {
-    if (Platform.isAndroid) {
-      return FloatingActionButton(
-        onPressed: _onAddVaultClicked,
-        backgroundColor: themeProvider.primaryColor,
-        child: Icon(Icons.add, color: themeProvider.textColor),
-      );
-    } else {
-      return null;
-    }
-  }
-
-  /// Displays the appbar only for the mobile version
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     if (!ChicPlatform.isDesktop()) {
       return AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
         title: Text(AppTranslations.of(context).text("vaults")),
         leading: _displaysAppBarLeadingIcon(themeProvider),
+        actions: [_displaysActionIcon(themeProvider)],
       );
     } else {
       return null;
     }
   }
 
-  /// Displays the app bar leading icon for mobile
+  Widget _displaysActionIcon(ThemeProvider themeProvider) {
+    return IconButton(
+      icon: Icon(
+        Icons.add,
+        color: themeProvider.textColor,
+      ),
+      onPressed: _onAddVaultClicked,
+    );
+  }
+
   Widget _displaysAppBarLeadingIcon(ThemeProvider themeProvider) {
     if (!_isUserLoggedIn) {
       return IconButton(
@@ -552,7 +564,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
     }
   }
 
-  /// Starts the settings page for the mobile
   _onStartSettings() async {
     await ChicNavigator.push(
       context,
@@ -567,7 +578,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
     EasyLoading.dismiss();
   }
 
-  /// Go the [LoginScreen] to synchronize the vaults
   _onLogin() async {
     var isLogged = await ChicNavigator.push(
       context,
@@ -587,7 +597,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
     }
   }
 
-  /// Calls the [NewVaultScreen] screen to create a new vault
   _onAddVaultClicked() async {
     var data = await ChicNavigator.push(
       context,
@@ -615,7 +624,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
     }
   }
 
-  /// Calls the [NewCategoryScreen] screen to create a new category
   _onAddCategoryClicked() async {
     var data = await ChicNavigator.push(
       context,
@@ -628,8 +636,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
     }
   }
 
-  /// Check if the vault is unlocked and returns the password used
-  /// to unlock the vault
   Future<String?> _isVaultUnlocking(Vault vault) async {
     var unlockingPassword = await ChicNavigator.push(
       context,
@@ -640,7 +646,6 @@ class _VaultsScreenState extends State<VaultsScreen> {
     return unlockingPassword;
   }
 
-  /// Check the security of all the entries
   _checkPasswordSecurity() async {
     var data = await Security.retrievePasswordsSecurityInfo();
 
