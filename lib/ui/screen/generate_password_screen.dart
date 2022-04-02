@@ -13,9 +13,9 @@ import 'package:chic_secret/ui/screen/select_language_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/rich_text_editing_controller.dart';
+import 'package:chic_secret/utils/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:chic_secret/utils/string_extension.dart';
 
 class GeneratePasswordScreen extends StatefulWidget {
   @override
@@ -77,7 +77,6 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     }
   }
 
-  /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: AppTranslations.of(context).text("generate_password"),
@@ -105,7 +104,6 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     );
   }
 
-  /// Displays the Mobile scaffold
   Widget _displaysMobile(ThemeProvider themeProvider) {
     return Scaffold(
       backgroundColor: themeProvider.backgroundColor,
@@ -134,8 +132,11 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     );
   }
 
-  /// Displays a unified body for Mobile and Desktop
   Widget _displaysBody(ThemeProvider themeProvider) {
+    String words = AppTranslations.of(context).text("words");
+    String characters = AppTranslations.of(context).text("characters");
+    int passwordSize = _passwordController.text.length;
+
     return Container(
       margin: EdgeInsets.all(16),
       child: Column(
@@ -168,8 +169,8 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
           SizedBox(height: 32.0),
           Text(
             _isGeneratingWords
-                ? AppTranslations.of(context).text("words")
-                : AppTranslations.of(context).text("characters"),
+                ? "$words ($passwordSize $characters)"
+                : characters,
             style: TextStyle(
               color: themeProvider.textColor,
               fontWeight: FontWeight.w600,
@@ -298,8 +299,6 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     );
   }
 
-  /// Displays a tabBar to select the type of password generation
-  /// Word based password or random number/characters password
   PreferredSizeWidget _displayTabBar(ThemeProvider themeProvider) {
     return TabBar(
       controller: _tabController,
@@ -333,7 +332,6 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     );
   }
 
-  /// Select the language to generate a new password from a range of languages supported
   _selectLanguage() async {
     String? language = await ChicNavigator.push(
       context,
@@ -352,7 +350,6 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     }
   }
 
-  /// Called to generate a new password
   String _generatePassword() {
     if (_isGeneratingWords) {
       // Generating a password composed of words
@@ -363,7 +360,6 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     return _generateRandomPassword();
   }
 
-  /// Generates a password made of random numbers/characters
   String _generateRandomPassword() {
     var newPassword = "";
     List<String> dictionary = [];
@@ -383,15 +379,38 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
       dictionary.addAll(specialCharacters);
     }
 
-    for (var wordIndex = 0; wordIndex < _numberWords; wordIndex++) {
-      var rng = new Random();
-      newPassword += dictionary[rng.nextInt(dictionary.length - 1)];
-    }
+    do {
+      newPassword = "";
+
+      for (var wordIndex = 0; wordIndex < _numberWords; wordIndex++) {
+        var rng = new Random();
+        newPassword += dictionary[rng.nextInt(dictionary.length - 1)];
+      }
+    } while (!_isPasswordGeneratedCorrect(newPassword));
 
     return newPassword;
   }
 
-  /// Generates a password based of words
+  bool _isPasswordGeneratedCorrect(String password) {
+    var isPasswordCorrect = true;
+
+    if (_hasUppercase && !password.contains(RegExp(r'[A-Z]'))) {
+      isPasswordCorrect = false;
+    }
+
+    if (_hasNumbers && !password.contains(RegExp(r'[0-9]'))) {
+      isPasswordCorrect = false;
+    }
+
+    if (_hasSpecialCharacters &&
+        !specialCharacters
+            .any((specialCharacter) => password.contains(specialCharacter))) {
+      isPasswordCorrect = false;
+    }
+
+    return isPasswordCorrect;
+  }
+
   String _generatePasswordWithWords() {
     var newPassword = "";
 
@@ -403,7 +422,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
         // French
         randomWord = wordsFrench[rng.nextInt(wordsFrench.length - 1)];
       } else if (_locale!.languageCode == "es") {
-        // French
+        // Spanish
         randomWord = wordsSpanish[rng.nextInt(wordsSpanish.length - 1)];
       } else {
         // English by default
@@ -425,7 +444,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
       if (_hasNumbers) {
         var numberLuck = rng.nextInt(10);
 
-        if (numberLuck >= 8) {
+        if (numberLuck >= 6) {
           var randomNumber = numbers[rng.nextInt(numbers.length - 1)];
           randomWord += randomNumber;
         }
@@ -435,7 +454,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
       if (_hasSpecialCharacters) {
         var specialCharacterLuck = rng.nextInt(10);
 
-        if (specialCharacterLuck >= 6) {
+        if (specialCharacterLuck >= 7) {
           var randomSpecialCharacter =
               specialCharacters[rng.nextInt(specialCharacters.length - 1)];
           randomWord += randomSpecialCharacter;
@@ -448,6 +467,25 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
       }
 
       newPassword += randomWord;
+    }
+
+    if (_hasUppercase && !newPassword.contains(RegExp(r'[A-Z]'))) {
+      newPassword = newPassword.capitalizeFirst();
+    }
+
+    if (_hasNumbers && !newPassword.contains(RegExp(r'[0-9]'))) {
+      var rng = new Random();
+      var randomNumber = numbers[rng.nextInt(numbers.length - 1)];
+      newPassword += randomNumber;
+    }
+
+    if (_hasSpecialCharacters &&
+        !specialCharacters.any(
+            (specialCharacter) => newPassword.contains(specialCharacter))) {
+      var rng = new Random();
+      var randomSpecialCharacter =
+          specialCharacters[rng.nextInt(specialCharacters.length - 1)];
+      newPassword += randomSpecialCharacter;
     }
 
     return newPassword;
