@@ -64,7 +64,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
                       securityIndex: 1,
                       number: _weakPasswordEntries.length,
                       title: AppTranslations.of(context).text("weak"),
-                      icon: Icons.security,
+                      icon: Icons.password,
                       color: Colors.red,
                       onTap: _onSecurityItemClicked,
                     ),

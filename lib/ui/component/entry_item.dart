@@ -75,7 +75,7 @@ class _EntryItemState extends State<EntryItem> {
               padding: EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: getColorFromHex(widget.entry.category!.color),
-                borderRadius: BorderRadius.all(Radius.circular(6)),
+                borderRadius: BorderRadius.all(Radius.circular(16)),
               ),
               child: Icon(
                 IconData(widget.entry.category!.icon,

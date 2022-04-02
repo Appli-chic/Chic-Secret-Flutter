@@ -30,7 +30,6 @@ class ChicAheadTextField extends StatelessWidget {
       textFieldConfiguration: TextFieldConfiguration(
         controller: controller,
         decoration: InputDecoration(
-          isDense: ChicPlatform.isDesktop(),
           border: _getInputBorder(themeProvider.placeholder),
           focusedBorder: _getInputBorder(themeProvider.primaryColor),
           enabledBorder: _getInputBorder(themeProvider.placeholder),
@@ -63,7 +62,7 @@ class ChicAheadTextField extends StatelessWidget {
     return OutlineInputBorder(
       borderSide: BorderSide(color: color),
       borderRadius: const BorderRadius.all(
-        const Radius.circular(6),
+        const Radius.circular(14),
       ),
     );
   }

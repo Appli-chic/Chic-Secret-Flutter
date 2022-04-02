@@ -196,7 +196,7 @@ class _IconPickerDialogState extends State<IconPickerDialog> {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
     var shortestSide = MediaQuery.of(context).size.shortestSide;
     double width = 320;
-    var cells = 4;
+    var cells = 5;
 
     if (ChicPlatform.isDesktop()) {
       width = 500;
@@ -281,7 +281,7 @@ Widget _displayIcon(
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.all(Radius.circular(6)),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       child: Icon(
         icons[index],

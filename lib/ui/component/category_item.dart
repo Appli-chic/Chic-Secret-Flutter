@@ -87,7 +87,7 @@ class _CategoryItemState extends State<CategoryItem> {
           padding: EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: getColorFromHex(widget.category!.color),
-            borderRadius: BorderRadius.all(Radius.circular(6)),
+            borderRadius: BorderRadius.all(Radius.circular(16)),
           ),
           child: Icon(
             IconData(widget.category!.icon, fontFamily: 'MaterialIcons'),

@@ -121,10 +121,12 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
       selectedItemColor: themeProvider.primaryColor,
       selectedLabelStyle: TextStyle(
         color: themeProvider.primaryColor,
+        fontSize: 10,
       ),
       unselectedItemColor: themeProvider.placeholder,
       unselectedLabelStyle: TextStyle(
         color: themeProvider.placeholder,
+        fontSize: 10,
       ),
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
@@ -139,8 +141,8 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
         ),
         BottomNavigationBarItem(icon: const SizedBox(), label: ""),
         BottomNavigationBarItem(
-          icon: Icon(Icons.shield),
-          activeIcon: Icon(Icons.shield),
+          icon: Icon(Icons.security),
+          activeIcon: Icon(Icons.security),
           label: AppTranslations.of(context).text("security"),
         ),
         BottomNavigationBarItem(

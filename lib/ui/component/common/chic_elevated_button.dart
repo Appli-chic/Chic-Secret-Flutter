@@ -29,8 +29,10 @@ class ChicElevatedButton extends StatelessWidget {
                 ),
               )
             : null,
-        padding:
-            MaterialStateProperty.resolveWith((states) => EdgeInsets.only(left: 24, right: 24)),
+        padding: !ChicPlatform.isDesktop()
+            ? MaterialStateProperty.resolveWith(
+                (states) => EdgeInsets.only(left: 24, right: 24))
+            : null,
       ),
       child: child,
       onPressed: onPressed,

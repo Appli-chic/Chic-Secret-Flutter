@@ -143,7 +143,6 @@ class _ChicTextFieldState extends State<ChicTextField> {
         },
         decoration: InputDecoration(
           focusColor: themeProvider.primaryColor,
-          isDense: ChicPlatform.isDesktop(),
           filled: widget.type == ChicTextFieldType.filledRounded,
           fillColor: ChicPlatform.isDesktop()
               ? themeProvider.inputBackgroundColor
