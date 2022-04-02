@@ -179,36 +179,63 @@ class _ChicTextFieldState extends State<ChicTextField> {
 
   Widget _displayStrengthIndicator(ThemeProvider themeProvider) {
     var value = 0.0;
-    Color color = Colors.red;
+    var colors = [
+      themeProvider.secondBackgroundColor,
+      themeProvider.secondBackgroundColor,
+      themeProvider.secondBackgroundColor,
+      themeProvider.secondBackgroundColor,
+    ];
 
     if (widget.controller.text.length == 0) {
       value = 0.0;
-      color = Colors.red;
     } else if (widget.controller.text.length <= 6) {
       value = 0.25;
-      color = Colors.red;
+      colors[0] = Colors.red;
     } else if (widget.controller.text.length < 10) {
       value = 0.5;
-      color = Colors.orange;
+      colors[0] = Colors.orange;
+      colors[1] = Colors.orange;
     } else if (widget.controller.text.length < 16) {
       value = 0.75;
-      color = Colors.green;
+      colors[0] = Colors.green;
+      colors[1] = Colors.green;
+      colors[2] = Colors.green;
     } else {
       value = 1;
-      color = Colors.green[800] as Color;
+      colors[0] = Colors.green;
+      colors[1] = Colors.green;
+      colors[2] = Colors.green;
+      colors[3] = Colors.green;
     }
 
-    // Don't display if no text
     if (value == 0.0) {
       return SizedBox.shrink();
     }
 
     return Container(
-      margin: EdgeInsets.only(top: 6),
-      child: LinearProgressIndicator(
-        value: value,
-        backgroundColor: themeProvider.backgroundColor,
-        valueColor: AlwaysStoppedAnimation<Color>(color),
+      margin: EdgeInsets.only(top: 16),
+      child: Row(
+        children: [
+          _passwordIndicator(colors[0]),
+          SizedBox(width: 8),
+          _passwordIndicator(colors[1]),
+          SizedBox(width: 8),
+          _passwordIndicator(colors[2]),
+          SizedBox(width: 8),
+          _passwordIndicator(colors[3]),
+        ],
+      ),
+    );
+  }
+
+  Widget _passwordIndicator(Color color) {
+    return Expanded(
+      child: Container(
+        height: 6,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.all(Radius.circular(3)),
+        ),
       ),
     );
   }
