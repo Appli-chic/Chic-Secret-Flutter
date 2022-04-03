@@ -8,6 +8,7 @@ import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
+import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/component/icon_selector.dart';
 import 'package:chic_secret/ui/screen/select_predefined_category.dart';
@@ -38,13 +39,10 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController _nameController = TextEditingController();
-  TextEditingController _predefinedCategoryController = TextEditingController();
 
   FocusNode _nameFocusNode = FocusNode();
-  FocusNode _predefinedCategoryFocusNode = FocusNode();
 
   FocusNode _desktopNameFocusNode = FocusNode();
-  FocusNode _desktopPredefinedCategoryFocusNode = FocusNode();
 
   ColorSelectorController _colorSelectorController = ColorSelectorController();
   IconSelectorController _iconSelectorController = IconSelectorController();
@@ -200,27 +198,17 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
               },
             ),
             SizedBox(height: 16.0),
-            Divider(color: themeProvider.divider),
-            SizedBox(height: 16.0),
-            Text(
-              AppTranslations.of(context).text("help_define_categories"),
-              style: TextStyle(
-                color: themeProvider.textColor,
-                fontWeight: FontWeight.w600,
-                fontSize: 17,
+            ChicTextIconButton(
+              label: Text(
+                AppTranslations.of(context).text("generate_category"),
+                style: TextStyle(color: themeProvider.primaryColor),
               ),
-            ),
-            SizedBox(height: 16.0),
-            ChicTextField(
-              controller: _predefinedCategoryController,
-              focus: _predefinedCategoryFocusNode,
-              desktopFocus: _desktopPredefinedCategoryFocusNode,
-              autoFocus: false,
-              isReadOnly: true,
-              textCapitalization: TextCapitalization.sentences,
-              label: AppTranslations.of(context).text("predefined_categories"),
-              onTap: _selectPredefinedCategory,
-            ),
+              icon: Icon(
+                Icons.add,
+                color: themeProvider.primaryColor,
+              ),
+              onPressed: _selectPredefinedCategory,
+            )
           ],
         ),
       ),
@@ -238,7 +226,6 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     if (category != null && category is Category) {
       _preselectedCategory = category;
       _nameController.text = category.name;
-      _predefinedCategoryController.text = category.name;
       _color = getColorFromHex(category.color);
       _icon = IconData(category.icon, fontFamily: 'MaterialIcons');
 
@@ -296,13 +283,10 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   @override
   void dispose() {
     _nameController.dispose();
-    _predefinedCategoryController.dispose();
 
     _nameFocusNode.dispose();
-    _predefinedCategoryFocusNode.dispose();
 
     _desktopNameFocusNode.dispose();
-    _desktopPredefinedCategoryFocusNode.dispose();
 
     super.dispose();
   }
