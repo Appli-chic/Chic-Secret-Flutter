@@ -200,11 +200,11 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
             SizedBox(height: 16.0),
             ChicTextIconButton(
               label: Text(
-                AppTranslations.of(context).text("generate_category"),
+                AppTranslations.of(context).text("copy_category"),
                 style: TextStyle(color: themeProvider.primaryColor),
               ),
               icon: Icon(
-                Icons.add,
+                Icons.folder_copy,
                 color: themeProvider.primaryColor,
               ),
               onPressed: _selectPredefinedCategory,

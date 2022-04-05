@@ -75,7 +75,7 @@
   "category_corresponding": "Corresponding Category",
   "next": "Next",
   "predefined_categories": "Predefined categories",
-  "generate_category": "Generate category",
+  "copy_category": "Copy a category",
   "login": "Login",
   "error_server": "An error occured while connecting to the server",
   "error_verification_code_invalid": "The verification code is invalid",

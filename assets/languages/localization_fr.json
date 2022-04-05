@@ -75,7 +75,7 @@
   "category_corresponding": "Catégorie correspondante",
   "next": "Suivant",
   "predefined_categories": "Catégories prédéfinies",
-  "generate_category": "Générer une catégorie",
+  "copy_category": "Copier une catégorie",
   "login": "Connexion",
   "error_server": "Une erreur est apparue lors du contact vers notre serveur",
   "error_verification_code_invalid": "Le code vérification est incorrecte",
