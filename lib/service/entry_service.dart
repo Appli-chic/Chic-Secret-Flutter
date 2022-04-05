@@ -30,7 +30,6 @@ LEFT JOIN $customFieldTable as cf ON cf.$columnCustomFieldEntryId = e.$columnId
 """;
 
 class EntryService {
-  /// Update an [entry] into the local database
   static Future<void> update(Entry entry) async {
     await db.update(
       entryTable,
@@ -39,7 +38,6 @@ class EntryService {
     );
   }
 
-  /// Save an [entry] into the local database
   static Future<void> save(Entry entry) async {
     await db.insert(
       entryTable,
@@ -48,7 +46,6 @@ class EntryService {
     );
   }
 
-  /// Checks if the entry already exists
   static Future<bool> exists(Entry entry) async {
     var data = await db.query(
       entryTable,
@@ -58,7 +55,6 @@ class EntryService {
     return data.isNotEmpty;
   }
 
-  /// Delete all the entries from the vault
   static Future<void> deleteAllFromVault(String vaultId) async {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     String date = dateFormatter.format(DateTime.now());
@@ -70,7 +66,6 @@ class EntryService {
       """);
   }
 
-  /// Hard delete of the entry
   static Future<void> deleteDefinitively(Entry entry) async {
     await EntryTagService.deleteAllFromEntry(entry.id);
     await CustomFieldService.deleteAllFromEntry(entry.id);
@@ -86,7 +81,6 @@ class EntryService {
     );
   }
 
-  /// Move an entry to another category
   static Future<void> moveToAnotherCategory(
       Entry entry, String categoryId) async {
     entry.categoryId = categoryId;
@@ -98,7 +92,6 @@ class EntryService {
     );
   }
 
-  /// Move an entry to the trash bin of it's vault
   static Future<void> moveToTrash(Entry entry) async {
     var category = await CategoryService.getTrashByVault(entry.vaultId);
 
@@ -112,7 +105,6 @@ class EntryService {
     }
   }
 
-  /// Move an entry to the trash bin of it's vault
   static Future<void> moveToTrashAllEntriesFromCategory(
       Category category) async {
     var trashCategory = await CategoryService.getTrashByVault(category.vaultId);
@@ -126,7 +118,6 @@ class EntryService {
     }
   }
 
-  /// Retrieve all the entries linked to a vault
   static Future<List<Entry>> getAllByVault(String vaultId,
       {String? categoryId, String? tagId}) async {
     List<Entry> entries = [];
@@ -162,8 +153,6 @@ class EntryService {
     return entries;
   }
 
-  /// Search all the entries linked to a vault.
-  /// The text filter by everything that defines a password
   static Future<List<Entry>> search(String vaultId, String text,
       {String? categoryId, String? tagId}) async {
     List<Entry> entries = [];
@@ -208,7 +197,30 @@ class EntryService {
     return entries;
   }
 
-  /// Get all the entries that don't have a password length defined
+  static Future<List<Entry>> findDuplicatedPasswords(String vaultId, String password) async {
+    List<Entry> entries = [];
+
+    var query = entryGeneralSelect + "WHERE e.$columnEntryVaultId = '$vaultId'";
+
+    query += """
+    AND e.$columnEntryHash LIKE '%$password%'
+    AND e.$columnDeletedAt IS NULL 
+    """;
+
+    query +=
+    "order by c.$columnCategoryIsTrash ASC, LOWER(e.$columnEntryName) ASC";
+
+    var maps = await db.rawQuery(query);
+
+    if (maps.isNotEmpty) {
+      for (var map in maps) {
+        entries.add(Entry.fromMap(map, categoryPrefix: "c_"));
+      }
+    }
+
+    return entries;
+  }
+
   static Future<List<Entry>> getEntriesWithoutPasswordLength() async {
     List<Map<String, dynamic>> maps = await db.query(
       entryTable,
@@ -221,7 +233,6 @@ class EntryService {
     });
   }
 
-  /// Get all the entries to synchronize from the locale database to the server
   static Future<List<Entry>> getEntriesToSynchronize(DateTime? lastSync) async {
     String? whereQuery;
 

@@ -41,7 +41,6 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     super.initState();
   }
 
-  /// Reload after a synchronization
   _reloadAfterSynchronization() {
     if (_vaultScreenController.reloadVaults != null) {
       _vaultScreenController.reloadVaults!();
@@ -58,7 +57,6 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     setState(() {});
   }
 
-  /// Ask to reload the passwords from the [EntryScreen] when the vault change
   _reloadPasswordScreenOnVaultChange() {
     _selectedEntry = null;
 
@@ -69,7 +67,6 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     setState(() {});
   }
 
-  /// Ask to reload the passwords from the [EntryScreen] when the category change
   _reloadPasswordScreenOnCategoryChange() {
     if (_entryScreenController.reloadPasswords != null) {
       _entryScreenController.reloadPasswords!();
@@ -78,7 +75,6 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     setState(() {});
   }
 
-  /// Ask to reload the passwords from the [EntryScreen] when the tag change
   _reloadPasswordScreenOnTagChange() {
     if (_entryScreenController.reloadPasswords != null) {
       _entryScreenController.reloadPasswords!();
@@ -87,28 +83,24 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     setState(() {});
   }
 
-  /// Ask to reload the categories from the [VaultsScreen]
   _reloadCategories() {
     if (_vaultScreenController.reloadCategories != null) {
       _vaultScreenController.reloadCategories!();
     }
   }
 
-  /// Ask to reload the tags from the [VaultsScreen]
   _reloadTags() {
     if (_vaultScreenController.reloadTags != null) {
       _vaultScreenController.reloadTags!();
     }
   }
 
-  /// Reload the [EntryDetailScreen] with the new selected entry
   _onEntrySelected(Entry entry) {
     _selectedEntry = entry;
     _isCreatingOrModifyingEntry = false;
     setState(() {});
   }
 
-  /// Displays [NewEntryScreen] instead of the entry detail
   _onCreateNewEntry() {
     _selectedEntry = null;
     _isCreatingOrModifyingEntry = true;
@@ -120,7 +112,6 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     setState(() {});
   }
 
-  /// Cancels the display of creation of a new entry
   _onNewEntryFinished(Entry? entry) {
     _isCreatingOrModifyingEntry = false;
     _reloadTags();
@@ -144,7 +135,6 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     setState(() {});
   }
 
-  /// Triggered when then the user click on the edit button of a created entry
   _onEditEntry(Entry entry) {
     _isCreatingOrModifyingEntry = true;
     _selectedEntry = entry;
@@ -156,7 +146,6 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     setState(() {});
   }
 
-  /// Triggered when the user deleted a selected entry
   _onEntryDeleted() {
     _isCreatingOrModifyingEntry = false;
     _selectedEntry = null;
@@ -209,7 +198,6 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     );
   }
 
-  /// Displays the third split screen with blank/[EntryDetailScreen]/[NewEntryScreen]
   Widget _displaysThirdSplitScreen(ThemeProvider themeProvider) {
     if (_isCreatingOrModifyingEntry) {
       return NewEntryScreen(
@@ -222,6 +210,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
         entry: _selectedEntry!,
         onEntryEdit: _onEditEntry,
         onEntryDeleted: _onEntryDeleted,
+        onEntrySelected: _onEntrySelected,
       );
     } else {
       return Container(color: themeProvider.backgroundColor);

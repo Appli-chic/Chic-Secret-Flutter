@@ -9,6 +9,7 @@ import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/entry_detail_input.dart';
+import 'package:chic_secret/ui/component/entry_item.dart';
 import 'package:chic_secret/ui/component/tag_chip.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
@@ -22,11 +23,13 @@ class EntryDetailScreen extends StatefulWidget {
   final Entry entry;
   final Function(Entry)? onEntryEdit;
   final Function()? onEntryDeleted;
+  final Function(Entry entry)? onEntrySelected;
 
   EntryDetailScreen({
     required this.entry,
     this.onEntryEdit,
     this.onEntryDeleted,
+    this.onEntrySelected,
   });
 
   @override
@@ -34,6 +37,8 @@ class EntryDetailScreen extends StatefulWidget {
 }
 
 class _EntryDetailScreenState extends State<EntryDetailScreen> {
+  List<Entry> _duplicatedEntries = [];
+
   late Entry _oldEntry;
   List<Tag> _tags = [];
   List<CustomField> _customFields = [];
@@ -44,18 +49,27 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
   void initState() {
     _oldEntry = widget.entry;
 
+    _checkPasswordSecurity();
     _loadTags();
     _loadCustomFields();
     super.initState();
   }
 
-  /// Load the tags related to the entry
+  _checkPasswordSecurity() async {
+    var entries = await EntryService.findDuplicatedPasswords(
+        selectedVault!.id, widget.entry.hash);
+
+    _duplicatedEntries =
+        entries.where((entry) => entry.id != widget.entry.id).toList();
+
+    setState(() {});
+  }
+
   _loadTags() async {
     _tags = await TagService.getAllByEntry(widget.entry.id);
     setState(() {});
   }
 
-  /// Load the custom fields related to the entry
   _loadCustomFields() async {
     _customFields = await CustomFieldService.getAllByEntry(widget.entry.id);
     setState(() {});
@@ -72,6 +86,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
       }
 
       _oldEntry = widget.entry;
+      _checkPasswordSecurity();
       _loadTags();
       _loadCustomFields();
     }
@@ -83,7 +98,6 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     );
   }
 
-  /// Displays the appbar that is only appearing on the mobile version
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     if (!ChicPlatform.isDesktop()) {
       return AppBar(
@@ -111,7 +125,6 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     }
   }
 
-  /// Displays the body of the screen
   Widget _displaysBody(ThemeProvider themeProvider) {
     var password = "";
 
@@ -126,74 +139,81 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
         Expanded(
           child: Scrollbar(
             child: SingleChildScrollView(
-              child: Container(
-                margin: EdgeInsets.only(left: 20, right: 20, top: 20),
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                  color: themeProvider.secondBackgroundColor,
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
-                padding: EdgeInsets.all(32),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                    width: double.maxFinite,
+                    decoration: BoxDecoration(
+                      color: themeProvider.secondBackgroundColor,
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                    padding: EdgeInsets.all(32),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          Icons.access_time_outlined,
-                          color: themeProvider.secondTextColor,
-                          size: 12,
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 8),
-                          child: Text(
-                            DateRender.displaysDate(
-                                context, widget.entry.updatedAt),
-                            style: TextStyle(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(
+                              Icons.access_time_outlined,
                               color: themeProvider.secondTextColor,
-                              fontSize: 12,
+                              size: 12,
                             ),
-                          ),
+                            Container(
+                              margin: EdgeInsets.only(left: 8),
+                              child: Text(
+                                DateRender.displaysDate(
+                                    context, widget.entry.updatedAt),
+                                style: TextStyle(
+                                  color: themeProvider.secondTextColor,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
+                        ChicPlatform.isDesktop()
+                            ? EntryDetailInput(
+                                label: AppTranslations.of(context)
+                                    .text("name_not_mandatory"),
+                                text: widget.entry.name,
+                              )
+                            : SizedBox.shrink(),
+                        ChicPlatform.isDesktop()
+                            ? SizedBox(height: 24)
+                            : SizedBox.shrink(),
+                        EntryDetailInput(
+                          label: AppTranslations.of(context).text("username"),
+                          text: widget.entry.username,
+                          canCopy: true,
+                        ),
+                        SizedBox(height: 24),
+                        EntryDetailInput(
+                          entryDetailInputController:
+                              _passwordEntryDetailController,
+                          label: AppTranslations.of(context)
+                              .text("password_not_mandatory"),
+                          text: password,
+                          canCopy: true,
+                          isPassword: true,
+                        ),
+                        SizedBox(height: 24),
+                        EntryDetailInput(
+                          label: AppTranslations.of(context).text("category"),
+                          text: widget.entry.category != null
+                              ? widget.entry.category!.name
+                              : "",
+                        ),
+                        _displaysTags(themeProvider),
+                        _displaysCustomFields(),
+                        _displaysComment(),
                       ],
                     ),
-                    ChicPlatform.isDesktop()
-                        ? EntryDetailInput(
-                            label: AppTranslations.of(context).text("name_not_mandatory"),
-                            text: widget.entry.name,
-                          )
-                        : SizedBox.shrink(),
-                    ChicPlatform.isDesktop()
-                        ? SizedBox(height: 24)
-                        : SizedBox.shrink(),
-                    EntryDetailInput(
-                      label: AppTranslations.of(context).text("username"),
-                      text: widget.entry.username,
-                      canCopy: true,
-                    ),
-                    SizedBox(height: 24),
-                    EntryDetailInput(
-                      entryDetailInputController:
-                          _passwordEntryDetailController,
-                      label: AppTranslations.of(context).text("password_not_mandatory"),
-                      text: password,
-                      canCopy: true,
-                      isPassword: true,
-                    ),
-                    SizedBox(height: 24),
-                    EntryDetailInput(
-                      label: AppTranslations.of(context).text("category"),
-                      text: widget.entry.category != null
-                          ? widget.entry.category!.name
-                          : "",
-                    ),
-                    _displaysTags(themeProvider),
-                    _displaysCustomFields(),
-                    _displaysComment(),
-                  ],
-                ),
+                  ),
+                  _displayDuplicatedEntries(themeProvider),
+                ],
               ),
             ),
           ),
@@ -208,7 +228,6 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     );
   }
 
-  /// Displays the buttons to delete and edit an entry, only for Desktop
   Widget _displaysDesktopToolbar(ThemeProvider themeProvider) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -261,7 +280,6 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     );
   }
 
-  /// Displays a comment if it exists
   Widget _displaysComment() {
     if (widget.entry.comment != null && widget.entry.comment!.isNotEmpty) {
       return Column(
@@ -278,7 +296,6 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     return SizedBox.shrink();
   }
 
-  /// Displays the custom fields if they exist
   Widget _displaysCustomFields() {
     if (_customFields.isEmpty) {
       return SizedBox.shrink();
@@ -313,7 +330,6 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     );
   }
 
-  /// Displays tags if they exist
   Widget _displaysTags(ThemeProvider themeProvider) {
     if (_tags.isEmpty) {
       return SizedBox.shrink();
@@ -335,7 +351,6 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     );
   }
 
-  /// Displays the list of tags
   List<Widget> _createChipsList(ThemeProvider themeProvider) {
     List<Widget> chips = [];
 
@@ -351,7 +366,53 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     return chips;
   }
 
-  /// Triggered when the edit button is clicked
+  Widget _displayDuplicatedEntries(ThemeProvider themeProvider) {
+    if (_duplicatedEntries.isEmpty) {
+      return SizedBox.shrink();
+    } else {
+      return Container(
+        margin: EdgeInsets.only(top: 16, left: 16, right: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              AppTranslations.of(context).text("duplicated"),
+              style: TextStyle(
+                color: themeProvider.textColor,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: _duplicatedEntries.length,
+              itemBuilder: (context, index) {
+                return EntryItem(
+                  entry: _duplicatedEntries[index],
+                  isSelected: false,
+                  onTap: _onEntrySelected,
+                );
+              },
+            )
+          ],
+        ),
+      );
+    }
+  }
+
+  _onEntrySelected(Entry entry) async {
+    if (ChicPlatform.isDesktop() && widget.onEntryEdit != null) {
+      if (widget.onEntrySelected != null) {
+        widget.onEntrySelected!(entry);
+      }
+    } else {
+      await ChicNavigator.push(context, EntryDetailScreen(entry: entry));
+    }
+
+    _checkPasswordSecurity();
+  }
+
   _onEditButtonClicked() async {
     if (ChicPlatform.isDesktop() && widget.onEntryEdit != null) {
       widget.onEntryEdit!(widget.entry);
@@ -365,8 +426,6 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     }
   }
 
-  /// Triggered when the delete button is clicked, it will moves the entry
-  /// to the trash category of it's vault if the user confirm the action
   _onDeleteButtonClicked() async {
     var isAlreadyInTrash = widget.entry.category!.isTrash;
 
