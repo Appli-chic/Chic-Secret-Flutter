@@ -29,7 +29,6 @@ class _SecurityEntryScreenState extends State<SecurityEntryScreen> {
     super.initState();
   }
 
-  /// Check the security of all the entries
   _checkPasswordSecurity() async {
     var data = await Security.retrievePasswordsSecurityInfo();
 
@@ -84,7 +83,6 @@ class _SecurityEntryScreenState extends State<SecurityEntryScreen> {
     );
   }
 
-  /// When the entry is selected by the user, it will display the user screen
   _onEntrySelected(Entry entry) async {
     await ChicNavigator.push(context, EntryDetailScreen(entry: entry));
     _checkPasswordSecurity();
