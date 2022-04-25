@@ -19,6 +19,7 @@ import 'package:chic_secret/ui/screen/select_category_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/security.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -213,11 +214,60 @@ class _EntryScreenState extends State<EntryScreen>
       autofocus: true,
       focusNode: _shortcutsFocusNode,
       onKey: _onKeyChanged,
-      child: Scaffold(
+      child: _displayScaffold(themeProvider),
+    );
+  }
+
+  Widget _displayScaffold(ThemeProvider themeProvider) {
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _displaysIosAppbar(themeProvider),
+        child: _displayBody(themeProvider),
+      );
+    } else {
+      return Scaffold(
         backgroundColor: themeProvider.backgroundColor,
         appBar: _displaysAppbar(themeProvider),
         body: _displayBody(themeProvider),
+      );
+    }
+  }
+
+  ObstructingPreferredSizeWidget _displaysIosAppbar(
+      ThemeProvider themeProvider) {
+    return CupertinoNavigationBar(
+      previousPageTitle: AppTranslations.of(context).text("vaults"),
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: Text(AppTranslations.of(context).text("passwords")),
+      trailing: CupertinoButton(
+        padding: EdgeInsets.zero,
+        child: Icon(CupertinoIcons.add),
+        onPressed: _onAddEntryClicked,
       ),
+      // bottom: PreferredSize(
+      //   preferredSize: Size.fromHeight(60.0),
+      //   child: Row(
+      //     children: [
+      //       Expanded(
+      //         child: _displaySearchBar(themeProvider),
+      //       ),
+      //       _searchFocusNode.hasFocus
+      //           ? Container(
+      //         padding: EdgeInsets.only(right: 8),
+      //         child: ChicTextButton(
+      //           child: Text(AppTranslations.of(context).text("cancel")),
+      //           onPressed: () {
+      //             _searchController.clear();
+      //             FocusScope.of(context).requestFocus(FocusNode());
+      //             _searchPassword("");
+      //           },
+      //         ),
+      //       )
+      //           : SizedBox.shrink(),
+      //     ],
+      //   ),
+      // ),
     );
   }
 

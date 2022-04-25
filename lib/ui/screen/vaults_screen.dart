@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/entry.dart';
@@ -24,6 +26,7 @@ import 'package:chic_secret/ui/screen/settings_screen.dart';
 import 'package:chic_secret/ui/screen/unlock_vault_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/security.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -127,15 +130,23 @@ class _VaultsScreenState extends State<VaultsScreen> {
     _synchronizationProvider =
         Provider.of<SynchronizationProvider>(context, listen: true);
 
-    return Scaffold(
-      backgroundColor: ChicPlatform.isDesktop()
-          ? themeProvider.sidebarBackgroundColor
-          : themeProvider.backgroundColor,
-      appBar: _displaysAppbar(themeProvider),
-      body: ChicPlatform.isDesktop()
-          ? _displaysDesktopBody(themeProvider)
-          : _displaysMobileBody(themeProvider),
-    );
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _iOSAppbar(themeProvider),
+        child: _displaysMobileBody(themeProvider),
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: ChicPlatform.isDesktop()
+            ? themeProvider.sidebarBackgroundColor
+            : themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: ChicPlatform.isDesktop()
+            ? _displaysDesktopBody(themeProvider)
+            : _displaysMobileBody(themeProvider),
+      );
+    }
   }
 
   /// Displays the body corresponding only to the desktop version
@@ -515,6 +526,16 @@ class _VaultsScreenState extends State<VaultsScreen> {
     );
   }
 
+  ObstructingPreferredSizeWidget _iOSAppbar(ThemeProvider themeProvider) {
+    return CupertinoNavigationBar(
+      automaticallyImplyLeading: false,
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: Text(AppTranslations.of(context).text("vaults")),
+      leading: _displaysAppBarLeadingIcon(themeProvider),
+      trailing: _displaysActionIcon(themeProvider),
+    );
+  }
+
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     if (!ChicPlatform.isDesktop()) {
       return AppBar(
@@ -529,32 +550,65 @@ class _VaultsScreenState extends State<VaultsScreen> {
   }
 
   Widget _displaysActionIcon(ThemeProvider themeProvider) {
-    return IconButton(
-      icon: Icon(
-        Icons.add,
-        color: themeProvider.textColor,
-      ),
-      onPressed: _onAddVaultClicked,
-    );
-  }
-
-  Widget _displaysAppBarLeadingIcon(ThemeProvider themeProvider) {
-    if (!_isUserLoggedIn) {
-      return IconButton(
-        icon: Icon(
-          Icons.person,
+    if (Platform.isIOS) {
+      return CupertinoButton(
+        padding: EdgeInsets.zero,
+        child: Icon(
+          CupertinoIcons.add,
           color: themeProvider.textColor,
         ),
-        onPressed: _onLogin,
+        onPressed: _onAddVaultClicked,
       );
     } else {
       return IconButton(
         icon: Icon(
-          Icons.settings,
+          Icons.add,
           color: themeProvider.textColor,
         ),
-        onPressed: _onStartSettings,
+        onPressed: _onAddVaultClicked,
       );
+    }
+  }
+
+  Widget _displaysAppBarLeadingIcon(ThemeProvider themeProvider) {
+    if (Platform.isIOS) {
+      if (!_isUserLoggedIn) {
+        return CupertinoButton(
+          padding: EdgeInsets.zero,
+          child: Icon(
+            CupertinoIcons.person_fill,
+            color: themeProvider.textColor,
+          ),
+          onPressed: _onLogin,
+        );
+      } else {
+        return CupertinoButton(
+          padding: EdgeInsets.zero,
+          child: Icon(
+            CupertinoIcons.settings,
+            color: themeProvider.textColor,
+          ),
+          onPressed: _onStartSettings,
+        );
+      }
+    } else {
+      if (!_isUserLoggedIn) {
+        return IconButton(
+          icon: Icon(
+            Icons.person,
+            color: themeProvider.textColor,
+          ),
+          onPressed: _onLogin,
+        );
+      } else {
+        return IconButton(
+          icon: Icon(
+            Icons.settings,
+            color: themeProvider.textColor,
+          ),
+          onPressed: _onStartSettings,
+        );
+      }
     }
   }
 

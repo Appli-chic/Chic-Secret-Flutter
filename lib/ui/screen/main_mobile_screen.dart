@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/clipper/half_circle_clipper.dart';
@@ -8,6 +10,7 @@ import 'package:chic_secret/ui/screen/entry_screen.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
 import 'package:chic_secret/ui/screen/security_screen.dart';
 import 'package:chic_secret/ui/screen/settings_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -57,32 +60,42 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
 
         return willPop;
       },
-      child: Scaffold(
+      child: _displayScaffold(themeProvider),
+    );
+  }
+
+  Widget _displayScaffold(ThemeProvider themeProvider) {
+    if (Platform.isIOS) {
+      return CupertinoTabScaffold(
         backgroundColor: themeProvider.backgroundColor,
-        body: PageView(
-          controller: _pageController,
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            EntryScreen(
+        tabBar: CupertinoTabBar(
+          items: _displayBottomNavigationBarItems(),
+          iconSize: 28,
+        ),
+        tabBuilder: (BuildContext context, int index) {
+          if (index == 0) {
+            return EntryScreen(
               passwordScreenController: _passwordScreenController,
-            ),
-            CategoriesScreen(
+            );
+          } else if (index == 1) {
+            return CategoriesScreen(
               categoryScreenController: _categoryScreenController,
               onCategoriesChanged: () {
                 if (_passwordScreenController.reloadPasswords != null) {
                   _passwordScreenController.reloadPasswords!();
                 }
               },
-            ),
-            Container(),
-            SecurityScreen(
+            );
+          } else if (index == 2) {
+            return SecurityScreen(
               onDataChanged: () {
                 if (_passwordScreenController.reloadPasswords != null) {
                   _passwordScreenController.reloadPasswords!();
                 }
               },
-            ),
-            SettingsScreen(
+            );
+          } else if (index == 3) {
+            return SettingsScreen(
               hasVaultLinked: true,
               onDataChanged: () {
                 if (_passwordScreenController.reloadPasswords != null) {
@@ -93,19 +106,65 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
                   _categoryScreenController.reloadCategories!();
                 }
               },
-            ),
-          ],
-        ),
+            );
+          }
+
+          return Container();
+        },
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        body: _displayBody(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: MediaQuery.of(context).viewInsets.bottom == 0
             ? _displaysFloatingButton(themeProvider)
             : null,
         bottomNavigationBar: _displayBottomBar(themeProvider),
-      ),
+      );
+    }
+  }
+
+  Widget _displayBody() {
+    return PageView(
+      controller: _pageController,
+      physics: NeverScrollableScrollPhysics(),
+      children: [
+        EntryScreen(
+          passwordScreenController: _passwordScreenController,
+        ),
+        CategoriesScreen(
+          categoryScreenController: _categoryScreenController,
+          onCategoriesChanged: () {
+            if (_passwordScreenController.reloadPasswords != null) {
+              _passwordScreenController.reloadPasswords!();
+            }
+          },
+        ),
+        Container(),
+        SecurityScreen(
+          onDataChanged: () {
+            if (_passwordScreenController.reloadPasswords != null) {
+              _passwordScreenController.reloadPasswords!();
+            }
+          },
+        ),
+        SettingsScreen(
+          hasVaultLinked: true,
+          onDataChanged: () {
+            if (_passwordScreenController.reloadPasswords != null) {
+              _passwordScreenController.reloadPasswords!();
+            }
+
+            if (_categoryScreenController.reloadCategories != null) {
+              _categoryScreenController.reloadCategories!();
+            }
+          },
+        ),
+      ],
     );
   }
 
-  /// Changes the displayed tab to the specified [index]
   _onTabClicked(int index) {
     if (_index != index) {
       setState(() {
@@ -116,7 +175,6 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
     }
   }
 
-  /// Displays the bottom navigation bar in the mobile version
   BottomNavigationBar _displayBottomBar(ThemeProvider themeProvider) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
@@ -134,7 +192,36 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
         color: themeProvider.placeholder,
         fontSize: 10,
       ),
-      items: <BottomNavigationBarItem>[
+      items: _displayBottomNavigationBarItems(),
+    );
+  }
+
+  List<BottomNavigationBarItem> _displayBottomNavigationBarItems() {
+    if(Platform.isIOS) {
+      return [
+        BottomNavigationBarItem(
+          icon: Icon(CupertinoIcons.list_dash),
+          activeIcon: Icon(CupertinoIcons.list_dash),
+          label: AppTranslations.of(context).text("passwords"),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(CupertinoIcons.folder_fill),
+          activeIcon: Icon(CupertinoIcons.folder_fill),
+          label: AppTranslations.of(context).text("categories"),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(CupertinoIcons.shield_lefthalf_fill),
+          activeIcon: Icon(CupertinoIcons.shield_lefthalf_fill),
+          label: AppTranslations.of(context).text("security"),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(CupertinoIcons.settings),
+          activeIcon: Icon(CupertinoIcons.settings),
+          label: AppTranslations.of(context).text("settings"),
+        ),
+      ];
+    } else {
+      return [
         BottomNavigationBarItem(
           icon: Icon(Icons.list_sharp),
           activeIcon: Icon(Icons.list_sharp),
@@ -156,11 +243,10 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
           activeIcon: Icon(Icons.settings),
           label: AppTranslations.of(context).text("settings"),
         ),
-      ],
-    );
+      ];
+    }
   }
 
-  /// Displays a centered floating button to create a new password
   Widget _displaysFloatingButton(ThemeProvider themeProvider) {
     return Stack(
       alignment: Alignment.center,
