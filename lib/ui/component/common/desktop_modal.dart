@@ -41,7 +41,7 @@ class _DesktopModalState extends State<DesktopModal> {
         width: desktopHeight,
         height: widget.height,
         child: Scrollbar(
-          isAlwaysShown: true,
+          thumbVisibility: true,
           child: SingleChildScrollView(child: widget.body),
         ),
       ),

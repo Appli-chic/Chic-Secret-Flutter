@@ -1,5 +1,4 @@
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';

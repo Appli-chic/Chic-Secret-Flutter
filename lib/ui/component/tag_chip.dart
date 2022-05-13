@@ -26,7 +26,6 @@ class _TagChipState extends State<TagChip> {
       margin: EdgeInsets.only(right: 8, bottom: 8),
       child: Chip(
         onDeleted: widget.onDelete != null ? _onTagDeleted : null,
-        useDeleteButtonTooltip: false,
         backgroundColor: themeProvider.divider,
         label: Text(
           widget.name,
@@ -49,7 +48,7 @@ class _TagChipState extends State<TagChip> {
               ),
             ),
           ),
-        ),
+        ), deleteButtonTooltipMessage: '',
       ),
     );
   }
