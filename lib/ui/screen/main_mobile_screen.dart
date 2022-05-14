@@ -70,7 +70,6 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
         backgroundColor: themeProvider.backgroundColor,
         tabBar: CupertinoTabBar(
           items: _displayBottomNavigationBarItems(),
-          iconSize: 28,
         ),
         tabBuilder: (BuildContext context, int index) {
           if (index == 0) {

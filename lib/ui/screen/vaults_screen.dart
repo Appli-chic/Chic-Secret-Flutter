@@ -553,9 +553,9 @@ class _VaultsScreenState extends State<VaultsScreen> {
     if (Platform.isIOS) {
       return CupertinoButton(
         padding: EdgeInsets.zero,
+        alignment: Alignment.centerRight,
         child: Icon(
           CupertinoIcons.add,
-          color: themeProvider.textColor,
         ),
         onPressed: _onAddVaultClicked,
       );
@@ -575,6 +575,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
       if (!_isUserLoggedIn) {
         return CupertinoButton(
           padding: EdgeInsets.zero,
+          alignment: Alignment.centerLeft,
           child: Icon(
             CupertinoIcons.person_fill,
             color: themeProvider.textColor,
@@ -584,6 +585,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
       } else {
         return CupertinoButton(
           padding: EdgeInsets.zero,
+          alignment: Alignment.centerLeft,
           child: Icon(
             CupertinoIcons.settings,
             color: themeProvider.textColor,

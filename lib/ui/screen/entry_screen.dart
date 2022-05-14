@@ -242,32 +242,10 @@ class _EntryScreenState extends State<EntryScreen>
       middle: Text(AppTranslations.of(context).text("passwords")),
       trailing: CupertinoButton(
         padding: EdgeInsets.zero,
+        alignment: Alignment.centerRight,
         child: Icon(CupertinoIcons.add),
         onPressed: _onAddEntryClicked,
       ),
-      // bottom: PreferredSize(
-      //   preferredSize: Size.fromHeight(60.0),
-      //   child: Row(
-      //     children: [
-      //       Expanded(
-      //         child: _displaySearchBar(themeProvider),
-      //       ),
-      //       _searchFocusNode.hasFocus
-      //           ? Container(
-      //         padding: EdgeInsets.only(right: 8),
-      //         child: ChicTextButton(
-      //           child: Text(AppTranslations.of(context).text("cancel")),
-      //           onPressed: () {
-      //             _searchController.clear();
-      //             FocusScope.of(context).requestFocus(FocusNode());
-      //             _searchPassword("");
-      //           },
-      //         ),
-      //       )
-      //           : SizedBox.shrink(),
-      //     ],
-      //   ),
-      // ),
     );
   }
 
@@ -318,16 +296,25 @@ class _EntryScreenState extends State<EntryScreen>
   }
 
   Widget _displayMobileBody(ThemeProvider themeProvider) {
-    if (_entries.isEmpty) {
-      return _displayMobileBodyEmpty(themeProvider);
+    var body = _entries.isEmpty
+        ? _displayMobileBodyEmpty(themeProvider)
+        : _displayMobileBodyFull(themeProvider);
+
+    if (Platform.isIOS) {
+      return Column(
+        children: [
+          _displayIOsSearchBar(themeProvider),
+          Expanded(child: body),
+        ],
+      );
     } else {
-      return _displayMobileBodyFull(themeProvider);
+      return body;
     }
   }
 
   Widget _displayMobileBodyEmpty(ThemeProvider themeProvider) {
     return Container(
-      margin: EdgeInsets.only(left: 32, right: 32),
+      margin: EdgeInsets.only(left: 32, right: 32, bottom: 50),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -429,6 +416,25 @@ class _EntryScreenState extends State<EntryScreen>
           ),
         ),
       ],
+    );
+  }
+
+  Widget _displayIOsSearchBar(ThemeProvider themeProvider) {
+    return Container(
+      padding: EdgeInsets.all(8),
+      color: themeProvider.secondBackgroundColor,
+      child: CupertinoSearchTextField(
+        controller: _searchController,
+        placeholder: AppTranslations.of(context).text("search_passwords"),
+        onChanged: (String text) {
+          _searchPassword(text);
+        },
+        onSuffixTap: () {
+          _searchController.clear();
+          FocusScope.of(context).requestFocus(FocusNode());
+          _searchPassword("");
+        },
+      ),
     );
   }
 

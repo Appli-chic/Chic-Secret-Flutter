@@ -42,7 +42,7 @@ dependencies:
   file_selector: ^0.8.4+2
   timeago: ^3.2.2
   tuple: ^2.0.0
-  local_auth: ^1.1.11
+  local_auth: ^2.0.2
   file_picker: ^4.5.1
   file_selector_macos: ^0.8.2+1
   file_selector_windows: ^0.8.2+1
