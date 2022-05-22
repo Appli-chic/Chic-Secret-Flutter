@@ -259,7 +259,7 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
   _onAddEntryClicked() async {
     var data = await ChicNavigator.push(
       context,
-      NewEntryScreen(),
+      NewEntryScreen(previousPageTitle: ""),
       isModal: true,
     );
 

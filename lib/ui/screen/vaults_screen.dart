@@ -677,7 +677,9 @@ class _VaultsScreenState extends State<VaultsScreen> {
   _onAddCategoryClicked() async {
     var data = await ChicNavigator.push(
       context,
-      NewCategoryScreen(),
+      NewCategoryScreen(
+        previousPageTitle: AppTranslations.of(context).text("vaults"),
+      ),
       isModal: true,
     );
 

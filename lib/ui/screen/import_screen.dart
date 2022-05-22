@@ -246,6 +246,7 @@ class _ImportScreenState extends State<ImportScreen> {
       SelectCategoryScreen(
         category: _category,
         isShowingTrash: true,
+        previousPageTitle: AppTranslations.of(context).text("migration"),
       ),
       isModal: true,
     );
@@ -260,7 +261,10 @@ class _ImportScreenState extends State<ImportScreen> {
   _createCategory() async {
     var category = await ChicNavigator.push(
       context,
-      NewCategoryScreen(hint: _categoryController.text),
+      NewCategoryScreen(
+        hint: _categoryController.text,
+        previousPageTitle: AppTranslations.of(context).text("migration"),
+      ),
       isModal: true,
     );
 

@@ -26,10 +26,12 @@ import 'package:uuid/uuid.dart';
 class NewCategoryScreen extends StatefulWidget {
   final Category? category;
   final String? hint;
+  final String previousPageTitle;
 
   NewCategoryScreen({
     this.category,
     this.hint,
+    required this.previousPageTitle,
   });
 
   @override
@@ -153,7 +155,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     ThemeProvider themeProvider,
   ) {
     return CupertinoNavigationBar(
-      previousPageTitle: AppTranslations.of(context).text("categories"),
+      previousPageTitle: widget.previousPageTitle,
       backgroundColor: themeProvider.secondBackgroundColor,
       middle: Text(
         widget.category != null

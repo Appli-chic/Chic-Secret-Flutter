@@ -48,7 +48,6 @@ class _CategoriesScreenState extends State<CategoriesScreen>
     super.initState();
   }
 
-  /// Load the categories linked to the current vault
   _loadCategories() async {
     if (selectedVault != null) {
       _categories = await CategoryService.getAllByVault(selectedVault!.id);
@@ -145,11 +144,12 @@ class _CategoriesScreenState extends State<CategoriesScreen>
     );
   }
 
-  /// Call the [NewCategoryScreen] screen to create a new category.
   _onAddCategoryClicked() async {
     var data = await ChicNavigator.push(
       context,
-      NewCategoryScreen(),
+      NewCategoryScreen(
+        previousPageTitle: AppTranslations.of(context).text("categories"),
+      ),
       isModal: true,
     );
 

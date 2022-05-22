@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:chic_secret/localization/app_translations.dart';
@@ -14,10 +15,17 @@ import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/rich_text_editing_controller.dart';
 import 'package:chic_secret/utils/string_extension.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class GeneratePasswordScreen extends StatefulWidget {
+  final String previousPageTitle;
+
+  GeneratePasswordScreen({
+    required this.previousPageTitle,
+  });
+
   @override
   _GeneratePasswordScreenState createState() => _GeneratePasswordScreenState();
 }
@@ -105,30 +113,53 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
   }
 
   Widget _displaysMobile(ThemeProvider themeProvider) {
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: themeProvider.secondBackgroundColor,
-        title: Text(AppTranslations.of(context).text("generate_password")),
-        actions: [
-          ChicTextButton(
-            child: Text(AppTranslations.of(context).text("done")),
-            onPressed: () {
-              Navigator.of(context).pop(_passwordController.text);
-            },
-          ),
-        ],
-        bottom: _displayTabBar(themeProvider),
+    var child = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: SingleChildScrollView(
+        child: _displaysBody(themeProvider),
       ),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: SingleChildScrollView(
-          child: _displaysBody(themeProvider),
+    );
+
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _displaysIosAppbar(themeProvider),
+        child: child,
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: child,
+      );
+    }
+  }
+
+  ObstructingPreferredSizeWidget _displaysIosAppbar(
+      ThemeProvider themeProvider) {
+    return CupertinoNavigationBar(
+      previousPageTitle: widget.previousPageTitle,
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: Text(AppTranslations.of(context).text("generate_password")),
+    );
+  }
+
+  PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
+    return AppBar(
+      backgroundColor: themeProvider.secondBackgroundColor,
+      title: Text(AppTranslations.of(context).text("generate_password")),
+      actions: [
+        ChicTextButton(
+          child: Text(AppTranslations.of(context).text("done")),
+          onPressed: () {
+            Navigator.of(context).pop(_passwordController.text);
+          },
         ),
-      ),
+      ],
+      bottom: _displayTabBar(themeProvider),
     );
   }
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/api/auth_api.dart';
 import 'package:chic_secret/api/user_api.dart';
 import 'package:chic_secret/localization/app_translations.dart';
@@ -11,6 +13,7 @@ import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/security.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +48,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: AppTranslations.of(context).text("login"),
@@ -72,22 +74,39 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  /// Displays the [Scaffold] for the mobile version
   Widget _displaysMobile(ThemeProvider themeProvider) {
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      appBar: _displaysAppbar(themeProvider),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _displaysIosAppbar(themeProvider),
         child: _displaysBody(themeProvider),
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: _displaysBody(themeProvider),
+      );
+    }
+  }
+
+  ObstructingPreferredSizeWidget _displaysIosAppbar(
+      ThemeProvider themeProvider) {
+    return CupertinoNavigationBar(
+      previousPageTitle: AppTranslations.of(context).text("settings"),
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: Text(AppTranslations.of(context).text("login")),
+      trailing: CupertinoButton(
+        padding: EdgeInsets.zero,
+        child: Text(
+          AppTranslations.of(context).text(_isAskingCode ? "next" : "done"),
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+        onPressed: _isAskingCode ? _onAskingLoginCode : _onLogin,
       ),
     );
   }
 
-  /// Displays the appBar for the mobile version
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     if (!ChicPlatform.isDesktop()) {
       return AppBar(
@@ -106,7 +125,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  /// Displays a unified body for both mobile and desktop version
   Widget _displaysBody(ThemeProvider themeProvider) {
     return Container(
       margin: EdgeInsets.all(16),
@@ -173,7 +191,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  /// Send a code by email to login the user
   _onAskingLoginCode() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       EasyLoading.show();
@@ -195,7 +212,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  /// Login the user with the email and the code sent to the email
   _onLogin() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       EasyLoading.show();

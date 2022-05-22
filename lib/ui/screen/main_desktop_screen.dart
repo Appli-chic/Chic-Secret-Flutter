@@ -204,6 +204,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
         entry: _selectedEntry,
         onFinish: _onNewEntryFinished,
         onReloadCategories: _reloadCategories,
+        previousPageTitle: "",
       );
     } else if (_selectedEntry != null) {
       return EntryDetailScreen(
@@ -211,6 +212,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
         onEntryEdit: _onEditEntry,
         onEntryDeleted: _onEntryDeleted,
         onEntrySelected: _onEntrySelected,
+        previousPageTitle: "",
       );
     } else {
       return Container(color: themeProvider.backgroundColor);

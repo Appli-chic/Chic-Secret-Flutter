@@ -237,7 +237,13 @@ class _SecurityScreenState extends State<SecurityScreen> {
   }
 
   _onEntrySelected(Entry entry) async {
-    await ChicNavigator.push(context, EntryDetailScreen(entry: entry));
+    await ChicNavigator.push(
+      context,
+      EntryDetailScreen(
+        entry: entry,
+        previousPageTitle: AppTranslations.of(context).text("security"),
+      ),
+    );
     _checkPasswordSecurity();
 
     if (widget.onDataChanged != null) {

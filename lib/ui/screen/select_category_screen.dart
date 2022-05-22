@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
@@ -8,16 +10,19 @@ import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SelectCategoryScreen extends StatefulWidget {
   final Category? category;
   final bool isShowingTrash;
+  final String previousPageTitle;
 
   SelectCategoryScreen({
     this.category,
     this.isShowingTrash = false,
+    required this.previousPageTitle,
   });
 
   @override
@@ -38,7 +43,6 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
     super.initState();
   }
 
-  /// Load the categories linked to the current vault
   _loadCategories() async {
     if (selectedVault != null) {
       if (widget.isShowingTrash) {
@@ -63,7 +67,6 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
     }
   }
 
-  /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: AppTranslations.of(context).text("select_category"),
@@ -91,27 +94,56 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
     );
   }
 
-  /// Displays the [Scaffold] for the mobile version
   Widget _displaysMobile(ThemeProvider themeProvider) {
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: themeProvider.secondBackgroundColor,
-        title: Text(AppTranslations.of(context).text("select_category")),
-        actions: [
-          ChicTextButton(
-            child: Text(AppTranslations.of(context).text("done")),
-            onPressed: () {
-              Navigator.pop(context, _category);
-            },
-          ),
-        ],
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _displaysIosAppbar(themeProvider),
+        child: _displaysBody(themeProvider),
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: _displaysBody(themeProvider),
+      );
+    }
+  }
+
+  ObstructingPreferredSizeWidget _displaysIosAppbar(
+      ThemeProvider themeProvider) {
+    return CupertinoNavigationBar(
+      previousPageTitle: widget.previousPageTitle,
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: Text(AppTranslations.of(context).text("select_category")),
+      trailing: CupertinoButton(
+        padding: EdgeInsets.zero,
+        child: Text(
+          AppTranslations.of(context).text("done"),
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+        onPressed: () {
+          Navigator.pop(context, _category);
+        },
       ),
-      body: _displaysBody(themeProvider),
     );
   }
 
-  /// Displays a unified body for both mobile and desktop version
+  PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
+    return AppBar(
+      backgroundColor: themeProvider.secondBackgroundColor,
+      title: Text(AppTranslations.of(context).text("select_category")),
+      actions: [
+        ChicTextButton(
+          child: Text(AppTranslations.of(context).text("done")),
+          onPressed: () {
+            Navigator.pop(context, _category);
+          },
+        ),
+      ],
+    );
+  }
+
   Widget _displaysBody(ThemeProvider themeProvider) {
     if (_categories.isEmpty) {
       return ConstrainedBox(

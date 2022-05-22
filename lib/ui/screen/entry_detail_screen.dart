@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/model/database/entry.dart';
@@ -16,6 +18,7 @@ import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/date_render.dart';
 import 'package:chic_secret/utils/security.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,12 +27,14 @@ class EntryDetailScreen extends StatefulWidget {
   final Function(Entry)? onEntryEdit;
   final Function()? onEntryDeleted;
   final Function(Entry entry)? onEntrySelected;
+  final String previousPageTitle;
 
   EntryDetailScreen({
     required this.entry,
     this.onEntryEdit,
     this.onEntryDeleted,
     this.onEntrySelected,
+    required this.previousPageTitle,
   });
 
   @override
@@ -91,10 +96,47 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
       _loadCustomFields();
     }
 
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      appBar: _displaysAppbar(themeProvider),
-      body: _displaysBody(themeProvider),
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _displaysIosAppbar(themeProvider),
+        child: _displaysBody(themeProvider),
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: _displaysBody(themeProvider),
+      );
+    }
+  }
+
+  ObstructingPreferredSizeWidget _displaysIosAppbar(
+      ThemeProvider themeProvider) {
+    return CupertinoNavigationBar(
+      previousPageTitle: widget.previousPageTitle,
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: Text(widget.entry.name),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CupertinoButton(
+            padding: EdgeInsets.zero,
+            child: Icon(
+              CupertinoIcons.pen,
+            ),
+            onPressed: _onEditButtonClicked,
+          ),
+          CupertinoButton(
+            padding: EdgeInsets.zero,
+            child: Icon(
+              CupertinoIcons.delete,
+              color: Colors.red,
+            ),
+            onPressed: _onDeleteButtonClicked,
+          ),
+        ],
+      ),
     );
   }
 
@@ -407,7 +449,13 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
         widget.onEntrySelected!(entry);
       }
     } else {
-      await ChicNavigator.push(context, EntryDetailScreen(entry: entry));
+      await ChicNavigator.push(
+        context,
+        EntryDetailScreen(
+          entry: entry,
+          previousPageTitle: widget.entry.name,
+        ),
+      );
     }
 
     _checkPasswordSecurity();
@@ -418,10 +466,21 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
       widget.onEntryEdit!(widget.entry);
     } else {
       var entry = await ChicNavigator.push(
-          context, NewEntryScreen(entry: widget.entry));
+        context,
+        NewEntryScreen(
+          entry: widget.entry,
+          previousPageTitle: "",
+        ),
+      );
 
       if (entry is Entry) {
-        ChicNavigator.pushReplacement(context, EntryDetailScreen(entry: entry));
+        ChicNavigator.pushReplacement(
+          context,
+          EntryDetailScreen(
+            entry: entry,
+            previousPageTitle: widget.entry.name,
+          ),
+        );
       }
     }
   }

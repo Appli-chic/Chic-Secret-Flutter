@@ -315,7 +315,7 @@ class _CategoryItemState extends State<CategoryItem> {
   void _onEditCategory() async {
     var category = await ChicNavigator.push(
       context,
-      NewCategoryScreen(category: widget.category),
+      NewCategoryScreen(category: widget.category, previousPageTitle: ""),
       isModal: true,
     );
 

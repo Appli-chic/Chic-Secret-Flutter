@@ -139,14 +139,23 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
   }
 
   _onEntrySelected(Entry entry) async {
-    await ChicNavigator.push(context, EntryDetailScreen(entry: entry));
+    await ChicNavigator.push(
+      context,
+      EntryDetailScreen(
+        entry: entry,
+        previousPageTitle: widget.category.name,
+      ),
+    );
     setState(() {});
   }
 
   void _onEditCategory() async {
     var category = await ChicNavigator.push(
       context,
-      NewCategoryScreen(category: _category),
+      NewCategoryScreen(
+        category: _category,
+        previousPageTitle: widget.category.name,
+      ),
       isModal: true,
     );
 

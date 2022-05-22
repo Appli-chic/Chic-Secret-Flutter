@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/custom_field.dart';
@@ -25,6 +27,7 @@ import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/rich_text_editing_controller.dart';
 import 'package:chic_secret/utils/security.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -33,11 +36,13 @@ class NewEntryScreen extends StatefulWidget {
   final Entry? entry;
   final Function(Entry?)? onFinish;
   final Function()? onReloadCategories;
+  final String previousPageTitle;
 
   NewEntryScreen({
     this.entry,
     this.onFinish,
     this.onReloadCategories,
+    required this.previousPageTitle,
   });
 
   @override
@@ -245,30 +250,63 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   }
 
   Widget _displaysMobile(ThemeProvider themeProvider) {
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: themeProvider.secondBackgroundColor,
-        title: widget.entry != null
-            ? Text(widget.entry!.name)
-            : Text(AppTranslations.of(context).text("new_password")),
-        actions: [
-          ChicTextButton(
-            child: Text(AppTranslations.of(context).text("save")),
-            onPressed: _save,
-          ),
-        ],
+    var body = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: _displaysBody(themeProvider),
       ),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: _displaysBody(themeProvider),
+    );
+
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _displaysIosAppbar(themeProvider),
+        child: body,
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: body,
+      );
+    }
+  }
+
+  ObstructingPreferredSizeWidget _displaysIosAppbar(
+      ThemeProvider themeProvider) {
+    return CupertinoNavigationBar(
+      previousPageTitle: widget.previousPageTitle,
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: widget.entry != null
+          ? Text(widget.entry!.name)
+          : Text(AppTranslations.of(context).text("new_password")),
+      trailing: CupertinoButton(
+        padding: EdgeInsets.zero,
+        child: Text(
+          AppTranslations.of(context).text("save"),
+          style: TextStyle(fontWeight: FontWeight.w600),
         ),
+        onPressed: _save,
       ),
+    );
+  }
+
+  PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
+    return AppBar(
+      backgroundColor: themeProvider.secondBackgroundColor,
+      title: widget.entry != null
+          ? Text(widget.entry!.name)
+          : Text(AppTranslations.of(context).text("new_password")),
+      actions: [
+        ChicTextButton(
+          child: Text(AppTranslations.of(context).text("save")),
+          onPressed: _save,
+        ),
+      ],
     );
   }
 
@@ -315,7 +353,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
               desktopFocus: _desktopUsernameFocusNode,
               nextFocus: _desktopPasswordFocusNode,
               autoFocus: false,
-              textCapitalization: TextCapitalization.none,
+              textCapitalization: TextCapitalization.sentences,
               keyboardType: TextInputType.emailAddress,
               label: AppTranslations.of(context).text("username_email"),
               errorMessage:
@@ -630,9 +668,13 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   }
 
   _selectCategory() async {
+    var title = widget.entry != null
+        ? widget.entry!.name
+        : AppTranslations.of(context).text("new_password");
+
     var category = await ChicNavigator.push(
       context,
-      SelectCategoryScreen(category: _category),
+      SelectCategoryScreen(category: _category, previousPageTitle: title),
       isModal: true,
     );
 
@@ -644,9 +686,13 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   }
 
   _createCategory() async {
+    var title = widget.entry != null
+        ? widget.entry!.name
+        : AppTranslations.of(context).text("new_password");
+
     var category = await ChicNavigator.push(
       context,
-      NewCategoryScreen(),
+      NewCategoryScreen(previousPageTitle: title),
       isModal: true,
     );
 
@@ -662,9 +708,13 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   }
 
   _generateNewPassword() async {
+    var title = widget.entry != null
+        ? widget.entry!.name
+        : AppTranslations.of(context).text("new_password");
+
     var password = await ChicNavigator.push(
       context,
-      GeneratePasswordScreen(),
+      GeneratePasswordScreen(previousPageTitle: title),
       isModal: true,
     );
 

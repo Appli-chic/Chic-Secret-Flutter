@@ -497,7 +497,13 @@ class _EntryScreenState extends State<EntryScreen>
           widget.onEntrySelected!(entry);
         }
       } else {
-        await ChicNavigator.push(context, EntryDetailScreen(entry: entry));
+        await ChicNavigator.push(
+          context,
+          EntryDetailScreen(
+            entry: entry,
+            previousPageTitle: AppTranslations.of(context).text("passwords"),
+          ),
+        );
         await _loadPassword(isClearingSearch: false);
         await _searchPassword(_searchController.text);
       }
@@ -521,7 +527,9 @@ class _EntryScreenState extends State<EntryScreen>
       // Push a new screen if it's on mobile
       data = await ChicNavigator.push(
         context,
-        NewEntryScreen(),
+        NewEntryScreen(
+          previousPageTitle: AppTranslations.of(context).text("passwords"),
+        ),
       );
     }
 
@@ -733,7 +741,9 @@ class _EntryScreenState extends State<EntryScreen>
 
     var category = await ChicNavigator.push(
       context,
-      SelectCategoryScreen(),
+      SelectCategoryScreen(
+        previousPageTitle: AppTranslations.of(context).text("passwords"),
+      ),
       isModal: true,
     );
 
