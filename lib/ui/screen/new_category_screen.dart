@@ -252,7 +252,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                 style: TextStyle(color: themeProvider.primaryColor),
               ),
               icon: Icon(
-                Icons.folder_copy,
+                Platform.isIOS ? CupertinoIcons.doc_on_doc_fill : Icons.folder_copy,
                 color: themeProvider.primaryColor,
               ),
               onPressed: _selectPredefinedCategory,

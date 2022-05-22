@@ -104,7 +104,9 @@ class _SecurityScreenState extends State<SecurityScreen> {
                       securityIndex: 1,
                       number: _weakPasswordEntries.length,
                       title: AppTranslations.of(context).text("weak"),
-                      icon: Icons.password,
+                      icon: Platform.isIOS
+                          ? CupertinoIcons.pencil_ellipsis_rectangle
+                          : Icons.password,
                       color: Colors.red,
                       onTap: _onSecurityItemClicked,
                     ),
@@ -115,7 +117,9 @@ class _SecurityScreenState extends State<SecurityScreen> {
                       securityIndex: 2,
                       number: _oldEntries.length,
                       title: AppTranslations.of(context).text("old"),
-                      icon: Icons.timelapse,
+                      icon: Platform.isIOS
+                          ? CupertinoIcons.timer
+                          : Icons.timelapse,
                       color: Colors.deepOrange,
                       onTap: _onSecurityItemClicked,
                     ),
@@ -126,7 +130,9 @@ class _SecurityScreenState extends State<SecurityScreen> {
                       securityIndex: 3,
                       number: _duplicatedEntries.length,
                       title: AppTranslations.of(context).text("duplicated"),
-                      icon: Icons.autorenew,
+                      icon: Platform.isIOS
+                          ? CupertinoIcons.arrow_2_circlepath_circle
+                          : Icons.autorenew,
                       color: Colors.orange,
                       onTap: _onSecurityItemClicked,
                     ),

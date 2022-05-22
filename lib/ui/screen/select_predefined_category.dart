@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
@@ -6,6 +8,7 @@ import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,11 +48,10 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
     }
   }
 
-  /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: AppTranslations.of(context).text("predefined_categories"),
-      body: _displaysBody(themeProvider),
+      body: _displayBody(themeProvider),
       actions: [
         Container(
           margin: EdgeInsets.only(right: 8, bottom: 8),
@@ -73,28 +75,57 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
     );
   }
 
-  /// Displays the [Scaffold] for the mobile version
   Widget _displaysMobile(ThemeProvider themeProvider) {
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: themeProvider.secondBackgroundColor,
-        title: Text(AppTranslations.of(context).text("select_category")),
-        actions: [
-          ChicTextButton(
-            child: Text(AppTranslations.of(context).text("done")),
-            onPressed: () {
-              Navigator.pop(context, _category);
-            },
-          ),
-        ],
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _displaysIosAppbar(themeProvider),
+        child: _displayBody(themeProvider),
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: _displayBody(themeProvider),
+      );
+    }
+  }
+
+  ObstructingPreferredSizeWidget _displaysIosAppbar(
+      ThemeProvider themeProvider) {
+    return CupertinoNavigationBar(
+      previousPageTitle: AppTranslations.of(context).text("new_category"),
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: Text(AppTranslations.of(context).text("select_category")),
+      trailing: CupertinoButton(
+        padding: EdgeInsets.zero,
+        child: Text(
+          AppTranslations.of(context).text("done"),
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+        onPressed: () {
+          Navigator.pop(context, _category);
+        },
       ),
-      body: _displaysBody(themeProvider),
     );
   }
 
-  /// Displays a unified body for both mobile and desktop version
-  Widget _displaysBody(ThemeProvider themeProvider) {
+  PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
+    return AppBar(
+      backgroundColor: themeProvider.secondBackgroundColor,
+      title: Text(AppTranslations.of(context).text("select_category")),
+      actions: [
+        ChicTextButton(
+          child: Text(AppTranslations.of(context).text("done")),
+          onPressed: () {
+            Navigator.pop(context, _category);
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _displayBody(ThemeProvider themeProvider) {
     if (_predefinedCategories.isEmpty) {
       return ConstrainedBox(
         constraints: BoxConstraints(
@@ -131,7 +162,6 @@ class _SelectPredefinedCategoryState extends State<SelectPredefinedCategory> {
     );
   }
 
-  /// Loads the list of predefined categories and reload the widget
   _generatePredefinedCategories(BuildContext context) {
     _predefinedCategories = [
       Category(

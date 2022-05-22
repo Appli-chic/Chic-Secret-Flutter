@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/entry.dart';
@@ -9,6 +11,7 @@ import 'package:chic_secret/ui/component/entry_item.dart';
 import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -48,43 +51,90 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: themeProvider.secondBackgroundColor,
-        title: Text(widget.category.name),
-        actions: [
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _displaysIosAppbar(themeProvider),
+        child: _displayBody(),
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: _displayBody(),
+      );
+    }
+  }
+
+  ObstructingPreferredSizeWidget _displaysIosAppbar(
+      ThemeProvider themeProvider) {
+    return CupertinoNavigationBar(
+      previousPageTitle: AppTranslations.of(context).text("categories"),
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: Text(widget.category.name),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
           _category.isTrash
               ? SizedBox.shrink()
-              : IconButton(
-                  icon: Icon(
-                    Icons.edit,
-                    color: themeProvider.textColor,
-                  ),
+              : CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: Icon(CupertinoIcons.pen),
                   onPressed: _onEditCategory,
                 ),
           _category.isTrash
               ? SizedBox.shrink()
-              : IconButton(
-                  icon: Icon(
-                    Icons.delete,
-                    color: themeProvider.textColor,
+              : CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: Icon(
+                    CupertinoIcons.delete,
+                    color: Colors.red,
                   ),
                   onPressed: _onDeletingCategory,
                 ),
         ],
       ),
-      body: ListView.builder(
-        physics: BouncingScrollPhysics(),
-        itemCount: _entries.length,
-        itemBuilder: (context, index) {
-          return EntryItem(
-            entry: _entries[index],
-            isSelected: false,
-            onTap: _onEntrySelected,
-          );
-        },
-      ),
+    );
+  }
+
+  PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
+    return AppBar(
+      backgroundColor: themeProvider.secondBackgroundColor,
+      title: Text(widget.category.name),
+      actions: [
+        _category.isTrash
+            ? SizedBox.shrink()
+            : IconButton(
+                icon: Icon(
+                  Icons.edit,
+                  color: themeProvider.textColor,
+                ),
+                onPressed: _onEditCategory,
+              ),
+        _category.isTrash
+            ? SizedBox.shrink()
+            : IconButton(
+                icon: Icon(
+                  Icons.delete,
+                  color: themeProvider.textColor,
+                ),
+                onPressed: _onDeletingCategory,
+              ),
+      ],
+    );
+  }
+
+  Widget _displayBody() {
+    return ListView.builder(
+      physics: BouncingScrollPhysics(),
+      itemCount: _entries.length,
+      itemBuilder: (context, index) {
+        return EntryItem(
+          entry: _entries[index],
+          isSelected: false,
+          onTap: _onEntrySelected,
+        );
+      },
     );
   }
 
