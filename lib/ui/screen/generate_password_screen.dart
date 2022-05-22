@@ -42,6 +42,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
   var _desktopLanguageFocusNode = FocusNode();
 
   var _isGeneratingWords = true;
+  int? _segmentedControlIndex = 0;
 
   var _hasUppercase = true;
   var _hasNumbers = true;
@@ -168,164 +169,205 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     String characters = AppTranslations.of(context).text("characters");
     int passwordSize = _passwordController.text.length;
 
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Platform.isIOS ? _displaySegment(themeProvider) : SizedBox.shrink(),
+        Container(
+          margin: EdgeInsets.all(16),
+          child: Column(
+            children: [
+              ChicPlatform.isDesktop()
+                  ? _displayTabBar(themeProvider)
+                  : SizedBox.shrink(),
+              ChicPlatform.isDesktop()
+                  ? SizedBox(height: 16.0)
+                  : SizedBox.shrink(),
+              ChicTextField(
+                controller: _passwordController,
+                focus: _passwordFocusNode,
+                desktopFocus: _desktopPasswordFocusNode,
+                label: "",
+                isReadOnly: true,
+                hasStrengthIndicator: true,
+                maxLines: null,
+                suffix: Container(
+                  margin: EdgeInsets.only(right: 8),
+                  child: ChicIconButton(
+                    icon: Platform.isIOS ? CupertinoIcons.arrow_clockwise : Icons.refresh,
+                    color: themeProvider.primaryColor,
+                    onPressed: () {
+                      _passwordController.text = _generatePassword();
+                      setState(() {});
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(height: 32.0),
+              Text(
+                _isGeneratingWords
+                    ? "$words ($passwordSize $characters)"
+                    : characters,
+                style: TextStyle(
+                  color: themeProvider.textColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 17,
+                ),
+              ),
+              SizedBox(height: 16.0),
+              Row(
+                children: [
+                  Expanded(
+                    child: Slider.adaptive(
+                      value: _numberWords,
+                      min: _minWords,
+                      max: _maxWords,
+                      divisions: _divisionWords,
+                      activeColor: themeProvider.primaryColor,
+                      onChanged: (double value) {
+                        _numberWords = value;
+                        _passwordController.text = _generatePassword();
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 16),
+                    child: Text(
+                      "${_numberWords.ceil()}",
+                      style: TextStyle(
+                        color: themeProvider.textColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 17,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 32.0),
+              Text(
+                AppTranslations.of(context).text("settings"),
+                style: TextStyle(
+                  color: themeProvider.textColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 17,
+                ),
+              ),
+              SizedBox(height: 16.0),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      AppTranslations.of(context).text("uppercase"),
+                      style: TextStyle(
+                        color: themeProvider.textColor,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                  Switch.adaptive(
+                    value: _hasUppercase,
+                    activeColor: themeProvider.primaryColor,
+                    onChanged: (bool value) {
+                      _hasUppercase = value;
+                      _passwordController.text = _generatePassword();
+                      setState(() {});
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 8.0),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      AppTranslations.of(context).text("digit"),
+                      style: TextStyle(
+                        color: themeProvider.textColor,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                  Switch.adaptive(
+                    value: _hasNumbers,
+                    activeColor: themeProvider.primaryColor,
+                    onChanged: (bool value) {
+                      _hasNumbers = value;
+                      _passwordController.text = _generatePassword();
+                      setState(() {});
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 8.0),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      AppTranslations.of(context).text("symbol"),
+                      style: TextStyle(
+                        color: themeProvider.textColor,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                  Switch.adaptive(
+                    value: _hasSpecialCharacters,
+                    activeColor: themeProvider.primaryColor,
+                    onChanged: (bool value) {
+                      _hasSpecialCharacters = value;
+                      _passwordController.text = _generatePassword();
+                      setState(() {});
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 16.0),
+              ChicTextField(
+                controller: _languageController,
+                focus: _languageFocusNode,
+                desktopFocus: _desktopLanguageFocusNode,
+                isReadOnly: true,
+                label: AppTranslations.of(context).text("language"),
+                onTap: _selectLanguage,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _displaySegment(ThemeProvider themeProvider) {
     return Container(
-      margin: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ChicPlatform.isDesktop()
-              ? _displayTabBar(themeProvider)
-              : SizedBox.shrink(),
-          ChicPlatform.isDesktop() ? SizedBox(height: 16.0) : SizedBox.shrink(),
-          ChicTextField(
-            controller: _passwordController,
-            focus: _passwordFocusNode,
-            desktopFocus: _desktopPasswordFocusNode,
-            label: "",
-            isReadOnly: true,
-            hasStrengthIndicator: true,
-            maxLines: null,
-            suffix: Container(
-              margin: EdgeInsets.only(right: 8),
-              child: ChicIconButton(
-                icon: Icons.refresh,
-                color: themeProvider.primaryColor,
-                onPressed: () {
-                  _passwordController.text = _generatePassword();
-                  setState(() {});
-                },
-              ),
+      width: double.maxFinite,
+      color: themeProvider.secondBackgroundColor,
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: CupertinoSlidingSegmentedControl<int>(
+        groupValue: _segmentedControlIndex,
+        onValueChanged: (index) {
+          setState(() {
+            _segmentedControlIndex = index;
+          });
+
+          _onTabBarItemTapped(index);
+        },
+        children: {
+          0: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              AppTranslations.of(context).text("words"),
+              style: TextStyle(color: themeProvider.textColor),
             ),
           ),
-          SizedBox(height: 32.0),
-          Text(
-            _isGeneratingWords
-                ? "$words ($passwordSize $characters)"
-                : characters,
-            style: TextStyle(
-              color: themeProvider.textColor,
-              fontWeight: FontWeight.w600,
-              fontSize: 17,
+          1: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              AppTranslations.of(context).text("characters"),
+              style: TextStyle(color: themeProvider.textColor),
             ),
           ),
-          SizedBox(height: 16.0),
-          Row(
-            children: [
-              Expanded(
-                child: Slider.adaptive(
-                  value: _numberWords,
-                  min: _minWords,
-                  max: _maxWords,
-                  divisions: _divisionWords,
-                  activeColor: themeProvider.primaryColor,
-                  onChanged: (double value) {
-                    _numberWords = value;
-                    _passwordController.text = _generatePassword();
-                    setState(() {});
-                  },
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 16),
-                child: Text(
-                  "${_numberWords.ceil()}",
-                  style: TextStyle(
-                    color: themeProvider.textColor,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 17,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 32.0),
-          Text(
-            AppTranslations.of(context).text("settings"),
-            style: TextStyle(
-              color: themeProvider.textColor,
-              fontWeight: FontWeight.w600,
-              fontSize: 17,
-            ),
-          ),
-          SizedBox(height: 16.0),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  AppTranslations.of(context).text("uppercase"),
-                  style: TextStyle(
-                    color: themeProvider.textColor,
-                    fontSize: 15,
-                  ),
-                ),
-              ),
-              Switch.adaptive(
-                value: _hasUppercase,
-                activeColor: themeProvider.primaryColor,
-                onChanged: (bool value) {
-                  _hasUppercase = value;
-                  _passwordController.text = _generatePassword();
-                  setState(() {});
-                },
-              ),
-            ],
-          ),
-          SizedBox(height: 8.0),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  AppTranslations.of(context).text("digit"),
-                  style: TextStyle(
-                    color: themeProvider.textColor,
-                    fontSize: 15,
-                  ),
-                ),
-              ),
-              Switch.adaptive(
-                value: _hasNumbers,
-                activeColor: themeProvider.primaryColor,
-                onChanged: (bool value) {
-                  _hasNumbers = value;
-                  _passwordController.text = _generatePassword();
-                  setState(() {});
-                },
-              ),
-            ],
-          ),
-          SizedBox(height: 8.0),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  AppTranslations.of(context).text("symbol"),
-                  style: TextStyle(
-                    color: themeProvider.textColor,
-                    fontSize: 15,
-                  ),
-                ),
-              ),
-              Switch.adaptive(
-                value: _hasSpecialCharacters,
-                activeColor: themeProvider.primaryColor,
-                onChanged: (bool value) {
-                  _hasSpecialCharacters = value;
-                  _passwordController.text = _generatePassword();
-                  setState(() {});
-                },
-              ),
-            ],
-          ),
-          SizedBox(height: 16.0),
-          ChicTextField(
-            controller: _languageController,
-            focus: _languageFocusNode,
-            desktopFocus: _desktopLanguageFocusNode,
-            isReadOnly: true,
-            label: AppTranslations.of(context).text("language"),
-            onTap: _selectLanguage,
-          ),
-        ],
+        },
       ),
     );
   }
@@ -334,24 +376,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     return TabBar(
       controller: _tabController,
       indicatorColor: themeProvider.primaryColor,
-      onTap: (int index) {
-        if (index == 0) {
-          _isGeneratingWords = true;
-          _numberWords = 4;
-          _minWords = 1.0;
-          _maxWords = 10.0;
-          _divisionWords = 9;
-        } else {
-          _isGeneratingWords = false;
-          _numberWords = 16;
-          _minWords = 6.0;
-          _maxWords = 50.0;
-          _divisionWords = 43;
-        }
-
-        _passwordController.text = _generatePassword();
-        setState(() {});
-      },
+      onTap: _onTabBarItemTapped,
       tabs: <Widget>[
         Tab(
           text: AppTranslations.of(context).text("words"),
@@ -361,6 +386,25 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
         ),
       ],
     );
+  }
+
+  _onTabBarItemTapped(int? index) {
+    if (index == 0) {
+      _isGeneratingWords = true;
+      _numberWords = 4;
+      _minWords = 1.0;
+      _maxWords = 10.0;
+      _divisionWords = 9;
+    } else {
+      _isGeneratingWords = false;
+      _numberWords = 16;
+      _minWords = 6.0;
+      _maxWords = 50.0;
+      _divisionWords = 43;
+    }
+
+    _passwordController.text = _generatePassword();
+    setState(() {});
   }
 
   _selectLanguage() async {
