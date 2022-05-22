@@ -176,6 +176,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
         Container(
           margin: EdgeInsets.all(16),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ChicPlatform.isDesktop()
                   ? _displayTabBar(themeProvider)

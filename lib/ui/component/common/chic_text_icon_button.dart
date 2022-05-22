@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ChicTextIconButton extends StatelessWidget {
@@ -18,6 +21,19 @@ class ChicTextIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(Platform.isIOS) {
+      return CupertinoButton(
+        child: Row(
+          children: [
+            icon,
+            SizedBox(width: 8),
+            label,
+          ],
+        ),
+        onPressed: onPressed,
+      );
+    }
+
     return TextButton.icon(
       style: ButtonStyle(
         overlayColor: ChicPlatform.isDesktop()

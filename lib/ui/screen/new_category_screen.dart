@@ -262,7 +262,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                 color: themeProvider.primaryColor,
               ),
               onPressed: _selectPredefinedCategory,
-            )
+            ),
           ],
         ),
       ),

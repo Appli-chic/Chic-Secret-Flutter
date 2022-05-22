@@ -382,7 +382,9 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
             ChicTextIconButton(
               onPressed: _generateNewPassword,
               icon: Icon(
-                Icons.auto_fix_high,
+                Platform.isIOS
+                    ? CupertinoIcons.wand_stars
+                    : Icons.auto_fix_high,
                 color: themeProvider.primaryColor,
                 size: 20,
               ),
@@ -418,7 +420,9 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
             ChicTextIconButton(
               onPressed: _createCategory,
               icon: Icon(
-                Icons.add_circle,
+                Platform.isIOS
+                    ? CupertinoIcons.add_circled_solid
+                    : Icons.add_circle,
                 color: themeProvider.primaryColor,
                 size: 20,
               ),
@@ -453,7 +457,11 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
               itemBuilder: (context, tag) {
                 return ListTile(
                   horizontalTitleGap: 0,
-                  leading: Icon(Icons.tag),
+                  leading: Icon(
+                      Platform.isIOS
+                          ? CupertinoIcons.tag_solid
+                          : Icons.tag
+                  ),
                   title: Text(tag.name),
                 );
               },
@@ -487,7 +495,9 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
             ChicTextIconButton(
               onPressed: _onAddCustomField,
               icon: Icon(
-                Icons.add_circle,
+                Platform.isIOS
+                    ? CupertinoIcons.add_circled_solid
+                    : Icons.add_circle,
                 color: themeProvider.primaryColor,
                 size: 20,
               ),
