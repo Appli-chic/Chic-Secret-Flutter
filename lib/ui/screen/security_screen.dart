@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
@@ -7,6 +9,7 @@ import 'package:chic_secret/ui/component/security_item.dart';
 import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
 import 'package:chic_secret/ui/screen/security_entry_screen.dart';
 import 'package:chic_secret/utils/security.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -47,70 +50,98 @@ class _SecurityScreenState extends State<SecurityScreen> {
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+    return _displayScaffold(themeProvider);
+  }
 
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: themeProvider.secondBackgroundColor,
-        title: Text(AppTranslations.of(context).text("security")),
-      ),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: Container(
-          margin: EdgeInsets.only(top: 16),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.only(left: 16, right: 16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: SecurityItem(
-                        securityIndex: 1,
-                        number: _weakPasswordEntries.length,
-                        title: AppTranslations.of(context).text("weak"),
-                        icon: Icons.password,
-                        color: Colors.red,
-                        onTap: _onSecurityItemClicked,
-                      ),
+  Widget _displayScaffold(ThemeProvider themeProvider) {
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _displaysIosAppbar(themeProvider),
+        child: _displayBody(themeProvider),
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: _displayBody(themeProvider),
+      );
+    }
+  }
+
+  ObstructingPreferredSizeWidget _displaysIosAppbar(
+      ThemeProvider themeProvider) {
+    return CupertinoNavigationBar(
+      previousPageTitle: AppTranslations.of(context).text("vaults"),
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: Text(AppTranslations.of(context).text("security")),
+    );
+  }
+
+  PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
+    return AppBar(
+      backgroundColor: themeProvider.secondBackgroundColor,
+      title: Text(AppTranslations.of(context).text("security")),
+    );
+  }
+
+  Widget _displayBody(ThemeProvider themeProvider) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Container(
+        margin: EdgeInsets.only(top: 16),
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.only(left: 16, right: 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SecurityItem(
+                      securityIndex: 1,
+                      number: _weakPasswordEntries.length,
+                      title: AppTranslations.of(context).text("weak"),
+                      icon: Icons.password,
+                      color: Colors.red,
+                      onTap: _onSecurityItemClicked,
                     ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: SecurityItem(
-                        securityIndex: 2,
-                        number: _oldEntries.length,
-                        title: AppTranslations.of(context).text("old"),
-                        icon: Icons.timelapse,
-                        color: Colors.deepOrange,
-                        onTap: _onSecurityItemClicked,
-                      ),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: SecurityItem(
+                      securityIndex: 2,
+                      number: _oldEntries.length,
+                      title: AppTranslations.of(context).text("old"),
+                      icon: Icons.timelapse,
+                      color: Colors.deepOrange,
+                      onTap: _onSecurityItemClicked,
                     ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: SecurityItem(
-                        securityIndex: 3,
-                        number: _duplicatedEntries.length,
-                        title: AppTranslations.of(context).text("duplicated"),
-                        icon: Icons.autorenew,
-                        color: Colors.orange,
-                        onTap: _onSecurityItemClicked,
-                      ),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: SecurityItem(
+                      securityIndex: 3,
+                      number: _duplicatedEntries.length,
+                      title: AppTranslations.of(context).text("duplicated"),
+                      icon: Icons.autorenew,
+                      color: Colors.orange,
+                      onTap: _onSecurityItemClicked,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Expanded(child: _displayBody(themeProvider)),
-            ],
-          ),
+            ),
+            Expanded(child: _displayLists(themeProvider)),
+          ],
         ),
       ),
     );
   }
 
-  Widget _displayBody(ThemeProvider themeProvider) {
+  Widget _displayLists(ThemeProvider themeProvider) {
     if (_weakPasswordEntries.isEmpty &&
         _oldEntries.isEmpty &&
         _duplicatedEntries.isEmpty &&

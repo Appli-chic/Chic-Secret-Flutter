@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/user.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
@@ -19,11 +21,12 @@ import 'package:chic_secret/ui/screen/import_export_choice_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/security.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 
 import 'login_screen.dart';
 import 'new_vault_screen.dart';
@@ -62,7 +65,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     super.initState();
   }
 
-  /// Checks if the biometrics are supported on this device
   _checkBiometrics() async {
     try {
       _isBiometricsSupported = await auth.canCheckBiometrics;
@@ -72,7 +74,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     }
   }
 
-  /// Retrieve the user information
   _getUser() async {
     _user = await Security.getCurrentUser();
     if (_user != null) {
@@ -131,29 +132,49 @@ class _SettingsScreenState extends State<SettingsScreen>
     );
   }
 
-  /// Displays the [Scaffold] for the mobile version
   Widget _displaysMobile(ThemeProvider themeProvider) {
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: themeProvider.secondBackgroundColor,
-        title: Text(AppTranslations.of(context).text("settings")),
-        actions: [],
+    var body = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: _displaysBody(themeProvider),
       ),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: _displaysBody(themeProvider),
-        ),
-      ),
+    );
+
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _displaysIosAppbar(themeProvider),
+        child: body,
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: body,
+      );
+    }
+  }
+
+  ObstructingPreferredSizeWidget _displaysIosAppbar(
+      ThemeProvider themeProvider) {
+    return CupertinoNavigationBar(
+      previousPageTitle: AppTranslations.of(context).text("vaults"),
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: Text(AppTranslations.of(context).text("settings")),
     );
   }
 
-  /// Displays a unified body for both mobile and desktop version
+  PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
+    return AppBar(
+      backgroundColor: themeProvider.secondBackgroundColor,
+      title: Text(AppTranslations.of(context).text("settings")),
+    );
+  }
+
   Widget _displaysBody(ThemeProvider themeProvider) {
     String? lastSyncDate;
 
@@ -255,7 +276,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     );
   }
 
-  /// Delete the vault and all the content the data
   _delete() async {
     if (selectedVault != null && selectedVault!.userId == _user!.id) {
       // Check if the user is willing to delete the vault
@@ -326,7 +346,6 @@ class _SettingsScreenState extends State<SettingsScreen>
         });
   }
 
-  /// On subscribe clicked move to the subscribe page
   _onEditVaultClicked() async {
     var isDeleted = await ChicNavigator.push(
       context,
@@ -345,7 +364,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     }
   }
 
-  /// Displays the last time it synchronized
   Widget? _displaysSynchronizationSubtitle(String? lastSyncDate) {
     if (lastSyncDate != null) {
       return Text(lastSyncDate);
@@ -354,7 +372,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     return null;
   }
 
-  /// Synchronize the data with the server
   _synchronize() async {
     await _synchronizationProvider.synchronize(isFullSynchronization: true);
 
@@ -363,13 +380,11 @@ class _SettingsScreenState extends State<SettingsScreen>
     }
   }
 
-  /// Logout the user and delete the data about the user
   _logout() async {
     await Security.logout();
     Navigator.of(context).pop(true);
   }
 
-  /// Send to the login page
   _login() async {
     var isLogged = await ChicNavigator.push(
       context,
@@ -387,7 +402,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     }
   }
 
-  /// Move to the import/export screen
   _goToImportExportScreen() async {
     await ChicNavigator.push(
       context,
@@ -396,7 +410,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     );
   }
 
-  /// Send to the biometry page to activate or deactivate the biometry
   _onBiometryClicked() async {
     await ChicNavigator.push(
       context,
