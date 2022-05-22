@@ -9,6 +9,7 @@ import 'package:chic_secret/ui/component/common/chic_popup_menu_item.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/color.dart';
+import 'package:chic_secret/utils/icon_converter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -89,7 +90,9 @@ class _CategoryItemState extends State<CategoryItem> {
             borderRadius: BorderRadius.all(Radius.circular(16)),
           ),
           child: Icon(
-            IconData(widget.category!.icon, fontFamily: 'MaterialIcons'),
+            IconConverter.convertMaterialIconToCupertino(
+              IconData(widget.category!.icon, fontFamily: 'MaterialIcons'),
+            ),
             color: Colors.white,
           ),
         ),

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 const String keyTheme = "THEME";
@@ -23,6 +26,14 @@ const List<Color> colors = [
   Colors.indigo,
   Colors.lime,
 ];
+
+List<IconData> getIcons() {
+  if(Platform.isIOS) {
+    return cupertinoIcons;
+  } else {
+    return icons;
+  }
+}
 
 const icons = [
   Icons.home,
@@ -51,7 +62,6 @@ const icons = [
   Icons.account_balance,
   Icons.airplanemode_active,
   Icons.contact_mail,
-  Icons.rss_feed,
   Icons.science,
   Icons.history_edu,
   Icons.brush,
@@ -59,7 +69,6 @@ const icons = [
   Icons.park,
   Icons.handyman,
   Icons.map,
-  Icons.lunch_dining,
   Icons.local_library,
   Icons.local_printshop,
   Icons.plumbing,
@@ -70,11 +79,52 @@ const icons = [
   Icons.timeline,
   Icons.backup,
   Icons.travel_explore,
-  Icons.catching_pokemon,
-  Icons.sports_soccer,
-  Icons.whatshot,
-  Icons.clean_hands,
-  Icons.surfing,
+];
+
+const cupertinoIcons = [
+  CupertinoIcons.house_fill,
+  CupertinoIcons.envelope_fill,
+  CupertinoIcons.film_fill,
+  CupertinoIcons.bubble_left_fill,
+  CupertinoIcons.train_style_one,
+  CupertinoIcons.cart_fill,
+  Icons.fastfood,
+  CupertinoIcons.money_dollar,
+  CupertinoIcons.paintbrush_fill,
+  CupertinoIcons.photo_fill,
+  CupertinoIcons.music_note,
+  CupertinoIcons.briefcase_fill,
+  CupertinoIcons.creditcard_fill,
+  CupertinoIcons.cloud_fill,
+  CupertinoIcons.book_fill,
+  CupertinoIcons.wifi,
+  CupertinoIcons.compass_fill,
+  CupertinoIcons.device_laptop,
+  CupertinoIcons.device_phone_portrait,
+  CupertinoIcons.person_3_fill,
+  CupertinoIcons.folder_fill,
+  CupertinoIcons.game_controller_solid,
+  CupertinoIcons.sportscourt_fill,
+  CupertinoIcons.building_2_fill,
+  CupertinoIcons.airplane,
+  CupertinoIcons.person_crop_square_fill,
+  CupertinoIcons.bolt_fill,
+  CupertinoIcons.bookmark_fill,
+  CupertinoIcons.pencil_outline,
+  CupertinoIcons.bandage_fill,
+  CupertinoIcons.leaf_arrow_circlepath,
+  CupertinoIcons.hammer_fill,
+  CupertinoIcons.map_fill,
+  CupertinoIcons.news_solid,
+  CupertinoIcons.printer_fill,
+  CupertinoIcons.wrench_fill,
+  CupertinoIcons.device_desktop,
+  CupertinoIcons.shield_lefthalf_fill,
+  CupertinoIcons.videocam_circle_fill,
+  CupertinoIcons.bag_fill,
+  CupertinoIcons.graph_square_fill,
+  CupertinoIcons.cloud_upload_fill,
+  CupertinoIcons.globe,
 ];
 
 const letters = [

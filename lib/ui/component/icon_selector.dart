@@ -33,17 +33,17 @@ class IconSelector extends StatefulWidget {
 }
 
 class _IconSelectorState extends State<IconSelector> {
-  IconData _icon = icons[0];
-  List<IconData> _icons = icons.toList();
+  IconData _icon = getIcons()[0];
+  List<IconData> _icons = getIcons().toList();
   var _iconsListSize = 6;
 
   @override
   void initState() {
+    _onIconChange(widget.icon);
     widget.iconSelectorController.onIconChange = _onIconChange;
     super.initState();
   }
 
-  /// Triggered when the icon is being changed
   _onIconChange(IconData icon) {
     _icon = icon;
     var iconListed = _icons
@@ -183,7 +183,7 @@ class IconPickerDialog extends StatefulWidget {
 }
 
 class _IconPickerDialogState extends State<IconPickerDialog> {
-  IconData _icon = icons[0];
+  IconData _icon = getIcons()[0];
 
   @override
   void initState() {
@@ -223,12 +223,12 @@ class _IconPickerDialogState extends State<IconPickerDialog> {
         child: GridView.count(
           physics: BouncingScrollPhysics(),
           crossAxisCount: cells,
-          children: List.generate(icons.length, (index) {
+          children: List.generate(getIcons().length, (index) {
             return _displayIcon(
               context,
               index,
               _icon,
-              icons,
+              getIcons(),
               widget.color,
               (IconData icon) {
                 widget.onIconChanged(icon);
@@ -256,8 +256,6 @@ class _IconPickerDialogState extends State<IconPickerDialog> {
   }
 }
 
-/// Displays the icon that will be displayed in the list of icons
-/// and in the icon picker
 Widget _displayIcon(
   BuildContext context,
   int index,

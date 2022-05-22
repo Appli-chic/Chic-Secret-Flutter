@@ -4,8 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class DateRender {
-  /// Displays the date corresponding to how old it is and within the
-  /// current locale.
   static String displaysDate(BuildContext context, DateTime date) {
     var locale = AppTranslations.of(context).locale;
     var today = DateTime.now();

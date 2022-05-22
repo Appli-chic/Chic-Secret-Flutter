@@ -18,6 +18,7 @@ import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/color.dart';
 import 'package:chic_secret/utils/constant.dart';
+import 'package:chic_secret/utils/icon_converter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -55,14 +56,15 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   Category? _preselectedCategory;
 
   Color _color = Colors.blue;
-  IconData _icon = icons[0];
+  IconData _icon = getIcons()[0];
 
   @override
   void initState() {
     if (widget.category != null) {
       _nameController = TextEditingController(text: widget.category!.name);
       _color = getColorFromHex(widget.category!.color);
-      _icon = IconData(widget.category!.icon, fontFamily: 'MaterialIcons');
+      _icon = IconConverter.convertMaterialIconToCupertino(
+          IconData(widget.category!.icon, fontFamily: 'MaterialIcons'));
     }
 
     if (widget.hint != null) {
@@ -254,7 +256,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                 style: TextStyle(color: themeProvider.primaryColor),
               ),
               icon: Icon(
-                Platform.isIOS ? CupertinoIcons.doc_on_doc_fill : Icons.folder_copy,
+                Platform.isIOS
+                    ? CupertinoIcons.doc_on_doc_fill
+                    : Icons.folder_copy,
                 color: themeProvider.primaryColor,
               ),
               onPressed: _selectPredefinedCategory,
@@ -276,7 +280,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       _preselectedCategory = category;
       _nameController.text = category.name;
       _color = getColorFromHex(category.color);
-      _icon = IconData(category.icon, fontFamily: 'MaterialIcons');
+      _icon = IconConverter.convertMaterialIconToCupertino(
+        IconData(category.icon, fontFamily: 'MaterialIcons'),
+      );
 
       if (_colorSelectorController.onColorChange != null) {
         _colorSelectorController.onColorChange!(_color);
@@ -300,7 +306,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
           id: widget.category!.id,
           name: _nameController.text,
           color: '#${_color.value.toRadixString(16)}',
-          icon: _icon.codePoint,
+          icon: IconConverter.convertCupertinoIconToMaterial(_icon).codePoint,
           isTrash: false,
           vaultId: selectedVault!.id,
           createdAt: widget.category!.createdAt,
@@ -313,7 +319,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
           id: Uuid().v4(),
           name: _nameController.text,
           color: '#${_color.value.toRadixString(16)}',
-          icon: _icon.codePoint,
+          icon: IconConverter.convertCupertinoIconToMaterial(_icon).codePoint,
           isTrash: false,
           vaultId: selectedVault!.id,
           createdAt: DateTime.now(),

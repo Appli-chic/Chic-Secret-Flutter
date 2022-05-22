@@ -30,7 +30,7 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
     if (widget.language != null) {
       var index = Application.supportedLanguagesCodes.indexOf(widget.language!);
 
-      if(index != -1) {
+      if (index != -1) {
         _language = Application.supportedLanguages[index];
       }
     }
@@ -69,7 +69,8 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
             child: Text(AppTranslations.of(context).text("done")),
             onPressed: () {
               var index = Application.supportedLanguages.indexOf(_language);
-              Navigator.pop(context, Application.supportedLanguagesCodes[index]);
+              Navigator.pop(
+                  context, Application.supportedLanguagesCodes[index]);
             },
           ),
         ),
@@ -144,7 +145,7 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
           ),
           trailing: isSelected
               ? Icon(
-                  Icons.check,
+                  Platform.isIOS ? CupertinoIcons.checkmark : Icons.check,
                   color: themeProvider.primaryColor,
                 )
               : null,

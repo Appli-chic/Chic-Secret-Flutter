@@ -4,6 +4,7 @@ import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/chic_popup_menu_item.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/color.dart';
+import 'package:chic_secret/utils/icon_converter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -78,8 +79,10 @@ class _EntryItemState extends State<EntryItem> {
                 borderRadius: BorderRadius.all(Radius.circular(16)),
               ),
               child: Icon(
-                IconData(widget.entry.category!.icon,
-                    fontFamily: 'MaterialIcons'),
+                IconConverter.convertMaterialIconToCupertino(
+                  IconData(widget.entry.category!.icon,
+                      fontFamily: 'MaterialIcons'),
+                ),
                 color: themeProvider.textColor,
               ),
             ),
