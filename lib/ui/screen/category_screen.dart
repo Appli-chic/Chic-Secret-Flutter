@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
@@ -7,6 +9,7 @@ import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/screen/entry_category_screen.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -58,51 +61,86 @@ class _CategoriesScreenState extends State<CategoriesScreen>
     super.build(context);
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: themeProvider.secondBackgroundColor,
-        title: Text(AppTranslations.of(context).text("categories")),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              color: themeProvider.textColor,
-            ),
-            onPressed: _onAddCategoryClicked,
-          )
-        ],
-      ),
-      body: Container(
-        margin: EdgeInsets.only(bottom: 8),
-        child: ListView.builder(
-          physics: BouncingScrollPhysics(),
-          itemCount: _categories.length,
-          itemBuilder: (context, index) {
-            return CategoryItem(
-              category: _categories[index],
-              onTap: (Category? category) async {
-                if (category != null) {
-                  var isDeleted = await ChicNavigator.push(
-                    context,
-                    EntryCategoryScreen(
-                      category: category,
-                      onCategoryChanged: () {
-                        _loadCategories();
-                        widget.onCategoriesChanged();
-                      },
-                    ),
-                    isModal: true,
-                  );
+    return _displayScaffold(themeProvider);
+  }
 
-                  if (isDeleted != null && isDeleted) {
-                    _loadCategories();
-                  }
+  Widget _displayScaffold(ThemeProvider themeProvider) {
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _displaysIosAppbar(themeProvider),
+        child: _displayBody(),
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: _displayBody(),
+      );
+    }
+  }
+
+  ObstructingPreferredSizeWidget _displaysIosAppbar(
+      ThemeProvider themeProvider) {
+    return CupertinoNavigationBar(
+      previousPageTitle: AppTranslations.of(context).text("vaults"),
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: Text(AppTranslations.of(context).text("categories")),
+      trailing: CupertinoButton(
+        padding: EdgeInsets.zero,
+        alignment: Alignment.centerRight,
+        child: Icon(CupertinoIcons.add),
+        onPressed: _onAddCategoryClicked,
+      ),
+    );
+  }
+
+  PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
+    return AppBar(
+      backgroundColor: themeProvider.secondBackgroundColor,
+      title: Text(AppTranslations.of(context).text("categories")),
+      actions: [
+        IconButton(
+          icon: Icon(
+            Icons.add,
+            color: themeProvider.textColor,
+          ),
+          onPressed: _onAddCategoryClicked,
+        )
+      ],
+    );
+  }
+
+  Widget _displayBody() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 8),
+      child: ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemCount: _categories.length,
+        itemBuilder: (context, index) {
+          return CategoryItem(
+            category: _categories[index],
+            onTap: (Category? category) async {
+              if (category != null) {
+                var isDeleted = await ChicNavigator.push(
+                  context,
+                  EntryCategoryScreen(
+                    category: category,
+                    onCategoryChanged: () {
+                      _loadCategories();
+                      widget.onCategoriesChanged();
+                    },
+                  ),
+                  isModal: true,
+                );
+
+                if (isDeleted != null && isDeleted) {
+                  _loadCategories();
                 }
-              },
-            );
-          },
-        ),
+              }
+            },
+          );
+        },
       ),
     );
   }
