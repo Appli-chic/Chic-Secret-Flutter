@@ -196,32 +196,30 @@ class _SettingsScreenState extends State<SettingsScreen>
         children: [
           _user != null
               ? SettingItem(
-                  leading: Icon(Icons.person),
-                  title: Text(_user!.email),
+                  leading: Icons.person,
+                  title: _user!.email,
                 )
               : SettingItem(
-                  leading: Icon(Icons.login),
-                  title: Text(AppTranslations.of(context).text("login")),
+                  leading: Icons.login,
+                  title: AppTranslations.of(context).text("login"),
                   onTap: _login,
                 ),
           _user != null
               ? SettingItem(
-                  leading: RotationTransition(
+                  leadingIcon: RotationTransition(
                     turns: Tween(begin: 1.0, end: 0.0)
                         .animate(_synchronizingAnimationController),
-                    child: Icon(Icons.sync),
+                    child: Icon(Icons.sync, color: themeProvider.textColor),
                   ),
-                  title:
-                      Text(AppTranslations.of(context).text("synchronizing")),
-                  subtitle: _displaysSynchronizationSubtitle(lastSyncDate),
+                  title: AppTranslations.of(context).text("synchronizing"),
+                  subtitle: lastSyncDate,
                   onTap: _synchronize,
                 )
               : SizedBox.shrink(),
           selectedVault != null
               ? SettingItem(
-                  leading: Icon(Icons.import_export_outlined),
-                  title:
-                      Text(AppTranslations.of(context).text("import_export")),
+                  leading: Icons.import_export_outlined,
+                  title: AppTranslations.of(context).text("import_export"),
                   onTap: _goToImportExportScreen,
                 )
               : SizedBox.shrink(),
@@ -229,15 +227,15 @@ class _SettingsScreenState extends State<SettingsScreen>
                   _isBiometricsSupported &&
                   widget.hasVaultLinked
               ? SettingItem(
-                  leading: Icon(Icons.fingerprint),
-                  title: Text(AppTranslations.of(context).text("biometry")),
+                  leading: Icons.fingerprint,
+                  title: AppTranslations.of(context).text("biometry"),
                   onTap: _onBiometryClicked,
                 )
               : SizedBox.shrink(),
           widget.hasVaultLinked && selectedVault != null
               ? SettingItem(
-                  leading: Icon(Icons.edit),
-                  title: Text(AppTranslations.of(context).text("edit_vault")),
+                  leading: Icons.edit,
+                  title: AppTranslations.of(context).text("edit_vault"),
                   onTap: _onEditVaultClicked,
                 )
               : SizedBox.shrink(),
@@ -246,28 +244,16 @@ class _SettingsScreenState extends State<SettingsScreen>
                   selectedVault!.userId == _user!.id
               ? SettingItem(
                   backgroundColor: Colors.red[500],
-                  leading: Icon(Icons.delete_forever,
-                      color: ChicPlatform.isDesktop() ? Colors.red[500] : null),
-                  title: Text(
-                    AppTranslations.of(context).text("delete"),
-                    style: TextStyle(
-                        color:
-                            ChicPlatform.isDesktop() ? Colors.red[500] : null),
-                  ),
+                  leading: Icons.delete_forever,
+                  title: AppTranslations.of(context).text("delete"),
                   onTap: _delete,
                 )
               : SizedBox.shrink(),
           _user != null
               ? SettingItem(
                   backgroundColor: Colors.red[500],
-                  leading: Icon(Icons.logout,
-                      color: ChicPlatform.isDesktop() ? Colors.red[500] : null),
-                  title: Text(
-                    AppTranslations.of(context).text("logout"),
-                    style: TextStyle(
-                        color:
-                            ChicPlatform.isDesktop() ? Colors.red[500] : null),
-                  ),
+                  leading: Icons.logout,
+                  title: AppTranslations.of(context).text("logout"),
                   onTap: _logout,
                 )
               : SizedBox.shrink(),
@@ -362,14 +348,6 @@ class _SettingsScreenState extends State<SettingsScreen>
         Navigator.pop(context, true);
       }
     }
-  }
-
-  Widget? _displaysSynchronizationSubtitle(String? lastSyncDate) {
-    if (lastSyncDate != null) {
-      return Text(lastSyncDate);
-    }
-
-    return null;
   }
 
   _synchronize() async {

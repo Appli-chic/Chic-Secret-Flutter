@@ -87,7 +87,7 @@ class _ImportExportChoiceScreenState extends State<ImportExportChoiceScreen> {
       child: Column(
         children: [
           SettingItem(
-            title: Text(AppTranslations.of(context).text("import_buttercup")),
+            title: AppTranslations.of(context).text("import_buttercup"),
             onTap: _importDataFromButtercup,
           ),
           // Divider(),

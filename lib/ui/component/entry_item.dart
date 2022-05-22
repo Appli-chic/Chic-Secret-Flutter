@@ -80,7 +80,7 @@ class _EntryItemState extends State<EntryItem> {
               child: Icon(
                 IconData(widget.entry.category!.icon,
                     fontFamily: 'MaterialIcons'),
-                color: Colors.white,
+                color: themeProvider.textColor,
               ),
             ),
             title: Container(

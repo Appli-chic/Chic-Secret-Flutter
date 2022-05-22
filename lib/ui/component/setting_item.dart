@@ -5,15 +5,17 @@ import 'package:provider/provider.dart';
 
 class SettingItem extends StatelessWidget {
   final Color? backgroundColor;
-  final Widget? leading;
-  final Widget? title;
-  final Widget? subtitle;
+  final IconData? leading;
+  final Widget? leadingIcon;
+  final String title;
+  final String? subtitle;
   final Function()? onTap;
 
   const SettingItem({
     this.backgroundColor,
     this.leading,
-    this.title,
+    this.leadingIcon,
+    required this.title,
     this.subtitle,
     this.onTap,
   });
@@ -25,9 +27,9 @@ class SettingItem extends StatelessWidget {
     if (ChicPlatform.isDesktop()) {
       return ListTile(
         horizontalTitleGap: 0,
-        leading: leading,
-        title: title,
-        subtitle: subtitle,
+        leading: _displayLeading(themeProvider),
+        title: _displayTitle(themeProvider),
+        subtitle: _displaySubtitle(themeProvider),
         onTap: onTap,
       );
     } else {
@@ -41,12 +43,38 @@ class SettingItem extends StatelessWidget {
         ),
         child: ListTile(
           horizontalTitleGap: 0,
-          leading: leading,
-          title: title,
-          subtitle: subtitle,
+          leading: _displayLeading(themeProvider),
+          title: _displayTitle(themeProvider),
+          subtitle: _displaySubtitle(themeProvider),
           onTap: onTap,
         ),
       );
     }
+  }
+
+  Widget? _displayLeading(ThemeProvider themeProvider) {
+    if (leadingIcon != null) {
+      return leadingIcon;
+    }
+
+    if (leading != null) {
+      return Icon(leading, color: themeProvider.textColor);
+    }
+
+    return null;
+  }
+
+  Widget? _displayTitle(ThemeProvider themeProvider) {
+    return Text(
+      title,
+      style: TextStyle(color: themeProvider.textColor),
+    );
+  }
+
+  Widget? _displaySubtitle(ThemeProvider themeProvider) {
+    if (subtitle == null) return null;
+
+    return Text(subtitle!,
+        style: TextStyle(color: themeProvider.secondTextColor));
   }
 }
