@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
@@ -7,6 +9,7 @@ import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/component/setting_item.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/import_export.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -40,7 +43,6 @@ class _ImportExportChoiceScreenState extends State<ImportExportChoiceScreen> {
     }
   }
 
-  /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: AppTranslations.of(context).text("settings"),
@@ -59,28 +61,49 @@ class _ImportExportChoiceScreenState extends State<ImportExportChoiceScreen> {
     );
   }
 
-  /// Displays the [Scaffold] for the mobile version
   Widget _displaysMobile(ThemeProvider themeProvider) {
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: themeProvider.secondBackgroundColor,
-        title: Text(AppTranslations.of(context).text("import_export")),
+    var body = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: _displaysBody(themeProvider),
       ),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: _displaysBody(themeProvider),
-        ),
-      ),
+    );
+
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _displaysIosAppbar(themeProvider),
+        child: body,
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: body,
+      );
+    }
+  }
+
+  ObstructingPreferredSizeWidget _displaysIosAppbar(
+      ThemeProvider themeProvider) {
+    return CupertinoNavigationBar(
+      previousPageTitle: AppTranslations.of(context).text("settings"),
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: Text(AppTranslations.of(context).text("import_export")),
     );
   }
 
-  /// Displays a unified body for both mobile and desktop version
+  PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
+    return AppBar(
+      backgroundColor: themeProvider.secondBackgroundColor,
+      title: Text(AppTranslations.of(context).text("import_export")),
+    );
+  }
+
   Widget _displaysBody(ThemeProvider themeProvider) {
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
@@ -100,12 +123,10 @@ class _ImportExportChoiceScreenState extends State<ImportExportChoiceScreen> {
     );
   }
 
-  /// Export the data from the vault in a csv file
   _exportData() async {
     await exportVaultData();
   }
 
-  /// Import the data from buttercup
   _importDataFromButtercup() async {
     var data = await importFromFile(ImportType.Buttercup);
 

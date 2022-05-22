@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/screen/unlock_vault_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/security.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +26,6 @@ class _BiometryScreenState extends State<BiometryScreen> {
     super.initState();
   }
 
-  /// Get if the password is stored and then if the biometry is activated or not
   _getIfBiometryActivated() async {
     _isBiometryActivated =
         await Security.isPasswordSavedForBiometry(selectedVault!);
@@ -34,65 +36,90 @@ class _BiometryScreenState extends State<BiometryScreen> {
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: themeProvider.secondBackgroundColor,
-        title: Text(AppTranslations.of(context).text("biometry")),
-      ),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Container(
-            margin: EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        AppTranslations.of(context).text("activated_biometry"),
-                        style: TextStyle(
-                          color: themeProvider.textColor,
-                          fontSize: 15,
-                        ),
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _displaysIosAppbar(themeProvider),
+        child: _displayBody(themeProvider),
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: _displayBody(themeProvider),
+      );
+    }
+  }
+
+  ObstructingPreferredSizeWidget _displaysIosAppbar(
+      ThemeProvider themeProvider) {
+    return CupertinoNavigationBar(
+      previousPageTitle: AppTranslations.of(context).text("settings"),
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: Text(AppTranslations.of(context).text("biometry")),
+    );
+  }
+
+  PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
+    return AppBar(
+      backgroundColor: themeProvider.secondBackgroundColor,
+      title: Text(AppTranslations.of(context).text("biometry")),
+    );
+  }
+
+  Widget _displayBody(ThemeProvider themeProvider) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Container(
+          margin: EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      AppTranslations.of(context).text("activated_biometry"),
+                      style: TextStyle(
+                        color: themeProvider.textColor,
+                        fontSize: 15,
                       ),
                     ),
-                    Switch.adaptive(
-                      activeColor: themeProvider.primaryColor,
-                      value: _isBiometryActivated,
-                      onChanged: (bool value) async {
-                        if (value) {
-                          // We activate the biometry
-                          var unlockingPassword = await ChicNavigator.push(
-                            context,
-                            UnlockVaultScreen(vault: selectedVault!),
-                            isModal: true,
-                          );
+                  ),
+                  Switch.adaptive(
+                    activeColor: themeProvider.primaryColor,
+                    value: _isBiometryActivated,
+                    onChanged: (bool value) async {
+                      if (value) {
+                        // We activate the biometry
+                        var unlockingPassword = await ChicNavigator.push(
+                          context,
+                          UnlockVaultScreen(vault: selectedVault!),
+                          isModal: true,
+                        );
 
-                          if (unlockingPassword != null) {
-                            await Security.addPasswordForBiometry(
-                                selectedVault!, unlockingPassword);
-                            _isBiometryActivated = true;
-                          }
-                        } else {
-                          // We deactivate the biometry
-                          await Security.removePasswordFromBiometry(
-                              selectedVault!);
-                          _isBiometryActivated = false;
+                        if (unlockingPassword != null) {
+                          await Security.addPasswordForBiometry(
+                              selectedVault!, unlockingPassword);
+                          _isBiometryActivated = true;
                         }
+                      } else {
+                        // We deactivate the biometry
+                        await Security.removePasswordFromBiometry(
+                            selectedVault!);
+                        _isBiometryActivated = false;
+                      }
 
-                        setState(() {});
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                      setState(() {});
+                    },
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

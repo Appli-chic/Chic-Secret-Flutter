@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
@@ -6,6 +8,7 @@ import 'package:chic_secret/ui/component/common/chic_popup_menu_item.dart';
 import 'package:chic_secret/ui/screen/new_vault_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -54,12 +57,12 @@ class _VaultItemState extends State<VaultItem> {
         },
         horizontalTitleGap: 0,
         leading: Icon(
-          Icons.lock,
+          Platform.isIOS ? CupertinoIcons.lock_fill : Icons.lock,
           color: themeProvider.textColor,
         ),
         trailing: widget.vault.vaultUsers.isNotEmpty
             ? Icon(
-                Icons.group,
+                Platform.isIOS ? CupertinoIcons.person_2_fill : Icons.group,
                 color: themeProvider.textColor,
               )
             : null,

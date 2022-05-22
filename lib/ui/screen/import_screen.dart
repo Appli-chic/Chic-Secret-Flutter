@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
@@ -16,6 +18,7 @@ import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/import_export.dart';
 import 'package:chic_secret/utils/security.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +55,6 @@ class _ImportScreenState extends State<ImportScreen> {
     super.initState();
   }
 
-  /// Load the first category if it exists
   _loadFirstCategory() async {
     _category = await CategoryService.getFirstByVault(selectedVault!.id);
 
@@ -73,7 +75,6 @@ class _ImportScreenState extends State<ImportScreen> {
     }
   }
 
-  /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: AppTranslations.of(context).text("migration"),
@@ -105,40 +106,73 @@ class _ImportScreenState extends State<ImportScreen> {
     );
   }
 
-  /// Displays the [Scaffold] for the mobile version
   Widget _displaysMobile(ThemeProvider themeProvider) {
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: themeProvider.secondBackgroundColor,
-        title: Text(AppTranslations.of(context).text("migration")),
-        actions: [
-          ChicTextButton(
-            child: Text(
-              _dataIndex != widget.importData.categories.length - 1
-                  ? AppTranslations.of(context).text("next")
-                  : AppTranslations.of(context).text("done"),
-            ),
-            onPressed: _dataIndex != widget.importData.categories.length - 1
-                ? _onNext
-                : _onDone,
-          ),
-        ],
+    var body = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: _displaysBody(themeProvider),
       ),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: _displaysBody(themeProvider),
+    );
+
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _displaysIosAppbar(themeProvider),
+        child: body,
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: body,
+      );
+    }
+  }
+
+  ObstructingPreferredSizeWidget _displaysIosAppbar(
+      ThemeProvider themeProvider) {
+    return CupertinoNavigationBar(
+      previousPageTitle: AppTranslations.of(context).text("import_export"),
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: Text(AppTranslations.of(context).text("migration")),
+      trailing: CupertinoButton(
+        padding: EdgeInsets.zero,
+        child: Text(
+          _dataIndex != widget.importData.categories.length - 1
+              ? AppTranslations.of(context).text("next")
+              : AppTranslations.of(context).text("done"),
+          style: TextStyle(fontWeight: FontWeight.w600),
         ),
+        onPressed: _dataIndex != widget.importData.categories.length - 1
+            ? _onNext
+            : _onDone,
       ),
     );
   }
 
-  /// Displays a unified body for both mobile and desktop version
+  PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
+    return AppBar(
+      backgroundColor: themeProvider.secondBackgroundColor,
+      title: Text(AppTranslations.of(context).text("migration")),
+      actions: [
+        ChicTextButton(
+          child: Text(
+            _dataIndex != widget.importData.categories.length - 1
+                ? AppTranslations.of(context).text("next")
+                : AppTranslations.of(context).text("done"),
+          ),
+          onPressed: _dataIndex != widget.importData.categories.length - 1
+              ? _onNext
+              : _onDone,
+        ),
+      ],
+    );
+  }
+
   Widget _displaysBody(ThemeProvider themeProvider) {
     return Form(
       key: _formKey,
@@ -206,8 +240,6 @@ class _ImportScreenState extends State<ImportScreen> {
     );
   }
 
-  /// Call the [SelectCategoryScreen] screen to select which category will
-  /// be linked to the new password.
   _selectCategory() async {
     var category = await ChicNavigator.push(
       context,
@@ -225,8 +257,6 @@ class _ImportScreenState extends State<ImportScreen> {
     }
   }
 
-  /// Calls the [NewCategoryScreen] screen to create a new category directly
-  /// from the [NewEntryScreen] screen
   _createCategory() async {
     var category = await ChicNavigator.push(
       context,
@@ -241,7 +271,6 @@ class _ImportScreenState extends State<ImportScreen> {
     }
   }
 
-  /// Check if a category is selected and pass to the next category to migrate
   _onNext() {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       _dataIndex++;
@@ -253,7 +282,6 @@ class _ImportScreenState extends State<ImportScreen> {
     }
   }
 
-  /// When all the categories have been migrated to a new one
   _onDone() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       EasyLoading.show();

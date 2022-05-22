@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -309,11 +312,16 @@ class _ChicTextFieldState extends State<ChicTextField> {
   }
 
   Widget? _displaysSuffixIcon(ThemeProvider themeProvider) {
+    var iconVisible =
+        Platform.isIOS ? CupertinoIcons.eye_fill : Icons.visibility;
+    var iconInvisible =
+        Platform.isIOS ? CupertinoIcons.eye_slash_fill : Icons.visibility_off;
+
     if (widget.isPassword) {
       return Container(
         margin: EdgeInsets.only(right: 8),
         child: ChicIconButton(
-          icon: _isHidden ? Icons.visibility : Icons.visibility_off,
+          icon: _isHidden ? iconVisible : iconInvisible,
           color: themeProvider.placeholder,
           onPressed: () {
             setState(() {
