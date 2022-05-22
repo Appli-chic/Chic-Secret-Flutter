@@ -111,7 +111,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     super.initState();
   }
 
-  /// Load the tags related to the entry if it exists
   _loadTags() async {
     _tags = await TagService.getAllByEntry(widget.entry!.id);
 
@@ -122,7 +121,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     setState(() {});
   }
 
-  /// Load the custom fields related to the entry if it exists
   _loadCustomFields() async {
     _customFields = await CustomFieldService.getAllByEntry(widget.entry!.id);
 
@@ -142,7 +140,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     setState(() {});
   }
 
-  /// Load the first category if it exists
   _loadFirstCategory() async {
     _category = await CategoryService.getFirstByVault(selectedVault!.id);
 
@@ -191,7 +188,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     }
   }
 
-  /// Displays the buttons to cancel or save only for Desktop
   Widget _displaysDesktopToolbar(ThemeProvider themeProvider) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -248,7 +244,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     );
   }
 
-  /// Displays the [Scaffold] for the mobile version
   Widget _displaysMobile(ThemeProvider themeProvider) {
     return Scaffold(
       backgroundColor: themeProvider.backgroundColor,
@@ -277,7 +272,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     );
   }
 
-  /// Displays a unified body for both mobile and desktop version
   Widget _displaysBody(ThemeProvider themeProvider) {
     return Container(
       margin: EdgeInsets.all(16),
@@ -490,7 +484,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     );
   }
 
-  /// Triggered when we add a new custom field to the list
   _onAddCustomField() {
     _customFieldsIds.add("");
     _customFieldsNameControllers.add(TextEditingController());
@@ -503,7 +496,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     setState(() {});
   }
 
-  /// Displays the customs fields in the form
   Widget _displaysCustomFields(ThemeProvider themeProvider) {
     List<Widget> customFields = [];
 
@@ -618,7 +610,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     );
   }
 
-  /// Displays the list of chips that had been added
   List<Widget> _createChipsList(ThemeProvider themeProvider) {
     List<Widget> chips = [];
 
@@ -638,8 +629,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     return chips;
   }
 
-  /// Call the [SelectCategoryScreen] screen to select which category will
-  /// be linked to the new password.
   _selectCategory() async {
     var category = await ChicNavigator.push(
       context,
@@ -654,8 +643,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     }
   }
 
-  /// Calls the [NewCategoryScreen] screen to create a new category directly
-  /// from the [NewEntryScreen] screen
   _createCategory() async {
     var category = await ChicNavigator.push(
       context,
@@ -674,8 +661,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     }
   }
 
-  /// Calls the [GeneratePasswordScreen] screen to help the user
-  /// generating a new password
   _generateNewPassword() async {
     var password = await ChicNavigator.push(
       context,
@@ -689,7 +674,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     }
   }
 
-  /// Save or update an entry in the local database
   _save() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       if (_category == null) {

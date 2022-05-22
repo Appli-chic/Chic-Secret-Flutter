@@ -80,7 +80,6 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     super.initState();
   }
 
-  /// Load the users linked to the vault
   _loadUsers() async {
     _users = await UserService.getUsersByVault(widget.vault!.id);
 
@@ -91,7 +90,6 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     setState(() {});
   }
 
-  /// Retrieve the user information
   _getUser() async {
     _user = await Security.getCurrentUser();
     if (_user != null) {
@@ -113,7 +111,6 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     }
   }
 
-  /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: AppTranslations.of(context).text("new_vault"),
@@ -152,7 +149,6 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     );
   }
 
-  /// Displays the [Scaffold] for the mobile version
   Widget _displaysMobile(ThemeProvider themeProvider) {
     if (Platform.isIOS) {
       return CupertinoPageScaffold(
@@ -206,7 +202,10 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
               : SizedBox(),
           CupertinoButton(
             padding: EdgeInsets.zero,
-            child: Text(AppTranslations.of(context).text("save")),
+            child: Text(
+              AppTranslations.of(context).text("save"),
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
             onPressed: _save,
           ),
         ],
@@ -243,7 +242,6 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     }
   }
 
-  /// Displays a unified body for both mobile and desktop version
   Widget _displaysBody(ThemeProvider themeProvider) {
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
@@ -359,7 +357,6 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     );
   }
 
-  /// Displays the list of chips for each email
   List<Widget> _createChipsList(ThemeProvider themeProvider) {
     List<Widget> chips = [];
 
@@ -379,7 +376,6 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     return chips;
   }
 
-  /// Check the email is linked to a user in the server
   _checkEmailExists(String text) async {
     EasyLoading.show();
 
@@ -423,7 +419,6 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
     }
   }
 
-  /// Delete the vault and all the content the data
   _delete() async {
     if (widget.vault != null && widget.vault!.userId == _user!.id) {
       // Check if the user is willing to delete the vault
@@ -494,7 +489,6 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
         });
   }
 
-  /// Save or update a vault in the local database
   _save() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       Vault vault;

@@ -196,11 +196,15 @@ class _SettingsScreenState extends State<SettingsScreen>
         children: [
           _user != null
               ? SettingItem(
-                  leading: Icons.person,
+                  leading: Platform.isIOS
+                      ? CupertinoIcons.person_fill
+                      : Icons.person,
                   title: _user!.email,
                 )
               : SettingItem(
-                  leading: Icons.login,
+                  leading: Platform.isIOS
+                      ? CupertinoIcons.square_arrow_right
+                      : Icons.login,
                   title: AppTranslations.of(context).text("login"),
                   onTap: _login,
                 ),
@@ -209,7 +213,11 @@ class _SettingsScreenState extends State<SettingsScreen>
                   leadingIcon: RotationTransition(
                     turns: Tween(begin: 1.0, end: 0.0)
                         .animate(_synchronizingAnimationController),
-                    child: Icon(Icons.sync, color: themeProvider.textColor),
+                    child: Icon(
+                        Platform.isIOS
+                            ? CupertinoIcons.arrow_2_circlepath
+                            : Icons.sync,
+                        color: themeProvider.textColor),
                   ),
                   title: AppTranslations.of(context).text("synchronizing"),
                   subtitle: lastSyncDate,
@@ -218,7 +226,9 @@ class _SettingsScreenState extends State<SettingsScreen>
               : SizedBox.shrink(),
           selectedVault != null
               ? SettingItem(
-                  leading: Icons.import_export_outlined,
+                  leading: Platform.isIOS
+                      ? CupertinoIcons.arrow_up_arrow_down
+                      : Icons.import_export_outlined,
                   title: AppTranslations.of(context).text("import_export"),
                   onTap: _goToImportExportScreen,
                 )
@@ -234,7 +244,7 @@ class _SettingsScreenState extends State<SettingsScreen>
               : SizedBox.shrink(),
           widget.hasVaultLinked && selectedVault != null
               ? SettingItem(
-                  leading: Icons.edit,
+                  leading: Platform.isIOS ? CupertinoIcons.pen : Icons.edit,
                   title: AppTranslations.of(context).text("edit_vault"),
                   onTap: _onEditVaultClicked,
                 )
@@ -244,7 +254,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   selectedVault!.userId == _user!.id
               ? SettingItem(
                   backgroundColor: Colors.red[500],
-                  leading: Icons.delete_forever,
+                  leading: Platform.isIOS ? CupertinoIcons.delete : Icons.delete_forever,
                   title: AppTranslations.of(context).text("delete"),
                   onTap: _delete,
                 )
@@ -252,7 +262,7 @@ class _SettingsScreenState extends State<SettingsScreen>
           _user != null
               ? SettingItem(
                   backgroundColor: Colors.red[500],
-                  leading: Icons.logout,
+                  leading: Platform.isIOS ? CupertinoIcons.square_arrow_left : Icons.logout,
                   title: AppTranslations.of(context).text("logout"),
                   onTap: _logout,
                 )

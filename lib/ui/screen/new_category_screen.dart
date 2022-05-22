@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
@@ -16,6 +18,7 @@ import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/color.dart';
 import 'package:chic_secret/utils/constant.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -80,7 +83,6 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     }
   }
 
-  /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: widget.category != null
@@ -101,45 +103,91 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
           margin: EdgeInsets.only(right: 8, bottom: 8),
           child: ChicElevatedButton(
             child: Text(AppTranslations.of(context).text("save")),
-            onPressed: _onAddingCategory,
+            onPressed: _onSavingCategory,
           ),
         ),
       ],
     );
   }
 
-  /// Displays the [Scaffold] for the mobile version
   Widget _displaysMobile(ThemeProvider themeProvider) {
-    return Scaffold(
-      backgroundColor: themeProvider.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: themeProvider.secondBackgroundColor,
-        title: Text(
-          widget.category != null
-              ? widget.category!.name
-              : AppTranslations.of(context).text("new_category"),
-        ),
-        actions: [
-          ChicTextButton(
-            child: Text(AppTranslations.of(context).text("save")),
-            onPressed: _onAddingCategory,
-          ),
-        ],
+    var child = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: _displaysBody(themeProvider),
       ),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: _displaysBody(themeProvider),
+    );
+
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        navigationBar: _displayIosAppBar(themeProvider),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: child,
         ),
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        appBar: _displaysAppbar(themeProvider),
+        body: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: child,
+        ),
+      );
+    }
+  }
+
+  ObstructingPreferredSizeWidget _displayIosAppBar(
+    ThemeProvider themeProvider,
+  ) {
+    return CupertinoNavigationBar(
+      previousPageTitle: AppTranslations.of(context).text("categories"),
+      backgroundColor: themeProvider.secondBackgroundColor,
+      middle: Text(
+        widget.category != null
+            ? widget.category!.name
+            : AppTranslations.of(context).text("new_category"),
+      ),
+      trailing: CupertinoButton(
+        padding: EdgeInsets.zero,
+        child: Text(
+          AppTranslations.of(context).text("save"),
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+        onPressed: _onSavingCategory,
       ),
     );
   }
 
-  /// Displays a unified body for both mobile and desktop version
+  PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
+    return AppBar(
+      backgroundColor: themeProvider.secondBackgroundColor,
+      title: Text(
+        widget.category != null
+            ? widget.category!.name
+            : AppTranslations.of(context).text("new_category"),
+      ),
+      actions: [
+        ChicTextButton(
+          child: Text(AppTranslations.of(context).text("save")),
+          onPressed: _onSavingCategory,
+        ),
+      ],
+    );
+  }
+
   Widget _displaysBody(ThemeProvider themeProvider) {
     return Container(
       margin: EdgeInsets.all(16),
@@ -215,7 +263,6 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     );
   }
 
-  /// Select from predefined categories to help the user to create it's categories
   _selectPredefinedCategory() async {
     var category = await ChicNavigator.push(
       context,
@@ -241,8 +288,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     }
   }
 
-  /// Save a new category in the local database
-  _onAddingCategory() async {
+  _onSavingCategory() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       var category;
 
