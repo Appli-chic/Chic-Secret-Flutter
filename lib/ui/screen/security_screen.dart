@@ -155,11 +155,11 @@ class _SecurityScreenState extends State<SecurityScreen> {
       return _securityImage();
     } else {
       return Container(
-        margin: EdgeInsets.only(top: 8, bottom: 8),
+        margin: EdgeInsets.symmetric(vertical: 8),
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Container(
-            margin: EdgeInsets.only(left: 16, right: 16),
+            margin: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
                 _displayListPasswords(
@@ -218,22 +218,29 @@ class _SecurityScreenState extends State<SecurityScreen> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: entries.length,
-              itemBuilder: (context, index) {
-                return EntryItem(
-                  entry: entries[index],
-                  isSelected: false,
-                  onTap: _onEntrySelected,
-                );
-              },
-            )
+            Column(
+              children: _buildListItems(entries),
+            ),
           ],
         ),
       );
     }
+  }
+
+  List<Widget> _buildListItems(List<Entry> entries) {
+    List<Widget> items = [];
+
+    for (var entry in entries) {
+      items.add(
+        EntryItem(
+          entry: entry,
+          isSelected: false,
+          onTap: _onEntrySelected,
+        ),
+      );
+    }
+
+    return items;
   }
 
   _onEntrySelected(Entry entry) async {
