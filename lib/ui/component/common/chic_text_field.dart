@@ -117,35 +117,12 @@ class _ChicTextFieldState extends State<ChicTextField> {
         textCapitalization: widget.textCapitalization,
         textInputAction: widget.textInputAction,
         keyboardType: widget.keyboardType,
+        keyboardAppearance: Brightness.dark,
         maxLines: widget.maxLines,
-        validator: (text) {
-          if (widget.validating != null && text != null) {
-            var result = widget.validating!(text);
-
-            if (!result) {
-              return widget.errorMessage;
-            }
-          }
-
-          return null;
-        },
+        validator: _validate,
         onFieldSubmitted: widget.onSubmitted,
-        onTap: () {
-          if (widget.onTap != null) {
-            widget.onTap!();
-          }
-
-          widget.focus.requestFocus();
-        },
-        onChanged: (String text) {
-          if (widget.onTextChanged != null) {
-            widget.onTextChanged!(text);
-          }
-
-          if (widget.hasStrengthIndicator) {
-            setState(() {});
-          }
-        },
+        onTap: _onTap,
+        onChanged: _onChanged,
         decoration: InputDecoration(
           focusColor: themeProvider.primaryColor,
           filled: widget.type == ChicTextFieldType.filledRounded,
@@ -178,6 +155,36 @@ class _ChicTextFieldState extends State<ChicTextField> {
         ),
       ),
     );
+  }
+
+  String? _validate(text) {
+    if (widget.validating != null && text != null) {
+      var result = widget.validating!(text);
+
+      if (!result) {
+        return widget.errorMessage;
+      }
+    }
+
+    return null;
+  }
+
+  _onTap() {
+    if (widget.onTap != null) {
+      widget.onTap!();
+    }
+
+    widget.focus.requestFocus();
+  }
+
+  _onChanged(String text) {
+    if (widget.onTextChanged != null) {
+      widget.onTextChanged!(text);
+    }
+
+    if (widget.hasStrengthIndicator) {
+      setState(() {});
+    }
   }
 
   Widget _displayStrengthIndicator(ThemeProvider themeProvider) {
