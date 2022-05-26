@@ -90,6 +90,8 @@ class _EntryItemState extends State<EntryItem> {
               margin: EdgeInsets.only(left: 16),
               child: Text(
                 widget.entry.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: ChicPlatform.isDesktop() ? 16 : 18,
@@ -101,6 +103,8 @@ class _EntryItemState extends State<EntryItem> {
               margin: EdgeInsets.only(left: 16),
               child: Text(
                 widget.entry.username,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: widget.isSelected
                       ? themeProvider.textColor
@@ -192,7 +196,6 @@ class _EntryItemState extends State<EntryItem> {
     }
   }
 
-  /// Show a menu when the user do a right click on the entry
   _onSecondaryClick(BuildContext context, ThemeProvider themeProvider) async {
     List<PopupMenuEntry> popupEntries = [
       ChicPopupMenuItem(
@@ -222,7 +225,6 @@ class _EntryItemState extends State<EntryItem> {
     );
   }
 
-  /// Update the mouse location for the secondary click
   void _updateMouseLocation(PointerEvent details) {
     setState(() {
       _mousePosition = details.position;
