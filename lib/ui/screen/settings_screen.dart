@@ -254,7 +254,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                   selectedVault!.userId == _user!.id
               ? SettingItem(
                   backgroundColor: Colors.red[500],
-                  leading: Platform.isIOS ? CupertinoIcons.delete : Icons.delete_forever,
+                  tint: ChicPlatform.isDesktop() ? Colors.red[500] : null,
+                  leading: Platform.isIOS
+                      ? CupertinoIcons.delete
+                      : Icons.delete_forever,
                   title: AppTranslations.of(context).text("delete"),
                   onTap: _delete,
                 )
@@ -262,7 +265,10 @@ class _SettingsScreenState extends State<SettingsScreen>
           _user != null
               ? SettingItem(
                   backgroundColor: Colors.red[500],
-                  leading: Platform.isIOS ? CupertinoIcons.square_arrow_left : Icons.logout,
+                  tint: ChicPlatform.isDesktop() ? Colors.red[500] : null,
+                  leading: Platform.isIOS
+                      ? CupertinoIcons.square_arrow_left
+                      : Icons.logout,
                   title: AppTranslations.of(context).text("logout"),
                   onTap: _logout,
                 )

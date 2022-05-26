@@ -9,6 +9,7 @@ class SettingItem extends StatelessWidget {
   final Widget? leadingIcon;
   final String title;
   final String? subtitle;
+  final Color? tint;
   final Function()? onTap;
 
   const SettingItem({
@@ -17,6 +18,7 @@ class SettingItem extends StatelessWidget {
     this.leadingIcon,
     required this.title,
     this.subtitle,
+    this.tint,
     this.onTap,
   });
 
@@ -58,7 +60,10 @@ class SettingItem extends StatelessWidget {
     }
 
     if (leading != null) {
-      return Icon(leading, color: themeProvider.textColor);
+      return Icon(
+        leading,
+        color: tint == null ? themeProvider.textColor : tint,
+      );
     }
 
     return null;
@@ -67,7 +72,7 @@ class SettingItem extends StatelessWidget {
   Widget? _displayTitle(ThemeProvider themeProvider) {
     return Text(
       title,
-      style: TextStyle(color: themeProvider.textColor),
+      style: TextStyle(color: tint == null ? themeProvider.textColor : tint),
     );
   }
 
