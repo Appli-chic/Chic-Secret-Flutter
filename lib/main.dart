@@ -72,39 +72,43 @@ class _AppState extends State<App> {
   }
 
   Widget _createIosApp() {
-    return CupertinoApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Chic Secret',
-      theme: CupertinoThemeData(brightness: Brightness.dark),
-      localizationsDelegates: [
-        _newLocaleDelegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: [
-        const Locale('en', ''), // English
-        const Locale('fr', ''), // French
-        const Locale('es', ''), // Spanish
-      ],
-      localeListResolutionCallback:
-          (List<Locale>? locales, Iterable<Locale> supportedLocales) {
-        if (locales != null) {
-          for (final locale in locales) {
-            var localeFiltered = supportedLocales
-                .where((l) => l.languageCode == locale.languageCode);
+    return MaterialApp(
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.dark,
+      home: CupertinoApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Chic Secret',
+        theme: CupertinoThemeData(brightness: Brightness.dark),
+        localizationsDelegates: [
+          _newLocaleDelegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('en', ''), // English
+          const Locale('fr', ''), // French
+          const Locale('es', ''), // Spanish
+        ],
+        localeListResolutionCallback:
+            (List<Locale>? locales, Iterable<Locale> supportedLocales) {
+          if (locales != null) {
+            for (final locale in locales) {
+              var localeFiltered = supportedLocales
+                  .where((l) => l.languageCode == locale.languageCode);
 
-            if (localeFiltered.isNotEmpty) {
-              _newLocaleDelegate = AppTranslationsDelegate(newLocale: locale);
-              return locale;
+              if (localeFiltered.isNotEmpty) {
+                _newLocaleDelegate = AppTranslationsDelegate(newLocale: locale);
+                return locale;
+              }
             }
           }
-        }
 
-        return Locale('en', '');
-      },
-      home: LandingScreen(),
-      builder: EasyLoading.init(),
+          return Locale('en', '');
+        },
+        home: LandingScreen(),
+        builder: EasyLoading.init(),
+      ),
     );
   }
 

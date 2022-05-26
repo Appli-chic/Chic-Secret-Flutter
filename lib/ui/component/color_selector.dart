@@ -41,7 +41,6 @@ class _ColorSelectorState extends State<ColorSelector> {
     super.initState();
   }
 
-  /// Change the color selection
   _changeColorSelection(Color color) {
     _selectedColor = color;
     var colorsListed = _colors
@@ -209,7 +208,6 @@ class _ColorSelectorState extends State<ColorSelector> {
 }
 
 class ColorPickerDialog {
-  /// Show the color picker dialog to select a custom color
   static Future<bool> colorPickerDialog(
     BuildContext context,
     Color color,
