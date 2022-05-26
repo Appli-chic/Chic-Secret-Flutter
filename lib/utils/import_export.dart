@@ -1,14 +1,23 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:chic_secret/utils/security.dart';
+import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:open_file/open_file.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
+
+import '../service/category_service.dart';
+import '../service/entry_service.dart';
 
 class ImportData {
   final List<String> categories;
@@ -27,10 +36,72 @@ enum ImportType {
 }
 
 Future<void> exportVaultData() async {
+  if (Platform.isIOS || Platform.isAndroid) {
+    bool status = await Permission.storage.isGranted;
+    if (!status) await Permission.storage.request();
+  }
 
+  List<List<dynamic>> rows = [];
+  List<dynamic> referenceRow = [];
+  referenceRow.add("category_id");
+  referenceRow.add("category_name");
+  referenceRow.add("category_color");
+  referenceRow.add("category_icon");
+  referenceRow.add("entry_name");
+  referenceRow.add("entry_username_email");
+  referenceRow.add("entry_password");
+  referenceRow.add("entry_category");
+  referenceRow.add("entry_comment");
+  rows.add(referenceRow);
+
+  // Add categories
+  var categories = await CategoryService.getAllByVault(selectedVault!.id);
+
+  for(var category in categories) {
+    if(!category.isTrash) {
+      List<dynamic> row = [];
+      row.add(category.id);
+      row.add(category.name);
+      row.add(category.color);
+      row.add(category.icon);
+      row.add("");
+      row.add("");
+      row.add("");
+      row.add("");
+      row.add("");
+      rows.add(row);
+    }
+  }
+
+  // Add entries
+  var entries = await EntryService.getAllByVault(selectedVault!.id);
+
+  for(var entry in entries) {
+    List<dynamic> row = [];
+    row.add("");
+    row.add("");
+    row.add("");
+    row.add("");
+    row.add(entry.name);
+    row.add(entry.username);
+    row.add(Security.decrypt(currentPassword!, entry.hash));
+    row.add(entry.categoryId);
+    row.add(entry.comment);
+    rows.add(row);
+  }
+
+  String csv = const ListToCsvConverter().convert(rows);
+
+  var path = await FileSaver.instance.saveFile(
+    "chic_secret_export",
+    Uint8List.fromList(csv.codeUnits),
+    "csv",
+    mimeType: MimeType.CSV,
+  );
+
+  OpenFile.open(path);
 }
 
-/// Import a file from the type of import
 Future<ImportData?> importFromFile(ImportType importType) async {
   if (ChicPlatform.isDesktop()) {
     // Import on desktop
@@ -74,7 +145,6 @@ Future<ImportData?> importFromFile(ImportType importType) async {
   return null;
 }
 
-/// Import the buttercup data
 Future<ImportData> _importFromButtercup(List<String> lines) async {
   var index = 0;
 

@@ -11,6 +11,7 @@ import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/import_export.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 import 'import_screen.dart';
@@ -113,18 +114,19 @@ class _ImportExportChoiceScreenState extends State<ImportExportChoiceScreen> {
             title: AppTranslations.of(context).text("import_buttercup"),
             onTap: _importDataFromButtercup,
           ),
-          // Divider(),
-          // SettingItem(
-          //   title: Text(AppTranslations.of(context).text("export")),
-          //   onTap: _exportData,
-          // ),
+          SettingItem(
+            title: AppTranslations.of(context).text("export"),
+            onTap: _exportData,
+          ),
         ],
       ),
     );
   }
 
   _exportData() async {
+    EasyLoading.show();
     await exportVaultData();
+    EasyLoading.dismiss();
   }
 
   _importDataFromButtercup() async {

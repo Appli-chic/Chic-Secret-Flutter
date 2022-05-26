@@ -51,6 +51,10 @@ dependencies:
   url_launcher: ^6.1.2
   path_provider: ^2.0.10
   flutter_svg: ^1.1.0
+  file_saver: ^0.1.0
+  permission_handler: ^9.2.0
+  csv: ^5.0.1
+  open_file: ^3.2.1
 
 dev_dependencies:
   flutter_test:
