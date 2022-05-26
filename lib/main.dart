@@ -119,7 +119,9 @@ class _AppState extends State<App> {
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      darkTheme: ThemeData.dark(),
+      darkTheme: ThemeData.dark().copyWith(
+        useMaterial3: Platform.isAndroid,
+      ),
       themeMode: ThemeMode.dark,
       localizationsDelegates: [
         _newLocaleDelegate,
