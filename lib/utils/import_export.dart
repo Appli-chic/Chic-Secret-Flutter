@@ -16,15 +16,18 @@ import 'package:open_file/open_file.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 
+import '../model/database/category.dart';
 import '../service/category_service.dart';
 import '../service/entry_service.dart';
 
 class ImportData {
-  final List<String> categories;
+  final List<String> categoriesName;
+  final List<Category> categories;
   final List<Entry> entries;
   final List<CustomField> customFields;
 
   ImportData({
+    this.categoriesName = const [],
     this.categories = const [],
     this.entries = const [],
     this.customFields = const [],
@@ -33,6 +36,7 @@ class ImportData {
 
 enum ImportType {
   Buttercup,
+  ChicSecret,
 }
 
 Future<void> exportVaultData() async {
@@ -56,9 +60,10 @@ Future<void> exportVaultData() async {
 
   // Add categories
   var categories = await CategoryService.getAllByVault(selectedVault!.id);
+  var trashCategoryId = "";
 
-  for(var category in categories) {
-    if(!category.isTrash) {
+  for (var category in categories) {
+    if (!category.isTrash) {
       List<dynamic> row = [];
       row.add(category.id);
       row.add(category.name);
@@ -70,31 +75,35 @@ Future<void> exportVaultData() async {
       row.add("");
       row.add("");
       rows.add(row);
+    } else {
+      trashCategoryId = category.id;
     }
   }
 
   // Add entries
   var entries = await EntryService.getAllByVault(selectedVault!.id);
 
-  for(var entry in entries) {
-    List<dynamic> row = [];
-    row.add("");
-    row.add("");
-    row.add("");
-    row.add("");
-    row.add(entry.name);
-    row.add(entry.username);
-    row.add(Security.decrypt(currentPassword!, entry.hash));
-    row.add(entry.categoryId);
-    row.add(entry.comment);
-    rows.add(row);
+  for (var entry in entries) {
+    if (trashCategoryId != entry.categoryId) {
+      List<dynamic> row = [];
+      row.add("");
+      row.add("");
+      row.add("");
+      row.add("");
+      row.add(entry.name);
+      row.add(entry.username);
+      row.add(Security.decrypt(currentPassword!, entry.hash));
+      row.add(entry.categoryId);
+      row.add(entry.comment);
+      rows.add(row);
+    }
   }
 
   String csv = const ListToCsvConverter().convert(rows);
 
   var path = await FileSaver.instance.saveFile(
     "chic_secret_export",
-    Uint8List.fromList(csv.codeUnits),
+    Uint8List.fromList(utf8.encode(csv)),
     "csv",
     mimeType: MimeType.CSV,
   );
@@ -117,6 +126,13 @@ Future<ImportData?> importFromFile(ImportType importType) async {
               .transform(LineSplitter())
               .toList();
           return _importFromButtercup(lines);
+        case ImportType.ChicSecret:
+          var lines = await file
+              .openRead()
+              .map(utf8.decode)
+              .transform(LineSplitter())
+              .toList();
+          return _importFromChicSecret(lines);
         default:
           break;
       }
@@ -136,6 +152,13 @@ Future<ImportData?> importFromFile(ImportType importType) async {
               .transform(LineSplitter())
               .toList();
           return _importFromButtercup(lines);
+        case ImportType.ChicSecret:
+          var lines = await file
+              .openRead()
+              .map(utf8.decode)
+              .transform(LineSplitter())
+              .toList();
+          return _importFromChicSecret(lines);
         default:
           break;
       }
@@ -143,6 +166,60 @@ Future<ImportData?> importFromFile(ImportType importType) async {
   }
 
   return null;
+}
+
+Future<ImportData> _importFromChicSecret(List<String> lines) async {
+  List<Category> categories = [];
+  List<Entry> entries = [];
+
+  var index = 0;
+  for (var line in lines) {
+    RegExp exp = RegExp(r'(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))');
+    Iterable<RegExpMatch> matchesCells = exp.allMatches(line);
+    List<String> cells = matchesCells.map((c) {
+      return c.group(1)!;
+    }).toList();
+
+    if (index == 0) {
+    } else if (cells[0].isNotEmpty) {
+      // Add categories
+      var category = Category(
+        id: cells[0],
+        name: cells[1],
+        color: cells[2],
+        icon: int.parse(cells[3]),
+        isTrash: false,
+        vaultId: selectedVault!.id,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      categories.add(category);
+    } else {
+      // Add entries
+      var entry = Entry(
+        id: Uuid().v4(),
+        name: cells[3],
+        username: cells[4],
+        hash: Security.encrypt(currentPassword!, cells[5]),
+        vaultId: selectedVault!.id,
+        categoryId: cells[6],
+        passwordSize: cells[5].length,
+        comment: cells.length > 8 ? cells[7] : null,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      entries.add(entry);
+    }
+
+    index++;
+  }
+
+  return ImportData(
+    categories: categories,
+    entries: entries,
+  );
 }
 
 Future<ImportData> _importFromButtercup(List<String> lines) async {
@@ -213,7 +290,7 @@ Future<ImportData> _importFromButtercup(List<String> lines) async {
   }
 
   return ImportData(
-    categories: categoriesMap.entries.map((entry) => entry.value).toList(),
+    categoriesName: categoriesMap.entries.map((entry) => entry.value).toList(),
     entries: entries,
     customFields: customFields,
   );

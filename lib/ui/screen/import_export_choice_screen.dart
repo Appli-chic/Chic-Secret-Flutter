@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/service/category_service.dart';
+import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
@@ -115,6 +117,10 @@ class _ImportExportChoiceScreenState extends State<ImportExportChoiceScreen> {
             onTap: _importDataFromButtercup,
           ),
           SettingItem(
+            title: AppTranslations.of(context).text("import_chic_secret"),
+            onTap: _importDataFromChicSecret,
+          ),
+          SettingItem(
             title: AppTranslations.of(context).text("export"),
             onTap: _exportData,
           ),
@@ -125,7 +131,44 @@ class _ImportExportChoiceScreenState extends State<ImportExportChoiceScreen> {
 
   _exportData() async {
     EasyLoading.show();
-    await exportVaultData();
+
+    try {
+      await exportVaultData();
+      Navigator.pop(context);
+    } catch(e) {
+      print(e);
+    }
+
+    EasyLoading.dismiss();
+  }
+
+  _importDataFromChicSecret() async {
+    EasyLoading.show();
+
+    try {
+      var data = await importFromFile(ImportType.ChicSecret);
+
+      if (data != null) {
+        for(var category in data.categories) {
+          await CategoryService.save(category);
+        }
+
+        for(var entry in data.entries) {
+          await EntryService.save(entry);
+        }
+
+        if (widget.onDataChanged != null) {
+          widget.onDataChanged!();
+        }
+
+        _synchronizationProvider.synchronize(isFullSynchronization: true);
+
+        Navigator.pop(context, true);
+      }
+    } catch (e) {
+      print(e);
+    }
+
     EasyLoading.dismiss();
   }
 

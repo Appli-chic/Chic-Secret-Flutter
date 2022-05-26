@@ -125,10 +125,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
             },
           ),
         ),
-        widget.vault != null &&
-                _user != null &&
-                widget.vault!.userId == _user!.id &&
-                widget.isFromSettings
+        widget.vault != null && widget.isFromSettings
             ? Container(
                 margin: EdgeInsets.only(right: 8, bottom: 8),
                 child: ChicElevatedButton(
@@ -187,10 +184,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          widget.vault != null &&
-                  _user != null &&
-                  widget.vault!.userId == _user!.id &&
-                  widget.isFromSettings
+          widget.vault != null && widget.isFromSettings
               ? CupertinoButton(
                   padding: EdgeInsets.zero,
                   child: Icon(
@@ -219,10 +213,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
         backgroundColor: themeProvider.secondBackgroundColor,
         title: Text(AppTranslations.of(context).text("new_vault")),
         actions: [
-          widget.vault != null &&
-                  _user != null &&
-                  widget.vault!.userId == _user!.id &&
-                  widget.isFromSettings
+          widget.vault != null && widget.isFromSettings
               ? IconButton(
                   icon: Icon(
                     Icons.delete,
@@ -420,7 +411,7 @@ class _NewVaultScreenState extends State<NewVaultScreen> {
   }
 
   _delete() async {
-    if (widget.vault != null && widget.vault!.userId == _user!.id) {
+    if (widget.vault != null) {
       // Check if the user is willing to delete the vault
       var toDelete = await _displaysDialogSureToDelete();
       if (toDelete) {

@@ -50,7 +50,7 @@ class _ImportScreenState extends State<ImportScreen> {
   @override
   void initState() {
     _categoryController =
-        TextEditingController(text: widget.importData.categories[_dataIndex]);
+        TextEditingController(text: widget.importData.categoriesName[_dataIndex]);
     _loadFirstCategory();
     super.initState();
   }
@@ -93,11 +93,11 @@ class _ImportScreenState extends State<ImportScreen> {
           margin: EdgeInsets.only(right: 8, bottom: 8),
           child: ChicElevatedButton(
             child: Text(
-              _dataIndex != widget.importData.categories.length - 1
+              _dataIndex != widget.importData.categoriesName.length - 1
                   ? AppTranslations.of(context).text("next")
                   : AppTranslations.of(context).text("done"),
             ),
-            onPressed: _dataIndex != widget.importData.categories.length - 1
+            onPressed: _dataIndex != widget.importData.categoriesName.length - 1
                 ? _onNext
                 : _onDone,
           ),
@@ -142,12 +142,12 @@ class _ImportScreenState extends State<ImportScreen> {
       trailing: CupertinoButton(
         padding: EdgeInsets.zero,
         child: Text(
-          _dataIndex != widget.importData.categories.length - 1
+          _dataIndex != widget.importData.categoriesName.length - 1
               ? AppTranslations.of(context).text("next")
               : AppTranslations.of(context).text("done"),
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
-        onPressed: _dataIndex != widget.importData.categories.length - 1
+        onPressed: _dataIndex != widget.importData.categoriesName.length - 1
             ? _onNext
             : _onDone,
       ),
@@ -161,11 +161,11 @@ class _ImportScreenState extends State<ImportScreen> {
       actions: [
         ChicTextButton(
           child: Text(
-            _dataIndex != widget.importData.categories.length - 1
+            _dataIndex != widget.importData.categoriesName.length - 1
                 ? AppTranslations.of(context).text("next")
                 : AppTranslations.of(context).text("done"),
           ),
-          onPressed: _dataIndex != widget.importData.categories.length - 1
+          onPressed: _dataIndex != widget.importData.categoriesName.length - 1
               ? _onNext
               : _onDone,
         ),
@@ -280,7 +280,7 @@ class _ImportScreenState extends State<ImportScreen> {
       _dataIndex++;
       _newCategories.add(_category!);
       _categoryController =
-          TextEditingController(text: widget.importData.categories[_dataIndex]);
+          TextEditingController(text: widget.importData.categoriesName[_dataIndex]);
 
       setState(() {});
     }
@@ -302,7 +302,7 @@ class _ImportScreenState extends State<ImportScreen> {
           entry.updatedAt = DateTime.now();
 
           entry.categoryId = _newCategories[
-                  widget.importData.categories.indexOf(entry.categoryId)]
+                  widget.importData.categoriesName.indexOf(entry.categoryId)]
               .id;
 
           entryFutures.add(EntryService.save(entry));

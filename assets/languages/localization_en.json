@@ -69,6 +69,7 @@
   "warning_message_delete_multiple_entry_definitely": "Are you sure to delete definitely these passwords ?\nNo restore will be possible.",
   "import_export": "Import / Export",
   "import_buttercup": "Import from buttercup",
+  "import_chic_secret": "Import from Chic Secret",
   "export": "Export",
   "migration": "Migration",
   "category_imported": "Category imported",

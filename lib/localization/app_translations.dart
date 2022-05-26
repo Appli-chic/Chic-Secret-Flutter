@@ -12,7 +12,11 @@ class AppTranslations {
   }
 
   static AppTranslations of(BuildContext context) {
-    return Localizations.of<AppTranslations>(context, AppTranslations)!;
+    try {
+      return Localizations.of<AppTranslations>(context, AppTranslations)!;
+    } catch(e) {
+      return AppTranslations(Locale('en', ''));
+    }
   }
 
   /// Load the [locale] language to display text
