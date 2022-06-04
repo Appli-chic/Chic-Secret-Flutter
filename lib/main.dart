@@ -73,6 +73,7 @@ class _AppState extends State<App> {
 
   Widget _createIosApp() {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.dark,
       home: CupertinoApp(
