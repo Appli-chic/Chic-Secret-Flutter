@@ -112,6 +112,9 @@
   "error_user_cant_be_you": "The email must be different to the one linked to your account.",
   "cant_delete_vault_not_owner": "Only the owner of this vault can delete it.",
   "warning_message_delete_vault": "Are you sure to delete definitely the {} vault ?\nAll the passwords, categories, tags in this vault are going to be definitively deleted.",
+  "user": "User",
+  "resend_code": "Resend code",
+  "delete_account": "Delete account",
 
   "general": "General",
   "email": "Email",

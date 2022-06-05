@@ -4,7 +4,6 @@ import 'package:chic_secret/utils/database.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 
 class UserService {
-  /// Save a [user] into the local database
   static Future<void> save(User user) async {
     await db.insert(
       userTable,
@@ -12,7 +11,6 @@ class UserService {
     );
   }
 
-  /// Update a [user] into the local database
   static Future<void> update(User user) async {
     await db.update(
       userTable,
@@ -21,7 +19,6 @@ class UserService {
     );
   }
 
-  /// Check if the user exists
   static Future<bool> exists(String userId) async {
     List<Map<String, dynamic>> maps = await db.query(
       userTable,
@@ -31,7 +28,6 @@ class UserService {
     return maps.isNotEmpty;
   }
 
-  /// Retrieve the user by ID
   static Future<User?> getUserById(String userId) async {
     List<Map<String, dynamic>> maps = await db.query(
       userTable,
@@ -46,7 +42,6 @@ class UserService {
     return null;
   }
 
-  /// Retrieve the user by email
   static Future<User?> getUserByEmail(String email) async {
     List<Map<String, dynamic>> maps = await db.query(
       userTable,
@@ -61,7 +56,6 @@ class UserService {
     return null;
   }
 
-  /// Retrieve the users linked to the vault
   static Future<List<User>> getUsersByVault(String vaultId) async {
     List<User> users = [];
 

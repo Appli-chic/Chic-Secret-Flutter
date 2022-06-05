@@ -143,10 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
               label: AppTranslations.of(context).text("email"),
               errorMessage: AppTranslations.of(context).text("error_email"),
               validating: (String text) {
-                return RegExp(
-                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-z"
-                        r"A-Z0-9]+\.[a-zA-Z]+")
-                    .hasMatch(_emailController.text);
+                return _checkEmailIsValid();
               },
               onSubmitted: (String text) {
                 _codeFocusNode.requestFocus();
@@ -185,14 +182,30 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   )
                 : SizedBox.shrink(),
+            !_isAskingCode ? SizedBox(height: 8.0) : SizedBox.shrink(),
+            !_isAskingCode
+                ? ChicTextButton(
+                    child: Text(
+                      AppTranslations.of(context).text("resend_code"),
+                      style: TextStyle(color: themeProvider.primaryColor),
+                    ),
+                    onPressed: _onAskingLoginCode,
+                  )
+                : SizedBox.shrink(),
           ],
         ),
       ),
     );
   }
 
+  bool _checkEmailIsValid() {
+    return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-z"
+            r"A-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(_emailController.text);
+  }
+
   _onAskingLoginCode() async {
-    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+    if (_checkEmailIsValid()) {
       EasyLoading.show();
 
       try {
@@ -209,6 +222,8 @@ class _LoginScreenState extends State<LoginScreen> {
           dismissOnTap: true,
         );
       }
+    } else {
+      _formKey.currentState!.validate();
     }
   }
 

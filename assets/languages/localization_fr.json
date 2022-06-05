@@ -112,6 +112,9 @@
   "error_user_cant_be_you": "Le courriel doit être différent de celui lié à votre compte.",
   "cant_delete_vault_not_owner": "Seul le propriétaire de ce coffre peut le supprimer.",
   "warning_message_delete_vault": "Êtes-vous certains de vouloir supprimer le coffre {} ?\nTous les mots de passe, catégories et tags de ce coffre seront définitivement supprimés.",
+  "user": "Utilisateur",
+  "resend_code": "Renvoyer le code",
+  "delete_account": "Suppression de compte",
 
   "general": "Général",
   "email": "Courriel",

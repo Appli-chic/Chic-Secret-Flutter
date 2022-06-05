@@ -18,6 +18,7 @@ import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/component/setting_item.dart';
 import 'package:chic_secret/ui/screen/biometry_screen.dart';
 import 'package:chic_secret/ui/screen/import_export_choice_screen.dart';
+import 'package:chic_secret/ui/screen/user_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/security.dart';
@@ -113,7 +114,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     }
   }
 
-  /// Displays the screen in a modal for the desktop version
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
     return DesktopModal(
       title: AppTranslations.of(context).text("settings"),
@@ -200,6 +200,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                       ? CupertinoIcons.person_fill
                       : Icons.person,
                   title: _user!.email,
+                  onTap: _onUserClicked,
                 )
               : SettingItem(
                   leading: Platform.isIOS
@@ -260,17 +261,6 @@ class _SettingsScreenState extends State<SettingsScreen>
                       : Icons.delete_forever,
                   title: AppTranslations.of(context).text("delete"),
                   onTap: _delete,
-                )
-              : SizedBox.shrink(),
-          _user != null
-              ? SettingItem(
-                  backgroundColor: Colors.red[500],
-                  tint: ChicPlatform.isDesktop() ? Colors.red[500] : null,
-                  leading: Platform.isIOS
-                      ? CupertinoIcons.square_arrow_left
-                      : Icons.logout,
-                  title: AppTranslations.of(context).text("logout"),
-                  onTap: _logout,
                 )
               : SizedBox.shrink(),
         ],
@@ -374,11 +364,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     }
   }
 
-  _logout() async {
-    await Security.logout();
-    Navigator.of(context).pop(true);
-  }
-
   _login() async {
     var isLogged = await ChicNavigator.push(
       context,
@@ -409,5 +394,19 @@ class _SettingsScreenState extends State<SettingsScreen>
       context,
       BiometryScreen(),
     );
+  }
+
+  _onUserClicked() async {
+    final hasChanged = await ChicNavigator.push(
+      context,
+      UserScreen(),
+      isModal: true,
+    );
+
+    if (hasChanged != null && hasChanged) {
+      setState(() {
+        _user = null;
+      });
+    }
   }
 }

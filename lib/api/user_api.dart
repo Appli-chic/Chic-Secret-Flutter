@@ -11,11 +11,11 @@ import 'package:http/http.dart' as http;
 
 import 'auth_api.dart';
 
-const String getUser = "api/user";
-const String getUsers = "api/users";
+const String getUserRoute = "api/user";
+const String deleteUserRoute = "api/user/delete";
+const String getUsersRoute = "api/users";
 
 class UserApi {
-  /// Send a user to synchronize to the server
   static Future<void> sendUser(User user) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
@@ -25,7 +25,7 @@ class UserApi {
     }
 
     var response = await client.post(
-      Uri.parse("$url$getUser"),
+      Uri.parse("$url$getUserRoute"),
       headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"},
       body: json.encode({
         "user": user.toJson(),
@@ -42,7 +42,6 @@ class UserApi {
     }
   }
 
-  /// Get the current user logged in
   static Future<User?> getCurrentUser() async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
@@ -52,7 +51,7 @@ class UserApi {
     }
 
     var response = await client.get(
-      Uri.parse("$url$getUser"),
+      Uri.parse("$url$getUserRoute"),
       headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"},
     );
 
@@ -63,7 +62,29 @@ class UserApi {
     }
   }
 
-  /// Get the user by email
+  static Future<void> deleteUser() async {
+    var client = http.Client();
+    var accessToken = await Security.getAccessToken();
+
+    if (accessToken == null || accessToken.isEmpty) {
+      return null;
+    }
+
+    var response = await client.get(
+      Uri.parse("$url$deleteUserRoute"),
+      headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"},
+    );
+
+    if (response.statusCode == 200) {
+      return;
+    } else if (response.statusCode == 401) {
+      await AuthApi.refreshAccessToken();
+      return await deleteUser();
+    }  else {
+      throw ApiError.fromJson(json.decode(response.body));
+    }
+  }
+
   static Future<User?> getUserByEmail(String email) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
@@ -73,7 +94,7 @@ class UserApi {
     }
 
     var response = await client.get(
-      Uri.parse("$url$getUser/$email"),
+      Uri.parse("$url$getUserRoute/$email"),
       headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"},
     );
 
@@ -87,7 +108,6 @@ class UserApi {
     }
   }
 
-  /// Retrieve all the users that changed
   static Future<void> retrieveUsers(DateTime? lastSync) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
@@ -97,7 +117,7 @@ class UserApi {
     }
 
     var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    String vaultUrl = "$url$getUsers";
+    String vaultUrl = "$url$getUsersRoute";
 
     if (lastSync != null) {
       vaultUrl += "?LastSynchro=${dateFormatter.format(lastSync)}";

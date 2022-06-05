@@ -48,7 +48,7 @@ class Security {
         }
 
         // Get old entries
-        var isOld = DateTime.now().difference(entry.updatedAt).inDays > 365 ||
+        var isOld = DateTime.now().difference(entry.updatedAt).inDays > (365 * 3) ||
             DateTime.now()
                     .difference(entry.hashUpdatedAt != null
                         ? entry.hashUpdatedAt!
