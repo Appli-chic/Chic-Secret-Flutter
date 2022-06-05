@@ -10,8 +10,6 @@ Personal data is not saved nor sold. Only the email and password's data used to 
 
 https://chic-secret.com
 
-> The Windows version is only available through the website
-
 # 🏪 Stores
 
 - [Android](https://play.google.com/store/apps/details?id=com.applichic.chic_secret)
