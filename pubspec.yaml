@@ -77,6 +77,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - assets/sqlite3.dll
     - assets/languages/
     - assets/images/
 
@@ -111,9 +112,9 @@ msix_config:
   publisher_display_name: hidden
   identity_name: hidden
   publisher: hidden
-  msix_version: 1.0.3.0
+  msix_version: 1.0.5.0
   languages: "en, fr"
-  vs_generated_images_folder_path: C:\chic_secret_windows_assets\
   icons_background_color: transparent
+  logo_path: C:\chic_secret_windows_assets\StoreLogo.scale-400.png
   capabilities: 'internetClient'
   store: true

@@ -65,7 +65,7 @@ DynamicLibrary _openOnLinux() {
 
 DynamicLibrary _openOnWindows() {
   final scriptDir = File(Platform.script.toFilePath()).parent;
-  final libraryNextToScript = File('${scriptDir.path}/sqlite3.dll');
+  final libraryNextToScript = File('${scriptDir.path}/data/flutter_assets/assets/sqlite3.dll');
   return DynamicLibrary.open(libraryNextToScript.path);
 }
 
