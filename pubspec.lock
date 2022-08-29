@@ -168,7 +168,7 @@ packages:
       name: file_saver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   file_selector:
     dependency: "direct main"
     description:
