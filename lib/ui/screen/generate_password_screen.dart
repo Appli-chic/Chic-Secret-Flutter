@@ -145,6 +145,16 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
       previousPageTitle: widget.previousPageTitle,
       backgroundColor: themeProvider.secondBackgroundColor,
       middle: Text(AppTranslations.of(context).text("generate_password")),
+      trailing: CupertinoButton(
+        padding: EdgeInsets.zero,
+        child: Text(
+          AppTranslations.of(context).text("done"),
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+        onPressed: () {
+          Navigator.of(context).pop(_passwordController.text);
+        },
+      ),
     );
   }
 
