@@ -18,7 +18,6 @@ late Database db;
 Future<void> initDatabase() async {
   if (Platform.isWindows) {
     databaseFactory = databaseFactoryFfi;
-    open.overrideFor(OperatingSystem.windows, _openOnWindows);
     sqfliteFfiInit();
 
     var factoryDb = databaseFactoryFfi;
