@@ -8,6 +8,7 @@ const String signature = "chic_secret/signature";
 const String databaseName = "chic_secret.db";
 const String encryptionKey = "x!A%D*G-KaPdRgUkXp2s5v8y/B?E(H+M";
 const String url = "https://chic-secret.com:8443/";
+const double defaultPasswordWordNumber = 4.0;
 
 const String errorServer = "CODE_ERROR_SERVER";
 const String codeErrorVerificationTokenInvalid =

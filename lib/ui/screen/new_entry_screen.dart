@@ -25,6 +25,7 @@ import 'package:chic_secret/ui/screen/new_category_screen.dart';
 import 'package:chic_secret/ui/screen/select_category_screen.dart';
 import 'package:chic_secret/ui/screen/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
+import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/rich_text_editing_controller.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/cupertino.dart';
@@ -52,6 +53,7 @@ class NewEntryScreen extends StatefulWidget {
 class _NewEntryScreenState extends State<NewEntryScreen> {
   late SynchronizationProvider _synchronizationProvider;
 
+  Locale? _locale;
   final _formKey = GlobalKey<FormState>();
 
   var _nameController = TextEditingController();
@@ -101,6 +103,8 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       _loadTags();
       _loadCustomFields();
     } else {
+
+
       if (ChicPlatform.isDesktop()) {
         if (selectedCategory == null) {
           _loadFirstCategory();
@@ -114,6 +118,24 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     }
 
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_locale == null && widget.entry == null) {
+      _locale = Localizations.localeOf(context);
+      _passwordController = RichTextEditingController(
+        text: Security.generatePasswordWithWords(
+          _locale,
+          defaultPasswordWordNumber,
+          true,
+          true,
+          true,
+        ),
+      );
+    }
+
+    super.didChangeDependencies();
   }
 
   _loadTags() async {
@@ -458,10 +480,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                 return ListTile(
                   horizontalTitleGap: 0,
                   leading: Icon(
-                      Platform.isIOS
-                          ? CupertinoIcons.tag_solid
-                          : Icons.tag
-                  ),
+                      Platform.isIOS ? CupertinoIcons.tag_solid : Icons.tag),
                   title: Text(tag.name),
                 );
               },

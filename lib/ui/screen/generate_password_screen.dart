@@ -14,7 +14,7 @@ import 'package:chic_secret/ui/screen/select_language_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/rich_text_editing_controller.dart';
-import 'package:chic_secret/utils/string_extension.dart';
+import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -49,7 +49,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
   var _hasSpecialCharacters = true;
 
   // if _isGeneratingWords is false then it's the number of characters
-  var _numberWords = 4.0;
+  var _numberWords = defaultPasswordWordNumber;
   var _minWords = 1.0;
   var _maxWords = 10.0;
   var _divisionWords = 9;
@@ -205,7 +205,9 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
                 suffix: Container(
                   margin: EdgeInsets.only(right: 8),
                   child: ChicIconButton(
-                    icon: Platform.isIOS ? CupertinoIcons.arrow_clockwise : Icons.refresh,
+                    icon: Platform.isIOS
+                        ? CupertinoIcons.arrow_clockwise
+                        : Icons.refresh,
                     color: themeProvider.primaryColor,
                     onPressed: () {
                       _passwordController.text = _generatePassword();
@@ -439,7 +441,13 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
   String _generatePassword() {
     if (_isGeneratingWords) {
       // Generating a password composed of words
-      return _generatePasswordWithWords();
+      return Security.generatePasswordWithWords(
+        _locale,
+        _numberWords,
+        _hasUppercase,
+        _hasNumbers,
+        _hasSpecialCharacters,
+      );
     }
 
     // Generating a random password
@@ -495,86 +503,6 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     }
 
     return isPasswordCorrect;
-  }
-
-  String _generatePasswordWithWords() {
-    var newPassword = "";
-
-    for (var wordIndex = 0; wordIndex < _numberWords; wordIndex++) {
-      var rng = new Random();
-      String randomWord = "";
-
-      if (_locale!.languageCode == "fr") {
-        // French
-        randomWord = wordsFrench[rng.nextInt(wordsFrench.length - 1)];
-      } else if (_locale!.languageCode == "es") {
-        // Spanish
-        randomWord = wordsSpanish[rng.nextInt(wordsSpanish.length - 1)];
-      } else {
-        // English by default
-        randomWord = words[rng.nextInt(words.length - 1)];
-      }
-
-      // Randomly add an uppercase
-      if (_hasUppercase) {
-        var uppercaseLuck = rng.nextInt(10);
-
-        if (uppercaseLuck >= 8) {
-          randomWord = randomWord.capitalizeLast();
-        } else if (uppercaseLuck >= 4) {
-          randomWord = randomWord.capitalizeFirst();
-        }
-      }
-
-      // Randomly add a number
-      if (_hasNumbers) {
-        var numberLuck = rng.nextInt(10);
-
-        if (numberLuck >= 6) {
-          var randomNumber = numbers[rng.nextInt(numbers.length - 1)];
-          randomWord += randomNumber;
-        }
-      }
-
-      // Randomly add a special character
-      if (_hasSpecialCharacters) {
-        var specialCharacterLuck = rng.nextInt(10);
-
-        if (specialCharacterLuck >= 7) {
-          var randomSpecialCharacter =
-              specialCharacters[rng.nextInt(specialCharacters.length - 1)];
-          randomWord += randomSpecialCharacter;
-        }
-      }
-
-      // Add space between words
-      if (wordIndex != _numberWords.ceil() - 1) {
-        randomWord += "_";
-      }
-
-      newPassword += randomWord;
-    }
-
-    if (_hasUppercase && !newPassword.contains(RegExp(r'[A-Z]'))) {
-      newPassword = newPassword.capitalizeFirst();
-    }
-
-    if (_hasNumbers && !newPassword.contains(RegExp(r'[0-9]'))) {
-      var rng = new Random();
-      var randomNumber = numbers[rng.nextInt(numbers.length - 1)];
-      newPassword += randomNumber;
-    }
-
-    if (_hasSpecialCharacters &&
-        !specialCharacters.any(
-            (specialCharacter) => newPassword.contains(specialCharacter))) {
-      var rng = new Random();
-      var randomSpecialCharacter =
-          specialCharacters[rng.nextInt(specialCharacters.length - 1)];
-      newPassword += randomSpecialCharacter;
-    }
-
-    return newPassword;
   }
 
   @override
