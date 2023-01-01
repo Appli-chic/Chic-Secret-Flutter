@@ -103,7 +103,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       _loadTags();
       _loadCustomFields();
     } else {
-
+      _prefillUsername();
 
       if (ChicPlatform.isDesktop()) {
         if (selectedCategory == null) {
@@ -136,6 +136,26 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
     }
 
     super.didChangeDependencies();
+  }
+
+  _prefillUsername() async {
+    final entries = await EntryService.getAllByVault(selectedVault!.id);
+    if (entries.isEmpty) return;
+    final usernameMap = {};
+
+    for (final entry in entries) {
+      if (usernameMap.containsKey(entry.username)) {
+        usernameMap[entry.username] += 1;
+      } else {
+        usernameMap[entry.username] = 1;
+      }
+    }
+
+    final usernameMapValues = usernameMap.values.toList();
+    usernameMapValues.sort((number1, number2) => number2.compareTo(number1));
+    final mostUsedUsername = usernameMap.keys.firstWhere(
+        (username) => usernameMap[username] == usernameMapValues.first);
+    _usernameController = TextEditingController(text: mostUsedUsername);
   }
 
   _loadTags() async {
