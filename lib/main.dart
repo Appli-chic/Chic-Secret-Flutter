@@ -12,11 +12,19 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:window_manager/window_manager.dart';
 
 import 'localization/app_translations_delegate.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+
+  await windowManager.waitUntilReadyToShow().then((_) async {
+    await windowManager.setBrightness(Brightness.dark);
+    await windowManager.show();
+  });
+
   timeago.setLocaleMessages('fr', timeago.FrMessages());
   await initDatabase();
 
