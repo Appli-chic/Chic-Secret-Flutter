@@ -4,7 +4,7 @@ import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/screen/unlock_vault_screen.dart';
-import 'package:chic_secret/ui/screen/vaults_screen.dart';
+import 'package:chic_secret/features/vault/vaults_screen.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

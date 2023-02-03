@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/ui/screen/main_desktop_screen.dart';
-import 'package:chic_secret/ui/screen/vaults_screen.dart';
+import 'package:chic_secret/features/vault/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

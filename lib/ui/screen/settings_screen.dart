@@ -19,7 +19,7 @@ import 'package:chic_secret/ui/component/setting_item.dart';
 import 'package:chic_secret/ui/screen/biometry_screen.dart';
 import 'package:chic_secret/ui/screen/import_export_choice_screen.dart';
 import 'package:chic_secret/ui/screen/user_screen.dart';
-import 'package:chic_secret/ui/screen/vaults_screen.dart';
+import 'package:chic_secret/features/vault/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/cupertino.dart';

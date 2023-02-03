@@ -5,7 +5,7 @@ import 'dart:typed_data';
 
 import 'package:chic_secret/model/database/custom_field.dart';
 import 'package:chic_secret/model/database/entry.dart';
-import 'package:chic_secret/ui/screen/vaults_screen.dart';
+import 'package:chic_secret/features/vault/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:csv/csv.dart';

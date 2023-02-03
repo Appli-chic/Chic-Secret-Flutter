@@ -14,7 +14,7 @@ import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/component/icon_selector.dart';
 import 'package:chic_secret/ui/screen/select_predefined_category.dart';
-import 'package:chic_secret/ui/screen/vaults_screen.dart';
+import 'package:chic_secret/features/vault/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/color.dart';
 import 'package:chic_secret/utils/constant.dart';

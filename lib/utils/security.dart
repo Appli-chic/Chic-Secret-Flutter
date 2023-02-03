@@ -7,7 +7,7 @@ import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/model/database/user.dart';
 import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/service/entry_service.dart';
-import 'package:chic_secret/ui/screen/vaults_screen.dart';
+import 'package:chic_secret/features/vault/vaults_screen.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/string_extension.dart';
 import 'package:encrypt/encrypt.dart';

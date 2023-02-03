@@ -10,7 +10,7 @@ import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/entry_item.dart';
 import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
-import 'package:chic_secret/ui/screen/vaults_screen.dart';
+import 'package:chic_secret/features/vault/vaults_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

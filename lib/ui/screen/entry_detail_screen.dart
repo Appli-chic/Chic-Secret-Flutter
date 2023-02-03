@@ -14,7 +14,7 @@ import 'package:chic_secret/ui/component/entry_detail_input.dart';
 import 'package:chic_secret/ui/component/entry_item.dart';
 import 'package:chic_secret/ui/component/tag_chip.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
-import 'package:chic_secret/ui/screen/vaults_screen.dart';
+import 'package:chic_secret/features/vault/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/date_render.dart';
 import 'package:chic_secret/utils/security.dart';
