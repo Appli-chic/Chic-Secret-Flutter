@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/screen/landing_screen.dart';
+import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,12 +19,15 @@ import 'localization/app_translations_delegate.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await windowManager.ensureInitialized();
 
-  await windowManager.waitUntilReadyToShow().then((_) async {
-    await windowManager.setBrightness(Brightness.dark);
-    await windowManager.show();
-  });
+  if(ChicPlatform.isDesktop()) {
+    await windowManager.ensureInitialized();
+
+    await windowManager.waitUntilReadyToShow().then((_) async {
+      await windowManager.setBrightness(Brightness.dark);
+      await windowManager.show();
+    });
+  }
 
   timeago.setLocaleMessages('fr', timeago.FrMessages());
   await initDatabase();

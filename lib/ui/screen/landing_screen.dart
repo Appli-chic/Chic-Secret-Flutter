@@ -44,14 +44,6 @@ class _LandingScreenState extends State<LandingScreen> {
     if (_vaultScreenController.reloadVaults != null) {
       _vaultScreenController.reloadVaults!();
     }
-
-    if (_vaultScreenController.reloadCategories != null) {
-      _vaultScreenController.reloadCategories!();
-    }
-
-    if (_vaultScreenController.reloadTags != null) {
-      _vaultScreenController.reloadTags!();
-    }
   }
 
   /// Displays the next screen depending if the application is launched on
@@ -72,7 +64,6 @@ class _LandingScreenState extends State<LandingScreen> {
         MaterialPageRoute(
           builder: (context) => VaultsScreen(
             vaultScreenController: _vaultScreenController,
-            onVaultChange: () {},
           ),
         ),
       );

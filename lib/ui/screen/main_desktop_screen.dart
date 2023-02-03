@@ -1,10 +1,10 @@
+import 'package:chic_secret/features/desktop/side_bar.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/split_view.dart';
 import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
 import 'package:chic_secret/ui/screen/entry_screen.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
-import 'package:chic_secret/features/vault/vaults_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,7 +30,7 @@ class MainDesktopScreen extends StatefulWidget {
 class _MainDesktopScreenState extends State<MainDesktopScreen> {
   Entry? _selectedEntry;
   bool _isCreatingOrModifyingEntry = false;
-  VaultScreenController _vaultScreenController = VaultScreenController();
+  SideBarController _sideBarController = SideBarController();
   EntryScreenController _entryScreenController = EntryScreenController();
 
   @override
@@ -42,12 +42,12 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
   }
 
   _reloadAfterSynchronization() {
-    if (_vaultScreenController.reloadVaults != null) {
-      _vaultScreenController.reloadVaults!();
+    if (_sideBarController.reloadVaults != null) {
+      _sideBarController.reloadVaults!();
     }
 
-    if (_vaultScreenController.reloadCategories != null) {
-      _vaultScreenController.reloadCategories!();
+    if (_sideBarController.reloadCategories != null) {
+      _sideBarController.reloadCategories!();
     }
 
     if (_entryScreenController.reloadPasswords != null) {
@@ -84,14 +84,14 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
   }
 
   _reloadCategories() {
-    if (_vaultScreenController.reloadCategories != null) {
-      _vaultScreenController.reloadCategories!();
+    if (_sideBarController.reloadCategories != null) {
+      _sideBarController.reloadCategories!();
     }
   }
 
   _reloadTags() {
-    if (_vaultScreenController.reloadTags != null) {
-      _vaultScreenController.reloadTags!();
+    if (_sideBarController.reloadTags != null) {
+      _sideBarController.reloadTags!();
     }
   }
 
@@ -116,8 +116,8 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     _isCreatingOrModifyingEntry = false;
     _reloadTags();
 
-    if (_vaultScreenController.reloadCategories != null) {
-      _vaultScreenController.reloadCategories!();
+    if (_sideBarController.reloadCategories != null) {
+      _sideBarController.reloadCategories!();
     }
 
     if (entry != null) {
@@ -139,8 +139,8 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     _isCreatingOrModifyingEntry = true;
     _selectedEntry = entry;
 
-    if (_vaultScreenController.reloadCategories != null) {
-      _vaultScreenController.reloadCategories!();
+    if (_sideBarController.reloadCategories != null) {
+      _sideBarController.reloadCategories!();
     }
 
     setState(() {});
@@ -150,8 +150,8 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
     _isCreatingOrModifyingEntry = false;
     _selectedEntry = null;
 
-    if (_vaultScreenController.reloadCategories != null) {
-      _vaultScreenController.reloadCategories!();
+    if (_sideBarController.reloadCategories != null) {
+      _sideBarController.reloadCategories!();
     }
 
     if (_entryScreenController.reloadPasswords != null) {
@@ -173,11 +173,11 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
       body: SplitView(
         gripColor: themeProvider.divider,
         positionLimit: 200,
-        view1: VaultsScreen(
+        view1: SideBar(
           onVaultChange: _reloadPasswordScreenOnVaultChange,
           onCategoryChange: _reloadPasswordScreenOnCategoryChange,
           onTagChange: _reloadPasswordScreenOnTagChange,
-          vaultScreenController: _vaultScreenController,
+          sideBarController: _sideBarController,
         ),
         view2: SplitView(
           gripColor: themeProvider.divider,
