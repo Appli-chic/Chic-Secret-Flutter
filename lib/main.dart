@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/ui/screen/landing_screen.dart';
+import 'package:chic_secret/features/landing_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/database.dart';
 import 'package:flutter/cupertino.dart';

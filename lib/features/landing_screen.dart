@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:chic_secret/provider/synchronization_provider.dart';
-import 'package:chic_secret/ui/screen/main_desktop_screen.dart';
+import 'package:chic_secret/features/main_desktop_screen.dart';
 import 'package:chic_secret/features/vault/vaults_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,6 @@ class _LandingScreenState extends State<LandingScreen> {
     }
   }
 
-  /// Synchronize the first time we start the application
   _firstSynchronization() async {
     Future(() {
       _firstConnection();
@@ -46,8 +45,6 @@ class _LandingScreenState extends State<LandingScreen> {
     }
   }
 
-  /// Displays the next screen depending if the application is launched on
-  /// desktop or mobile version
   _firstConnection() async {
     if (ChicPlatform.isDesktop()) {
       return await Navigator.pushReplacement(
