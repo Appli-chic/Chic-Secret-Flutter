@@ -11,7 +11,7 @@ import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/desktop_expandable_menu.dart';
 import 'package:chic_secret/ui/component/tag_item.dart';
 import 'package:chic_secret/ui/component/vault_item.dart';
-import 'package:chic_secret/ui/screen/login_screen.dart';
+import 'package:chic_secret/features/user/login/login_screen.dart';
 import 'package:chic_secret/features/category/new/new_category_screen.dart';
 import 'package:chic_secret/ui/screen/new_vault_screen.dart';
 import 'package:chic_secret/features/settings/settings_screen.dart';
