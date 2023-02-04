@@ -22,7 +22,7 @@ import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/tag_chip.dart';
 import 'package:chic_secret/ui/screen/generate_password_screen.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
-import 'package:chic_secret/ui/screen/select_category_screen.dart';
+import 'package:chic_secret/features/category/select_category/select_category_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/rich_text_editing_controller.dart';

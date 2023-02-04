@@ -1,15 +1,14 @@
 import 'dart:io';
 
+import 'package:chic_secret/features/category/select_category/select_category_screen_view_model.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/ui/component/category_item.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
-import 'package:chic_secret/utils/shared_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,41 +29,34 @@ class SelectCategoryScreen extends StatefulWidget {
 }
 
 class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
-  List<Category> _categories = [];
-  Category? _category;
+  late SelectCategoryScreenViewModel _viewModel;
 
   @override
   void initState() {
-    if (widget.category != null) {
-      _category = widget.category!;
-    }
+    _viewModel = SelectCategoryScreenViewModel(
+      widget.isShowingTrash,
+      widget.category,
+    );
 
-    _loadCategories();
     super.initState();
-  }
-
-  _loadCategories() async {
-    if (selectedVault != null) {
-      if (widget.isShowingTrash) {
-        _categories = await CategoryService.getAllByVault(selectedVault!.id);
-      } else {
-        _categories =
-            await CategoryService.getAllByVaultWithoutTrash(selectedVault!.id);
-      }
-
-      setState(() {});
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    if (ChicPlatform.isDesktop()) {
-      return _displaysDesktopInModal(themeProvider);
-    } else {
-      return _displaysMobile(themeProvider);
-    }
+    return ChangeNotifierProvider<SelectCategoryScreenViewModel>(
+      create: (BuildContext context) => _viewModel,
+      child: Consumer<SelectCategoryScreenViewModel>(
+        builder: (context, value, _) {
+          if (ChicPlatform.isDesktop()) {
+            return _displaysDesktopInModal(themeProvider);
+          } else {
+            return _displaysMobile(themeProvider);
+          }
+        },
+      ),
+    );
   }
 
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
@@ -85,9 +77,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
           margin: EdgeInsets.only(right: 8, bottom: 8),
           child: ChicElevatedButton(
             child: Text(AppTranslations.of(context).text("done")),
-            onPressed: () {
-              Navigator.pop(context, _category);
-            },
+            onPressed: _onCategoryValidated,
           ),
         ),
       ],
@@ -122,9 +112,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
           AppTranslations.of(context).text("done"),
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
-        onPressed: () {
-          Navigator.pop(context, _category);
-        },
+        onPressed: _onCategoryValidated,
       ),
     );
   }
@@ -136,16 +124,14 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
       actions: [
         ChicTextButton(
           child: Text(AppTranslations.of(context).text("done")),
-          onPressed: () {
-            Navigator.pop(context, _category);
-          },
+          onPressed: _onCategoryValidated,
         ),
       ],
     );
   }
 
   Widget _displaysBody(ThemeProvider themeProvider) {
-    if (_categories.isEmpty) {
+    if (_viewModel.categories.isEmpty) {
       return ConstrainedBox(
         constraints: BoxConstraints(
           minHeight: desktopHeight,
@@ -165,19 +151,20 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
     return ListView.builder(
       physics: BouncingScrollPhysics(),
       shrinkWrap: true,
-      itemCount: _categories.length,
+      itemCount: _viewModel.categories.length,
       itemBuilder: (context, index) {
         return CategoryItem(
-          category: _categories[index],
-          isSelected:
-              _category != null && _category!.id == _categories[index].id,
+          category: _viewModel.categories[index],
+          isSelected: _viewModel.category != null &&
+              _viewModel.category!.id == _viewModel.categories[index].id,
           isForcingMobileStyle: true,
-          onTap: (Category? category) {
-            _category = category;
-            setState(() {});
-          },
+          onTap: _viewModel.onCategorySelected,
         );
       },
     );
+  }
+
+  _onCategoryValidated() {
+    Navigator.pop(context, _viewModel.category);
   }
 }

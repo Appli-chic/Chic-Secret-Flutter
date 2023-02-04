@@ -15,7 +15,7 @@ import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/entry_item.dart';
 import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
-import 'package:chic_secret/ui/screen/select_category_screen.dart';
+import 'package:chic_secret/features/category/select_category/select_category_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:chic_secret/utils/shared_data.dart';
