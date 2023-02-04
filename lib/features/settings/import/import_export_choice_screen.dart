@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
-import '../../features/settings/import/import_screen.dart';
+import 'import_screen.dart';
 
 class ImportExportChoiceScreen extends StatefulWidget {
   final Function()? onDataChanged;
