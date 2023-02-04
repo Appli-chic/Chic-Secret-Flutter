@@ -1,26 +1,21 @@
 import 'dart:io';
 
+import 'package:chic_secret/features/category/new/new_category_screen.dart';
+import 'package:chic_secret/features/category/select_category/select_category_screen.dart';
+import 'package:chic_secret/features/settings/import/import_screen_view_model.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/service/category_service.dart';
-import 'package:chic_secret/service/custom_field_service.dart';
-import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_text_button.dart';
 import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
-import 'package:chic_secret/features/category/new/new_category_screen.dart';
-import 'package:chic_secret/features/category/select_category/select_category_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/import_export.dart';
-import 'package:chic_secret/utils/security.dart';
-import 'package:chic_secret/utils/shared_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 class ImportScreen extends StatefulWidget {
@@ -35,13 +30,8 @@ class ImportScreen extends StatefulWidget {
 }
 
 class _ImportScreenState extends State<ImportScreen> {
-  final _formKey = GlobalKey<FormState>();
-  List<Category> _newCategories = [];
-  var _dataIndex = 0;
-  Category? _category;
+  late ImportScreenViewModel _viewModel;
 
-  var _categoryController = TextEditingController();
-  var _newCategoryController = TextEditingController();
   var _categoryFocusNode = FocusNode();
   var _newCategoryFocusNode = FocusNode();
   var _desktopCategoryFocusNode = FocusNode();
@@ -49,30 +39,26 @@ class _ImportScreenState extends State<ImportScreen> {
 
   @override
   void initState() {
-    _categoryController =
-        TextEditingController(text: widget.importData.categoriesName[_dataIndex]);
-    _loadFirstCategory();
+    _viewModel = ImportScreenViewModel(widget.importData);
     super.initState();
-  }
-
-  _loadFirstCategory() async {
-    _category = await CategoryService.getFirstByVault(selectedVault!.id);
-
-    if (_category != null) {
-      _newCategoryController.text = _category!.name;
-      setState(() {});
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    if (ChicPlatform.isDesktop()) {
-      return _displaysDesktopInModal(themeProvider);
-    } else {
-      return _displaysMobile(themeProvider);
-    }
+    return ChangeNotifierProvider<ImportScreenViewModel>(
+      create: (BuildContext context) => _viewModel,
+      child: Consumer<ImportScreenViewModel>(
+        builder: (context, value, _) {
+          if (ChicPlatform.isDesktop()) {
+            return _displaysDesktopInModal(themeProvider);
+          } else {
+            return _displaysMobile(themeProvider);
+          }
+        },
+      ),
+    );
   }
 
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
@@ -93,12 +79,14 @@ class _ImportScreenState extends State<ImportScreen> {
           margin: EdgeInsets.only(right: 8, bottom: 8),
           child: ChicElevatedButton(
             child: Text(
-              _dataIndex != widget.importData.categoriesName.length - 1
+              _viewModel.dataIndex !=
+                      widget.importData.categoriesName.length - 1
                   ? AppTranslations.of(context).text("next")
                   : AppTranslations.of(context).text("done"),
             ),
-            onPressed: _dataIndex != widget.importData.categoriesName.length - 1
-                ? _onNext
+            onPressed: _viewModel.dataIndex !=
+                    widget.importData.categoriesName.length - 1
+                ? _viewModel.onNext
                 : _onDone,
           ),
         ),
@@ -142,14 +130,15 @@ class _ImportScreenState extends State<ImportScreen> {
       trailing: CupertinoButton(
         padding: EdgeInsets.zero,
         child: Text(
-          _dataIndex != widget.importData.categoriesName.length - 1
+          _viewModel.dataIndex != widget.importData.categoriesName.length - 1
               ? AppTranslations.of(context).text("next")
               : AppTranslations.of(context).text("done"),
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
-        onPressed: _dataIndex != widget.importData.categoriesName.length - 1
-            ? _onNext
-            : _onDone,
+        onPressed:
+            _viewModel.dataIndex != widget.importData.categoriesName.length - 1
+                ? _viewModel.onNext
+                : _onDone,
       ),
     );
   }
@@ -161,12 +150,13 @@ class _ImportScreenState extends State<ImportScreen> {
       actions: [
         ChicTextButton(
           child: Text(
-            _dataIndex != widget.importData.categoriesName.length - 1
+            _viewModel.dataIndex != widget.importData.categoriesName.length - 1
                 ? AppTranslations.of(context).text("next")
                 : AppTranslations.of(context).text("done"),
           ),
-          onPressed: _dataIndex != widget.importData.categoriesName.length - 1
-              ? _onNext
+          onPressed: _viewModel.dataIndex !=
+                  widget.importData.categoriesName.length - 1
+              ? _viewModel.onNext
               : _onDone,
         ),
       ],
@@ -175,7 +165,7 @@ class _ImportScreenState extends State<ImportScreen> {
 
   Widget _displaysBody(ThemeProvider themeProvider) {
     return Form(
-      key: _formKey,
+      key: _viewModel.formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -192,7 +182,7 @@ class _ImportScreenState extends State<ImportScreen> {
           ),
           SizedBox(height: 16.0),
           ChicTextField(
-            controller: _categoryController,
+            controller: _viewModel.categoryController,
             focus: _categoryFocusNode,
             desktopFocus: _desktopCategoryFocusNode,
             autoFocus: false,
@@ -210,7 +200,7 @@ class _ImportScreenState extends State<ImportScreen> {
           ),
           SizedBox(height: 16.0),
           ChicTextField(
-            controller: _newCategoryController,
+            controller: _viewModel.newCategoryController,
             focus: _newCategoryFocusNode,
             desktopFocus: _desktopNewCategoryFocusNode,
             autoFocus: false,
@@ -219,7 +209,8 @@ class _ImportScreenState extends State<ImportScreen> {
             label: AppTranslations.of(context).text("category"),
             errorMessage:
                 AppTranslations.of(context).text("error_category_empty"),
-            validating: (String text) => _newCategoryController.text.isNotEmpty,
+            validating: (String text) =>
+                _viewModel.newCategoryController.text.isNotEmpty,
             onTap: _selectCategory,
           ),
           SizedBox(height: 16.0),
@@ -244,7 +235,7 @@ class _ImportScreenState extends State<ImportScreen> {
     var category = await ChicNavigator.push(
       context,
       SelectCategoryScreen(
-        category: _category,
+        category: _viewModel.category,
         isShowingTrash: true,
         previousPageTitle: AppTranslations.of(context).text("migration"),
       ),
@@ -252,9 +243,7 @@ class _ImportScreenState extends State<ImportScreen> {
     );
 
     if (category != null && category is Category) {
-      _newCategoryController.text = category.name;
-      _category = category;
-      setState(() {});
+      _viewModel.onCategorySelected(category);
     }
   }
 
@@ -262,76 +251,26 @@ class _ImportScreenState extends State<ImportScreen> {
     var category = await ChicNavigator.push(
       context,
       NewCategoryScreen(
-        hint: _categoryController.text,
+        hint: _viewModel.categoryController.text,
         previousPageTitle: AppTranslations.of(context).text("migration"),
       ),
       isModal: true,
     );
 
     if (category != null && category is Category) {
-      _newCategoryController.text = category.name;
-      _category = category;
-      setState(() {});
-    }
-  }
-
-  _onNext() {
-    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-      _dataIndex++;
-      _newCategories.add(_category!);
-      _categoryController =
-          TextEditingController(text: widget.importData.categoriesName[_dataIndex]);
-
-      setState(() {});
+      _viewModel.onCategoryCreated(category);
     }
   }
 
   _onDone() async {
-    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-      EasyLoading.show();
-
-      // Start the migration process
-      _newCategories.add(_category!);
-      List<Future> entryFutures = [];
-
-      for (var entry in widget.importData.entries) {
-        // Add entries
-        if (entry.hash.isNotEmpty) {
-          entry.hash = Security.encrypt(currentPassword!, entry.hash);
-          entry.createdAt = DateTime.now();
-          entry.updatedAt = DateTime.now();
-
-          entry.categoryId = _newCategories[
-                  widget.importData.categoriesName.indexOf(entry.categoryId)]
-              .id;
-
-          entryFutures.add(EntryService.save(entry));
-        }
-      }
-
-      await Future.wait(entryFutures);
-
-      // Add Custom Fields
-      List<Future> customFieldsFutures = [];
-
-      for (var customField in widget.importData.customFields) {
-        customField.createdAt = DateTime.now();
-        customField.updatedAt = DateTime.now();
-        customFieldsFutures.add(CustomFieldService.save(customField));
-      }
-
-      await Future.wait(customFieldsFutures);
-
-      EasyLoading.dismiss();
-
-      Navigator.pop(context, true);
-    }
+    await _viewModel.onDone();
+    Navigator.pop(context, true);
   }
 
   @override
   void dispose() {
-    _categoryController.dispose();
-    _newCategoryController.dispose();
+    _viewModel.categoryController.dispose();
+    _viewModel.newCategoryController.dispose();
 
     _categoryFocusNode.dispose();
     _newCategoryFocusNode.dispose();
