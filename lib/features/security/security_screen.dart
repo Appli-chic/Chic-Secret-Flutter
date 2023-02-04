@@ -8,11 +8,12 @@ import 'package:chic_secret/ui/component/entry_item.dart';
 import 'package:chic_secret/ui/component/security_item.dart';
 import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
 import 'package:chic_secret/ui/screen/security_entry_screen.dart';
-import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+
+import 'security_screen_view_model.dart';
 
 class SecurityScreen extends StatefulWidget {
   final Function()? onDataChanged;
@@ -26,31 +27,20 @@ class SecurityScreen extends StatefulWidget {
 }
 
 class _SecurityScreenState extends State<SecurityScreen> {
-  List<Entry> _weakPasswordEntries = [];
-  List<Entry> _oldEntries = [];
-  List<Entry> _duplicatedEntries = [];
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    _checkPasswordSecurity();
-    super.initState();
-  }
-
-  _checkPasswordSecurity() async {
-    var data = await Security.retrievePasswordsSecurityInfo();
-
-    _weakPasswordEntries = data.item1;
-    _oldEntries = data.item2;
-    _duplicatedEntries = data.item3;
-    _isLoading = false;
-    setState(() {});
-  }
+  late SecurityScreenViewModel _viewModel = SecurityScreenViewModel();
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
-    return _displayScaffold(themeProvider);
+
+    return ChangeNotifierProvider<SecurityScreenViewModel>(
+      create: (BuildContext context) => _viewModel,
+      child: Consumer<SecurityScreenViewModel>(
+        builder: (context, value, _) {
+          return _displayScaffold(themeProvider);
+        },
+      ),
+    );
   }
 
   Widget _displayScaffold(ThemeProvider themeProvider) {
@@ -102,7 +92,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
                   Expanded(
                     child: SecurityItem(
                       securityIndex: 1,
-                      number: _weakPasswordEntries.length,
+                      number: _viewModel.weakPasswordEntries.length,
                       title: AppTranslations.of(context).text("weak"),
                       icon: Platform.isIOS
                           ? CupertinoIcons.pencil_ellipsis_rectangle
@@ -115,7 +105,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
                   Expanded(
                     child: SecurityItem(
                       securityIndex: 2,
-                      number: _oldEntries.length,
+                      number: _viewModel.oldEntries.length,
                       title: AppTranslations.of(context).text("old"),
                       icon: Platform.isIOS
                           ? CupertinoIcons.timer
@@ -128,7 +118,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
                   Expanded(
                     child: SecurityItem(
                       securityIndex: 3,
-                      number: _duplicatedEntries.length,
+                      number: _viewModel.duplicatedEntries.length,
                       title: AppTranslations.of(context).text("duplicated"),
                       icon: Platform.isIOS
                           ? CupertinoIcons.arrow_2_circlepath_circle
@@ -148,10 +138,10 @@ class _SecurityScreenState extends State<SecurityScreen> {
   }
 
   Widget _displayLists(ThemeProvider themeProvider) {
-    if (_weakPasswordEntries.isEmpty &&
-        _oldEntries.isEmpty &&
-        _duplicatedEntries.isEmpty &&
-        !_isLoading) {
+    if (_viewModel.weakPasswordEntries.isEmpty &&
+        _viewModel.oldEntries.isEmpty &&
+        _viewModel.duplicatedEntries.isEmpty &&
+        !_viewModel.isLoading) {
       return _securityImage();
     } else {
       return Container(
@@ -165,17 +155,17 @@ class _SecurityScreenState extends State<SecurityScreen> {
                 _displayListPasswords(
                   themeProvider,
                   AppTranslations.of(context).text("weak"),
-                  _weakPasswordEntries,
+                  _viewModel.weakPasswordEntries,
                 ),
                 _displayListPasswords(
                   themeProvider,
                   AppTranslations.of(context).text("old"),
-                  _oldEntries,
+                  _viewModel.oldEntries,
                 ),
                 _displayListPasswords(
                   themeProvider,
                   AppTranslations.of(context).text("duplicated"),
-                  _duplicatedEntries,
+                  _viewModel.duplicatedEntries,
                 ),
               ],
             ),
@@ -251,7 +241,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
         previousPageTitle: AppTranslations.of(context).text("security"),
       ),
     );
-    _checkPasswordSecurity();
+    _viewModel.checkPasswordSecurity();
 
     if (widget.onDataChanged != null) {
       widget.onDataChanged!();
@@ -262,7 +252,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
     await ChicNavigator.push(context,
         SecurityEntryScreen(title: title, securityIndex: securityIndex));
 
-    _checkPasswordSecurity();
+    _viewModel.checkPasswordSecurity();
 
     if (widget.onDataChanged != null) {
       widget.onDataChanged!();

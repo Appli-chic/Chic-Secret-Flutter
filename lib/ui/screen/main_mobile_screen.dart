@@ -7,7 +7,7 @@ import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/features/category/categories_screen.dart';
 import 'package:chic_secret/ui/screen/entry_screen.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
-import 'package:chic_secret/ui/screen/security_screen.dart';
+import 'package:chic_secret/features/security/security_screen.dart';
 import 'package:chic_secret/features/settings/settings_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
