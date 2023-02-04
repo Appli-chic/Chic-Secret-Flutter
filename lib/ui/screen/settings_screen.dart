@@ -18,7 +18,7 @@ import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/component/setting_item.dart';
 import 'package:chic_secret/ui/screen/biometry_screen.dart';
 import 'package:chic_secret/ui/screen/import_export_choice_screen.dart';
-import 'package:chic_secret/ui/screen/user_screen.dart';
+import 'package:chic_secret/features/user/user_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:chic_secret/utils/shared_data.dart';
