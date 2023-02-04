@@ -14,7 +14,7 @@ import 'package:chic_secret/ui/component/vault_item.dart';
 import 'package:chic_secret/ui/screen/login_screen.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
 import 'package:chic_secret/ui/screen/new_vault_screen.dart';
-import 'package:chic_secret/ui/screen/settings_screen.dart';
+import 'package:chic_secret/features/settings/settings_screen.dart';
 import 'package:chic_secret/features/vault/unlock/unlock_vault_screen.dart';
 import 'package:chic_secret/utils/shared_data.dart';
 import 'package:flutter/material.dart';

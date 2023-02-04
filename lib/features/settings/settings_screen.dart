@@ -1,7 +1,8 @@
 import 'dart:io';
 
+import 'package:chic_secret/features/settings/settings_screen_view_model.dart';
+import 'package:chic_secret/features/user/user_screen.dart';
 import 'package:chic_secret/localization/app_translations.dart';
-import 'package:chic_secret/model/database/user.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
@@ -9,7 +10,6 @@ import 'package:chic_secret/service/custom_field_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/service/entry_tag_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
-import 'package:chic_secret/service/user_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
 import 'package:chic_secret/service/vault_user_service.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
@@ -18,19 +18,13 @@ import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/component/setting_item.dart';
 import 'package:chic_secret/ui/screen/biometry_screen.dart';
 import 'package:chic_secret/ui/screen/import_export_choice_screen.dart';
-import 'package:chic_secret/features/user/user_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
-import 'package:chic_secret/utils/security.dart';
 import 'package:chic_secret/utils/shared_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
-
-import 'login_screen.dart';
-import 'new_vault_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Function()? onDataChanged;
@@ -47,40 +41,20 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen>
     with SingleTickerProviderStateMixin {
-  final LocalAuthentication auth = LocalAuthentication();
+  late SettingsScreenViewModel _viewModel;
+
   late SynchronizationProvider _synchronizationProvider;
-  User? _user;
   late AnimationController _synchronizingAnimationController;
-  bool _isBiometricsSupported = false;
 
   @override
   void initState() {
+    _viewModel = SettingsScreenViewModel(widget.onDataChanged);
     _synchronizingAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     );
 
-    _checkBiometrics();
-    _getUser();
-
     super.initState();
-  }
-
-  _checkBiometrics() async {
-    try {
-      _isBiometricsSupported = await auth.canCheckBiometrics;
-      setState(() {});
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  _getUser() async {
-    _user = await Security.getCurrentUser();
-    if (_user != null) {
-      _user = await UserService.getUserById(_user!.id);
-    }
-    setState(() {});
   }
 
   _startsAnimatingSynchronisation() {
@@ -107,11 +81,18 @@ class _SettingsScreenState extends State<SettingsScreen>
       _stopAnimatingSynchronisation();
     }
 
-    if (ChicPlatform.isDesktop()) {
-      return _displaysDesktopInModal(themeProvider);
-    } else {
-      return _displaysMobile(themeProvider);
-    }
+    return ChangeNotifierProvider<SettingsScreenViewModel>(
+      create: (BuildContext context) => _viewModel,
+      child: Consumer<SettingsScreenViewModel>(
+        builder: (context, value, _) {
+          if (ChicPlatform.isDesktop()) {
+            return _displaysDesktopInModal(themeProvider);
+          } else {
+            return _displaysMobile(themeProvider);
+          }
+        },
+      ),
+    );
   }
 
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
@@ -194,12 +175,12 @@ class _SettingsScreenState extends State<SettingsScreen>
       physics: BouncingScrollPhysics(),
       child: Column(
         children: [
-          _user != null
+          _viewModel.user != null
               ? SettingItem(
                   leading: Platform.isIOS
                       ? CupertinoIcons.person_fill
                       : Icons.person,
-                  title: _user!.email,
+                  title: _viewModel.user!.email,
                   onTap: _onUserClicked,
                 )
               : SettingItem(
@@ -207,9 +188,11 @@ class _SettingsScreenState extends State<SettingsScreen>
                       ? CupertinoIcons.square_arrow_right
                       : Icons.login,
                   title: AppTranslations.of(context).text("login"),
-                  onTap: _login,
+                  onTap: () {
+                    _viewModel.login(context, _synchronizationProvider);
+                  },
                 ),
-          _user != null
+          _viewModel.user != null
               ? SettingItem(
                   leadingIcon: RotationTransition(
                     turns: Tween(begin: 1.0, end: 0.0)
@@ -222,7 +205,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                   ),
                   title: AppTranslations.of(context).text("synchronizing"),
                   subtitle: lastSyncDate,
-                  onTap: _synchronize,
+                  onTap: () {
+                    _viewModel.synchronize(_synchronizationProvider);
+                  },
                 )
               : SizedBox.shrink(),
           selectedVault != null
@@ -235,7 +220,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                 )
               : SizedBox.shrink(),
           !ChicPlatform.isDesktop() &&
-                  _isBiometricsSupported &&
+                  _viewModel.isBiometricsSupported &&
                   widget.hasVaultLinked
               ? SettingItem(
                   leading: Icons.fingerprint,
@@ -247,12 +232,14 @@ class _SettingsScreenState extends State<SettingsScreen>
               ? SettingItem(
                   leading: Platform.isIOS ? CupertinoIcons.pen : Icons.edit,
                   title: AppTranslations.of(context).text("edit_vault"),
-                  onTap: _onEditVaultClicked,
+                  onTap: () {
+                    _viewModel.onEditVaultClicked(context);
+                  },
                 )
               : SizedBox.shrink(),
           selectedVault != null &&
-                  _user != null &&
-                  selectedVault!.userId == _user!.id
+                  _viewModel.user != null &&
+                  selectedVault!.userId == _viewModel.user!.id
               ? SettingItem(
                   backgroundColor: Colors.red[500],
                   tint: ChicPlatform.isDesktop() ? Colors.red[500] : null,
@@ -269,7 +256,7 @@ class _SettingsScreenState extends State<SettingsScreen>
   }
 
   _delete() async {
-    if (selectedVault != null && selectedVault!.userId == _user!.id) {
+    if (selectedVault != null && selectedVault!.userId == _viewModel.user!.id) {
       // Check if the user is willing to delete the vault
       var toDelete = await _displaysDialogSureToDelete();
       if (toDelete) {
@@ -338,49 +325,6 @@ class _SettingsScreenState extends State<SettingsScreen>
         });
   }
 
-  _onEditVaultClicked() async {
-    var isDeleted = await ChicNavigator.push(
-      context,
-      NewVaultScreen(vault: selectedVault, isFromSettings: true),
-      isModal: true,
-    );
-
-    if (widget.onDataChanged != null) {
-      widget.onDataChanged!();
-    }
-
-    if (isDeleted != null && isDeleted) {
-      if (!ChicPlatform.isDesktop()) {
-        Navigator.pop(context, true);
-      }
-    }
-  }
-
-  _synchronize() async {
-    await _synchronizationProvider.synchronize(isFullSynchronization: true);
-
-    if (widget.onDataChanged != null) {
-      widget.onDataChanged!();
-    }
-  }
-
-  _login() async {
-    var isLogged = await ChicNavigator.push(
-      context,
-      LoginScreen(),
-      isModal: true,
-    );
-
-    if (isLogged) {
-      _getUser();
-      await _synchronizationProvider.synchronize(isFullSynchronization: true);
-
-      if (widget.onDataChanged != null) {
-        widget.onDataChanged!();
-      }
-    }
-  }
-
   _goToImportExportScreen() async {
     await ChicNavigator.push(
       context,
@@ -404,9 +348,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     );
 
     if (hasChanged != null && hasChanged) {
-      setState(() {
-        _user = null;
-      });
+      _viewModel.loggedOut();
     }
   }
 }
