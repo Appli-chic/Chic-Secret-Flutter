@@ -13,7 +13,7 @@ import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/component/icon_selector.dart';
-import 'package:chic_secret/ui/screen/select_predefined_category.dart';
+import 'package:chic_secret/features/category/predefined_category/select_predefined_category_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/color.dart';
 import 'package:chic_secret/utils/constant.dart';
@@ -272,7 +272,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   _selectPredefinedCategory() async {
     var category = await ChicNavigator.push(
       context,
-      SelectPredefinedCategory(category: _preselectedCategory),
+      SelectPredefinedScreenCategory(category: _preselectedCategory),
       isModal: true,
     );
 
