@@ -1,10 +1,11 @@
 import 'dart:io';
 
+import 'package:chic_secret/features/category/new/new_category_screen_view_model.dart';
+import 'package:chic_secret/features/category/predefined_category/select_predefined_category_screen.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/ui/component/color_selector.dart';
 import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
@@ -13,16 +14,10 @@ import 'package:chic_secret/ui/component/common/chic_text_field.dart';
 import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/ui/component/icon_selector.dart';
-import 'package:chic_secret/features/category/predefined_category/select_predefined_category_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
-import 'package:chic_secret/utils/color.dart';
-import 'package:chic_secret/utils/constant.dart';
-import 'package:chic_secret/utils/icon_converter.dart';
-import 'package:chic_secret/utils/shared_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 class NewCategoryScreen extends StatefulWidget {
   final Category? category;
@@ -40,37 +35,15 @@ class NewCategoryScreen extends StatefulWidget {
 }
 
 class _NewCategoryScreenState extends State<NewCategoryScreen> {
+  late NewCategoryScreenViewModel _viewModel;
   late SynchronizationProvider _synchronizationProvider;
 
-  final _formKey = GlobalKey<FormState>();
-
-  TextEditingController _nameController = TextEditingController();
-
   FocusNode _nameFocusNode = FocusNode();
-
   FocusNode _desktopNameFocusNode = FocusNode();
-
-  ColorSelectorController _colorSelectorController = ColorSelectorController();
-  IconSelectorController _iconSelectorController = IconSelectorController();
-
-  Category? _preselectedCategory;
-
-  Color _color = Colors.blue;
-  IconData _icon = getIcons()[0];
 
   @override
   void initState() {
-    if (widget.category != null) {
-      _nameController = TextEditingController(text: widget.category!.name);
-      _color = getColorFromHex(widget.category!.color);
-      _icon = IconConverter.convertMaterialIconToCupertino(
-          IconData(widget.category!.icon, fontFamily: 'MaterialIcons'));
-    }
-
-    if (widget.hint != null) {
-      _nameController = TextEditingController(text: widget.hint);
-    }
-
+    _viewModel = NewCategoryScreenViewModel(widget.category, widget.hint);
     super.initState();
   }
 
@@ -80,11 +53,18 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     _synchronizationProvider =
         Provider.of<SynchronizationProvider>(context, listen: true);
 
-    if (ChicPlatform.isDesktop()) {
-      return _displaysDesktopInModal(themeProvider);
-    } else {
-      return _displaysMobile(themeProvider);
-    }
+    return ChangeNotifierProvider<NewCategoryScreenViewModel>(
+      create: (BuildContext context) => _viewModel,
+      child: Consumer<NewCategoryScreenViewModel>(
+        builder: (context, value, _) {
+          if (ChicPlatform.isDesktop()) {
+            return _displaysDesktopInModal(themeProvider);
+          } else {
+            return _displaysMobile(themeProvider);
+          }
+        },
+      ),
+    );
   }
 
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
@@ -107,7 +87,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
           margin: EdgeInsets.only(right: 8, bottom: 8),
           child: ChicElevatedButton(
             child: Text(AppTranslations.of(context).text("save")),
-            onPressed: _onSavingCategory,
+            onPressed: () {
+              _viewModel.onSavingCategory(context, _synchronizationProvider);
+            },
           ),
         ),
       ],
@@ -170,7 +152,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
           AppTranslations.of(context).text("save"),
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
-        onPressed: _onSavingCategory,
+        onPressed: () {
+          _viewModel.onSavingCategory(context, _synchronizationProvider);
+        },
       ),
     );
   }
@@ -186,7 +170,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       actions: [
         ChicTextButton(
           child: Text(AppTranslations.of(context).text("save")),
-          onPressed: _onSavingCategory,
+          onPressed: () {
+            _viewModel.onSavingCategory(context, _synchronizationProvider);
+          },
         ),
       ],
     );
@@ -196,19 +182,20 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     return Container(
       margin: EdgeInsets.all(16),
       child: Form(
-        key: _formKey,
+        key: _viewModel.formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ChicTextField(
-              controller: _nameController,
+              controller: _viewModel.nameController,
               focus: _nameFocusNode,
               desktopFocus: _desktopNameFocusNode,
               textCapitalization: TextCapitalization.sentences,
               label: AppTranslations.of(context).text("name"),
               errorMessage:
                   AppTranslations.of(context).text("error_name_empty"),
-              validating: (String text) => _nameController.text.isNotEmpty,
+              validating: (String text) =>
+                  _viewModel.nameController.text.isNotEmpty,
             ),
             SizedBox(height: 16.0),
             Text(
@@ -221,13 +208,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
             ),
             SizedBox(height: 16.0),
             ColorSelector(
-              colorSelectorController: _colorSelectorController,
-              color: _color,
-              onColorSelected: (Color color) {
-                setState(() {
-                  _color = color;
-                });
-              },
+              colorSelectorController: _viewModel.colorSelectorController,
+              color: _viewModel.color,
+              onColorSelected: _viewModel.onUpdateColor,
             ),
             SizedBox(height: 16.0),
             Text(
@@ -240,14 +223,10 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
             ),
             SizedBox(height: 16.0),
             IconSelector(
-              iconSelectorController: _iconSelectorController,
-              icon: _icon,
-              color: _color,
-              onIconSelected: (IconData icon) {
-                setState(() {
-                  _icon = icon;
-                });
-              },
+              iconSelectorController: _viewModel.iconSelectorController,
+              icon: _viewModel.icon,
+              color: _viewModel.color,
+              onIconSelected: _viewModel.onUpdateIcon,
             ),
             SizedBox(height: 16.0),
             ChicTextIconButton(
@@ -272,74 +251,19 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   _selectPredefinedCategory() async {
     var category = await ChicNavigator.push(
       context,
-      SelectPredefinedScreenCategory(category: _preselectedCategory),
+      SelectPredefinedScreenCategory(category: _viewModel.preselectedCategory),
       isModal: true,
     );
 
     if (category != null && category is Category) {
-      _preselectedCategory = category;
-      _nameController.text = category.name;
-      _color = getColorFromHex(category.color);
-      _icon = IconConverter.convertMaterialIconToCupertino(
-        IconData(category.icon, fontFamily: 'MaterialIcons'),
-      );
-
-      if (_colorSelectorController.onColorChange != null) {
-        _colorSelectorController.onColorChange!(_color);
-      }
-
-      if (_iconSelectorController.onIconChange != null) {
-        _iconSelectorController.onIconChange!(_icon);
-      }
-
-      setState(() {});
-    }
-  }
-
-  _onSavingCategory() async {
-    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-      var category;
-
-      if (widget.category != null) {
-        // We edit the category
-        category = Category(
-          id: widget.category!.id,
-          name: _nameController.text,
-          color: '#${_color.value.toRadixString(16)}',
-          icon: IconConverter.convertCupertinoIconToMaterial(_icon).codePoint,
-          isTrash: false,
-          vaultId: selectedVault!.id,
-          createdAt: widget.category!.createdAt,
-          updatedAt: DateTime.now(),
-        );
-        await CategoryService.update(category);
-      } else {
-        // We create a new category
-        category = Category(
-          id: Uuid().v4(),
-          name: _nameController.text,
-          color: '#${_color.value.toRadixString(16)}',
-          icon: IconConverter.convertCupertinoIconToMaterial(_icon).codePoint,
-          isTrash: false,
-          vaultId: selectedVault!.id,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
-
-        await CategoryService.save(category);
-      }
-
-      _synchronizationProvider.synchronize();
-      Navigator.pop(context, category);
+      _viewModel.onPredefinedCategorySelected(category);
     }
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-
+    _viewModel.nameController.dispose();
     _nameFocusNode.dispose();
-
     _desktopNameFocusNode.dispose();
 
     super.dispose();

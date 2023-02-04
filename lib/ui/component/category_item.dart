@@ -6,7 +6,7 @@ import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/common/chic_popup_menu_item.dart';
-import 'package:chic_secret/ui/screen/new_category_screen.dart';
+import 'package:chic_secret/features/category/new/new_category_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/color.dart';
 import 'package:chic_secret/utils/icon_converter.dart';

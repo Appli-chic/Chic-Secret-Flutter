@@ -12,7 +12,7 @@ import 'package:chic_secret/ui/component/desktop_expandable_menu.dart';
 import 'package:chic_secret/ui/component/tag_item.dart';
 import 'package:chic_secret/ui/component/vault_item.dart';
 import 'package:chic_secret/ui/screen/login_screen.dart';
-import 'package:chic_secret/ui/screen/new_category_screen.dart';
+import 'package:chic_secret/features/category/new/new_category_screen.dart';
 import 'package:chic_secret/ui/screen/new_vault_screen.dart';
 import 'package:chic_secret/features/settings/settings_screen.dart';
 import 'package:chic_secret/features/vault/unlock/unlock_vault_screen.dart';

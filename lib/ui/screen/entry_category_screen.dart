@@ -9,7 +9,7 @@ import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/entry_item.dart';
 import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
-import 'package:chic_secret/ui/screen/new_category_screen.dart';
+import 'package:chic_secret/features/category/new/new_category_screen.dart';
 import 'package:chic_secret/utils/shared_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
