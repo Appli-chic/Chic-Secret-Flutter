@@ -4,7 +4,7 @@ import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/clipper/half_circle_clipper.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
-import 'package:chic_secret/ui/screen/category_screen.dart';
+import 'package:chic_secret/features/category/categories_screen.dart';
 import 'package:chic_secret/ui/screen/entry_screen.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
 import 'package:chic_secret/ui/screen/security_screen.dart';
@@ -20,8 +20,8 @@ class MainMobileScreen extends StatefulWidget {
 
 class _MainMobileScreenState extends State<MainMobileScreen> {
   EntryScreenController _passwordScreenController = EntryScreenController();
-  CategoryScreenController _categoryScreenController =
-      CategoryScreenController();
+  CategoriesScreenController _categoryScreenController =
+      CategoriesScreenController();
   PageController _pageController = PageController();
   int _index = 0;
 

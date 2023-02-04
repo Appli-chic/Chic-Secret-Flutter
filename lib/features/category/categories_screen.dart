@@ -1,28 +1,27 @@
 import 'dart:io';
 
+import 'package:chic_secret/features/category/categories_screen_view_model.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/ui/component/category_item.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/screen/entry_category_screen.dart';
 import 'package:chic_secret/ui/screen/new_category_screen.dart';
-import 'package:chic_secret/utils/shared_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CategoryScreenController {
+class CategoriesScreenController {
   void Function()? reloadCategories;
 
-  CategoryScreenController({
+  CategoriesScreenController({
     this.reloadCategories,
   });
 }
 
 class CategoriesScreen extends StatefulWidget {
-  final CategoryScreenController? categoryScreenController;
+  final CategoriesScreenController? categoryScreenController;
   final Function() onCategoriesChanged;
 
   const CategoriesScreen({
@@ -36,23 +35,16 @@ class CategoriesScreen extends StatefulWidget {
 
 class _CategoriesScreenState extends State<CategoriesScreen>
     with AutomaticKeepAliveClientMixin<CategoriesScreen> {
-  List<Category> _categories = [];
+  CategoriesScreenViewModel _viewModel = CategoriesScreenViewModel();
 
   @override
   void initState() {
     if (widget.categoryScreenController != null) {
-      widget.categoryScreenController!.reloadCategories = _loadCategories;
+      widget.categoryScreenController!.reloadCategories =
+          _viewModel.loadCategories();
     }
 
-    _loadCategories();
     super.initState();
-  }
-
-  _loadCategories() async {
-    if (selectedVault != null) {
-      _categories = await CategoryService.getAllByVault(selectedVault!.id);
-      setState(() {});
-    }
   }
 
   @override
@@ -60,7 +52,14 @@ class _CategoriesScreenState extends State<CategoriesScreen>
     super.build(context);
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    return _displayScaffold(themeProvider);
+    return ChangeNotifierProvider<CategoriesScreenViewModel>(
+      create: (BuildContext context) => _viewModel,
+      child: Consumer<CategoriesScreenViewModel>(
+        builder: (context, value, _) {
+          return _displayScaffold(themeProvider);
+        },
+      ),
+    );
   }
 
   Widget _displayScaffold(ThemeProvider themeProvider) {
@@ -115,33 +114,37 @@ class _CategoriesScreenState extends State<CategoriesScreen>
       margin: EdgeInsets.only(bottom: 8),
       child: ListView.builder(
         physics: BouncingScrollPhysics(),
-        itemCount: _categories.length,
+        itemCount: _viewModel.categories.length,
         itemBuilder: (context, index) {
           return CategoryItem(
-            category: _categories[index],
-            onTap: (Category? category) async {
-              if (category != null) {
-                var isDeleted = await ChicNavigator.push(
-                  context,
-                  EntryCategoryScreen(
-                    category: category,
-                    onCategoryChanged: () {
-                      _loadCategories();
-                      widget.onCategoriesChanged();
-                    },
-                  ),
-                  isModal: true,
-                );
-
-                if (isDeleted != null && isDeleted) {
-                  _loadCategories();
-                }
-              }
-            },
+            category: _viewModel.categories[index],
+            onTap: _onCategoryTapped,
           );
         },
       ),
     );
+  }
+
+  _onCategoryTapped(Category? category) async {
+    if (category != null) {
+      var isDeleted = await ChicNavigator.push(
+        context,
+        EntryCategoryScreen(
+          category: category,
+          onCategoryChanged: _onCategoryChanged,
+        ),
+        isModal: true,
+      );
+
+      if (isDeleted != null && isDeleted) {
+        _viewModel.loadCategories();
+      }
+    }
+  }
+
+  _onCategoryChanged() {
+    _viewModel.loadCategories();
+    widget.onCategoriesChanged();
   }
 
   _onAddCategoryClicked() async {
@@ -154,7 +157,7 @@ class _CategoriesScreenState extends State<CategoriesScreen>
     );
 
     if (data != null) {
-      _loadCategories();
+      _viewModel.loadCategories();
     }
   }
 
