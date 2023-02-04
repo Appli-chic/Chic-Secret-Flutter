@@ -1,63 +1,50 @@
 import 'dart:io';
 
+import 'package:chic_secret/features/security/entries/security_entries_screen_view_model.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/entry_item.dart';
 import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
-import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SecurityEntryScreen extends StatefulWidget {
+class SecurityEntriesScreen extends StatefulWidget {
   final String title;
   final int securityIndex;
 
-  const SecurityEntryScreen({
+  const SecurityEntriesScreen({
     required this.title,
     required this.securityIndex,
   });
 
   @override
-  _SecurityEntryScreenState createState() => _SecurityEntryScreenState();
+  _SecurityEntriesScreenState createState() => _SecurityEntriesScreenState();
 }
 
-class _SecurityEntryScreenState extends State<SecurityEntryScreen> {
-  List<Entry> _entries = [];
+class _SecurityEntriesScreenState extends State<SecurityEntriesScreen> {
+  late SecurityEntriesScreenViewModel _viewModel;
 
   @override
   void initState() {
-    _checkPasswordSecurity();
+    _viewModel = SecurityEntriesScreenViewModel(widget.securityIndex);
     super.initState();
-  }
-
-  _checkPasswordSecurity() async {
-    var data = await Security.retrievePasswordsSecurityInfo();
-
-    switch (widget.securityIndex) {
-      case 1:
-        _entries = data.item1;
-        break;
-      case 2:
-        _entries = data.item2;
-        break;
-      case 3:
-        _entries = data.item3;
-        break;
-      default:
-        _entries = data.item1;
-        break;
-    }
-
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
-    return _displayScaffold(themeProvider);
+
+    return ChangeNotifierProvider<SecurityEntriesScreenViewModel>(
+      create: (BuildContext context) => _viewModel,
+      child: Consumer<SecurityEntriesScreenViewModel>(
+        builder: (context, value, _) {
+          return _displayScaffold(themeProvider);
+        },
+      ),
+    );
   }
 
   Widget _displayScaffold(ThemeProvider themeProvider) {
@@ -102,10 +89,10 @@ class _SecurityEntryScreenState extends State<SecurityEntryScreen> {
         margin: EdgeInsets.only(bottom: 8),
         child: ListView.builder(
           physics: BouncingScrollPhysics(),
-          itemCount: _entries.length,
+          itemCount: _viewModel.entries.length,
           itemBuilder: (context, index) {
             return EntryItem(
-              entry: _entries[index],
+              entry: _viewModel.entries[index],
               isSelected: false,
               onTap: _onEntrySelected,
             );
@@ -123,6 +110,7 @@ class _SecurityEntryScreenState extends State<SecurityEntryScreen> {
         previousPageTitle: widget.title,
       ),
     );
-    _checkPasswordSecurity();
+
+    _viewModel.checkPasswordSecurity();
   }
 }

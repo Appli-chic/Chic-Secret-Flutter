@@ -7,7 +7,7 @@ import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/component/entry_item.dart';
 import 'package:chic_secret/ui/component/security_item.dart';
 import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
-import 'package:chic_secret/ui/screen/security_entry_screen.dart';
+import 'package:chic_secret/features/security/entries/security_entries_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -250,7 +250,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
 
   _onSecurityItemClicked(String title, int securityIndex) async {
     await ChicNavigator.push(context,
-        SecurityEntryScreen(title: title, securityIndex: securityIndex));
+        SecurityEntriesScreen(title: title, securityIndex: securityIndex));
 
     _viewModel.checkPasswordSecurity();
 
