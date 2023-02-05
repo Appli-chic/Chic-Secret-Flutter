@@ -2,15 +2,13 @@ import 'dart:io';
 
 import 'package:chic_secret/component/common/chic_navigator.dart';
 import 'package:chic_secret/component/entry_item.dart';
+import 'package:chic_secret/feature/category/new/new_category_screen.dart';
+import 'package:chic_secret/feature/entry/category/entry_category_screen_view_model.dart';
+import 'package:chic_secret/feature/entry/detail/entry_detail_screen.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/service/category_service.dart';
-import 'package:chic_secret/service/entry_service.dart';
-import 'package:chic_secret/feature/entry/detail/entry_detail_screen.dart';
-import 'package:chic_secret/feature/category/new/new_category_screen.dart';
-import 'package:chic_secret/utils/shared_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,41 +27,38 @@ class EntryCategoryScreen extends StatefulWidget {
 }
 
 class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
-  List<Entry> _entries = [];
-  late Category _category;
+  late EntryCategoryScreenViewModel _viewModel;
 
   @override
   void initState() {
-    _category = widget.category;
-    _loadPassword();
+    _viewModel = EntryCategoryScreenViewModel(widget.category);
     super.initState();
-  }
-
-  _loadPassword() async {
-    if (selectedVault != null) {
-      _entries = await EntryService.getAllByVault(selectedVault!.id,
-          categoryId: widget.category.id);
-      setState(() {});
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    if (Platform.isIOS) {
-      return CupertinoPageScaffold(
-        backgroundColor: themeProvider.backgroundColor,
-        navigationBar: _displaysIosAppbar(themeProvider),
-        child: _displayBody(),
-      );
-    } else {
-      return Scaffold(
-        backgroundColor: themeProvider.backgroundColor,
-        appBar: _displaysAppbar(themeProvider),
-        body: _displayBody(),
-      );
-    }
+    return ChangeNotifierProvider<EntryCategoryScreenViewModel>(
+      create: (BuildContext context) => _viewModel,
+      child: Consumer<EntryCategoryScreenViewModel>(
+        builder: (context, value, _) {
+          if (Platform.isIOS) {
+            return CupertinoPageScaffold(
+              backgroundColor: themeProvider.backgroundColor,
+              navigationBar: _displaysIosAppbar(themeProvider),
+              child: _displayBody(),
+            );
+          } else {
+            return Scaffold(
+              backgroundColor: themeProvider.backgroundColor,
+              appBar: _displaysAppbar(themeProvider),
+              body: _displayBody(),
+            );
+          }
+        },
+      ),
+    );
   }
 
   ObstructingPreferredSizeWidget _displaysIosAppbar(
@@ -75,14 +70,14 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _category.isTrash
+          _viewModel.category.isTrash
               ? SizedBox.shrink()
               : CupertinoButton(
                   padding: EdgeInsets.zero,
                   child: Icon(CupertinoIcons.pen),
                   onPressed: _onEditCategory,
                 ),
-          _category.isTrash
+          _viewModel.category.isTrash
               ? SizedBox.shrink()
               : CupertinoButton(
                   padding: EdgeInsets.zero,
@@ -102,7 +97,7 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
       backgroundColor: themeProvider.secondBackgroundColor,
       title: Text(widget.category.name),
       actions: [
-        _category.isTrash
+        _viewModel.category.isTrash
             ? SizedBox.shrink()
             : IconButton(
                 icon: Icon(
@@ -111,7 +106,7 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
                 ),
                 onPressed: _onEditCategory,
               ),
-        _category.isTrash
+        _viewModel.category.isTrash
             ? SizedBox.shrink()
             : IconButton(
                 icon: Icon(
@@ -127,10 +122,10 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
   Widget _displayBody() {
     return ListView.builder(
       physics: BouncingScrollPhysics(),
-      itemCount: _entries.length,
+      itemCount: _viewModel.entries.length,
       itemBuilder: (context, index) {
         return EntryItem(
-          entry: _entries[index],
+          entry: _viewModel.entries[index],
           isSelected: false,
           onTap: _onEntrySelected,
         );
@@ -153,15 +148,14 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
     var category = await ChicNavigator.push(
       context,
       NewCategoryScreen(
-        category: _category,
+        category: _viewModel.category,
         previousPageTitle: widget.category.name,
       ),
       isModal: true,
     );
 
     if (category != null && category is Category) {
-      _category = category;
-      _loadPassword();
+      _viewModel.onEditCategory(category);
       widget.onCategoryChanged();
     }
   }
@@ -174,7 +168,7 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
           title: Text(AppTranslations.of(context).text("warning")),
           content: Text(
             AppTranslations.of(context).textWithArgument(
-                "warning_message_delete_category", _category.name),
+                "warning_message_delete_category", _viewModel.category.name),
           ),
           actions: [
             TextButton(
@@ -200,9 +194,7 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
     );
 
     if (result != null && result) {
-      // Delete the category and put the linked entries into the trash category
-      await EntryService.moveToTrashAllEntriesFromCategory(_category);
-      await CategoryService.delete(_category);
+      await _viewModel.onDeletingCategory();
       Navigator.pop(context, true);
     }
   }

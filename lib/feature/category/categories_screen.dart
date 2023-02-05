@@ -6,7 +6,7 @@ import 'package:chic_secret/feature/category/categories_screen_view_model.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/ui/screen/entry_category_screen.dart';
+import 'package:chic_secret/feature/entry/category/entry_category_screen.dart';
 import 'package:chic_secret/feature/category/new/new_category_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
