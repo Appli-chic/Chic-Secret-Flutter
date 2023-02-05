@@ -13,7 +13,7 @@ import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/custom_field_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
-import 'package:chic_secret/ui/screen/new_entry_screen.dart';
+import 'package:chic_secret/feature/entry/new/new_entry_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/date_render.dart';
 import 'package:chic_secret/utils/security.dart';

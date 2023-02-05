@@ -14,7 +14,7 @@ import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/ui/screen/new_entry_screen.dart';
+import 'package:chic_secret/feature/entry/new/new_entry_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/shared_data.dart';
 import 'package:flutter/cupertino.dart';
