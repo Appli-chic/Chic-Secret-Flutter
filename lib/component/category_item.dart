@@ -6,7 +6,7 @@ import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
-import 'package:chic_secret/features/category/new/new_category_screen.dart';
+import 'package:chic_secret/feature/category/new/new_category_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/color.dart';
 import 'package:chic_secret/utils/icon_converter.dart';
