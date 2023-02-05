@@ -13,7 +13,7 @@ import 'package:chic_secret/service/custom_field_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/service/entry_tag_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
-import 'package:chic_secret/ui/screen/generate_password_screen.dart';
+import 'package:chic_secret/feature/entry/generate_password/generate_password_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/rich_text_editing_controller.dart';

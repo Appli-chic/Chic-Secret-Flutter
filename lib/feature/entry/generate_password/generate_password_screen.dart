@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:chic_secret/component/common/chic_elevated_button.dart';
 import 'package:chic_secret/component/common/chic_icon_button.dart';
@@ -7,14 +6,11 @@ import 'package:chic_secret/component/common/chic_navigator.dart';
 import 'package:chic_secret/component/common/chic_text_button.dart';
 import 'package:chic_secret/component/common/chic_text_field.dart';
 import 'package:chic_secret/component/common/desktop_modal.dart';
+import 'package:chic_secret/feature/entry/generate_password/generate_password_screen_view_model.dart';
 import 'package:chic_secret/localization/app_translations.dart';
-import 'package:chic_secret/localization/application.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/screen/select_language_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
-import 'package:chic_secret/utils/constant.dart';
-import 'package:chic_secret/utils/rich_text_editing_controller.dart';
-import 'package:chic_secret/utils/security.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -32,58 +28,36 @@ class GeneratePasswordScreen extends StatefulWidget {
 
 class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     with TickerProviderStateMixin {
-  Locale? _locale;
-  late TabController _tabController;
-  final _passwordController = RichTextEditingController();
-  final _languageController = TextEditingController();
+  late GeneratePasswordScreenViewModel _viewModel;
+
   var _passwordFocusNode = FocusNode();
   var _languageFocusNode = FocusNode();
   var _desktopPasswordFocusNode = FocusNode();
   var _desktopLanguageFocusNode = FocusNode();
 
-  var _isGeneratingWords = true;
-  int? _segmentedControlIndex = 0;
-
-  var _hasUppercase = true;
-  var _hasNumbers = true;
-  var _hasSpecialCharacters = true;
-
-  // if _isGeneratingWords is false then it's the number of characters
-  var _numberWords = defaultPasswordWordNumber;
-  var _minWords = 1.0;
-  var _maxWords = 10.0;
-  var _divisionWords = 9;
-
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
+    final tabController = TabController(length: 2, vsync: this);
+    _viewModel = GeneratePasswordScreenViewModel(context, tabController);
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    if (_locale == null) {
-      _locale = Localizations.localeOf(context);
-      _passwordController.text = _generatePassword();
-
-      if (_locale != null) {
-        _languageController.text =
-            Application.getSupportedLanguageFromCode(_locale!.languageCode);
-      }
-    }
-
-    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    if (ChicPlatform.isDesktop()) {
-      return _displaysDesktopInModal(themeProvider);
-    } else {
-      return _displaysMobile(themeProvider);
-    }
+    return ChangeNotifierProvider<GeneratePasswordScreenViewModel>(
+      create: (BuildContext context) => _viewModel,
+      child: Consumer<GeneratePasswordScreenViewModel>(
+        builder: (context, value, _) {
+          if (ChicPlatform.isDesktop()) {
+            return _displaysDesktopInModal(themeProvider);
+          } else {
+            return _displaysMobile(themeProvider);
+          }
+        },
+      ),
+    );
   }
 
   Widget _displaysDesktopInModal(ThemeProvider themeProvider) {
@@ -105,7 +79,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
           child: ChicElevatedButton(
             child: Text(AppTranslations.of(context).text("done")),
             onPressed: () {
-              Navigator.of(context).pop(_passwordController.text);
+              Navigator.of(context).pop(_viewModel.passwordController.text);
             },
           ),
         ),
@@ -152,7 +126,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         onPressed: () {
-          Navigator.of(context).pop(_passwordController.text);
+          Navigator.of(context).pop(_viewModel.passwordController.text);
         },
       ),
     );
@@ -166,7 +140,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
         ChicTextButton(
           child: Text(AppTranslations.of(context).text("done")),
           onPressed: () {
-            Navigator.of(context).pop(_passwordController.text);
+            Navigator.of(context).pop(_viewModel.passwordController.text);
           },
         ),
       ],
@@ -177,7 +151,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
   Widget _displaysBody(ThemeProvider themeProvider) {
     String words = AppTranslations.of(context).text("words");
     String characters = AppTranslations.of(context).text("characters");
-    int passwordSize = _passwordController.text.length;
+    int passwordSize = _viewModel.passwordController.text.length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,7 +169,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
                   ? SizedBox(height: 16.0)
                   : SizedBox.shrink(),
               ChicTextField(
-                controller: _passwordController,
+                controller: _viewModel.passwordController,
                 focus: _passwordFocusNode,
                 desktopFocus: _desktopPasswordFocusNode,
                 label: "",
@@ -209,16 +183,13 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
                         ? CupertinoIcons.arrow_clockwise
                         : Icons.refresh,
                     color: themeProvider.primaryColor,
-                    onPressed: () {
-                      _passwordController.text = _generatePassword();
-                      setState(() {});
-                    },
+                    onPressed: _viewModel.onGeneratePassword,
                   ),
                 ),
               ),
               SizedBox(height: 32.0),
               Text(
-                _isGeneratingWords
+                _viewModel.isGeneratingWords
                     ? "$words ($passwordSize $characters)"
                     : characters,
                 style: TextStyle(
@@ -232,22 +203,18 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
                 children: [
                   Expanded(
                     child: Slider.adaptive(
-                      value: _numberWords,
-                      min: _minWords,
-                      max: _maxWords,
-                      divisions: _divisionWords,
+                      value: _viewModel.numberWords,
+                      min: _viewModel.minWords,
+                      max: _viewModel.maxWords,
+                      divisions: _viewModel.divisionWords,
                       activeColor: themeProvider.primaryColor,
-                      onChanged: (double value) {
-                        _numberWords = value;
-                        _passwordController.text = _generatePassword();
-                        setState(() {});
-                      },
+                      onChanged: _viewModel.onAmountWordsChanged,
                     ),
                   ),
                   Container(
                     margin: EdgeInsets.only(left: 16),
                     child: Text(
-                      "${_numberWords.ceil()}",
+                      "${_viewModel.numberWords.ceil()}",
                       style: TextStyle(
                         color: themeProvider.textColor,
                         fontWeight: FontWeight.w600,
@@ -279,13 +246,9 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
                     ),
                   ),
                   Switch.adaptive(
-                    value: _hasUppercase,
+                    value: _viewModel.hasUppercase,
                     activeColor: themeProvider.primaryColor,
-                    onChanged: (bool value) {
-                      _hasUppercase = value;
-                      _passwordController.text = _generatePassword();
-                      setState(() {});
-                    },
+                    onChanged: _viewModel.onUppercaseSwitchChanged,
                   ),
                 ],
               ),
@@ -302,13 +265,9 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
                     ),
                   ),
                   Switch.adaptive(
-                    value: _hasNumbers,
+                    value: _viewModel.hasNumbers,
                     activeColor: themeProvider.primaryColor,
-                    onChanged: (bool value) {
-                      _hasNumbers = value;
-                      _passwordController.text = _generatePassword();
-                      setState(() {});
-                    },
+                    onChanged: _viewModel.onDigitSwitchChanged,
                   ),
                 ],
               ),
@@ -325,19 +284,15 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
                     ),
                   ),
                   Switch.adaptive(
-                    value: _hasSpecialCharacters,
+                    value: _viewModel.hasSpecialCharacters,
                     activeColor: themeProvider.primaryColor,
-                    onChanged: (bool value) {
-                      _hasSpecialCharacters = value;
-                      _passwordController.text = _generatePassword();
-                      setState(() {});
-                    },
+                    onChanged: _viewModel.onSpecialCharacterSwitchChanged,
                   ),
                 ],
               ),
               SizedBox(height: 16.0),
               ChicTextField(
-                controller: _languageController,
+                controller: _viewModel.languageController,
                 focus: _languageFocusNode,
                 desktopFocus: _desktopLanguageFocusNode,
                 isReadOnly: true,
@@ -357,14 +312,8 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
       color: themeProvider.secondBackgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: CupertinoSlidingSegmentedControl<int>(
-        groupValue: _segmentedControlIndex,
-        onValueChanged: (index) {
-          setState(() {
-            _segmentedControlIndex = index;
-          });
-
-          _onTabBarItemTapped(index);
-        },
+        groupValue: _viewModel.segmentedControlIndex,
+        onValueChanged: _viewModel.onSegmentedControlChanged,
         children: {
           0: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
@@ -387,9 +336,9 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
 
   PreferredSizeWidget _displayTabBar(ThemeProvider themeProvider) {
     return TabBar(
-      controller: _tabController,
+      controller: _viewModel.tabController,
       indicatorColor: themeProvider.primaryColor,
-      onTap: _onTabBarItemTapped,
+      onTap: _viewModel.onTabBarItemTapped,
       tabs: <Widget>[
         Tab(
           text: AppTranslations.of(context).text("words"),
@@ -401,114 +350,24 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
     );
   }
 
-  _onTabBarItemTapped(int? index) {
-    if (index == 0) {
-      _isGeneratingWords = true;
-      _numberWords = 4;
-      _minWords = 1.0;
-      _maxWords = 10.0;
-      _divisionWords = 9;
-    } else {
-      _isGeneratingWords = false;
-      _numberWords = 16;
-      _minWords = 6.0;
-      _maxWords = 50.0;
-      _divisionWords = 43;
-    }
-
-    _passwordController.text = _generatePassword();
-    setState(() {});
-  }
-
   _selectLanguage() async {
     String? language = await ChicNavigator.push(
       context,
       SelectLanguageScreen(
-        language: _locale?.languageCode,
+        language: _viewModel.locale?.languageCode,
       ),
       isModal: true,
     );
 
     if (language != null) {
-      _locale = Locale(language);
-      var index = Application.supportedLanguagesCodes.indexOf(language);
-      _languageController.text = Application.supportedLanguages[index];
-      _passwordController.text = _generatePassword();
-      setState(() {});
+      _viewModel.setLanguage(language);
     }
-  }
-
-  String _generatePassword() {
-    if (_isGeneratingWords) {
-      // Generating a password composed of words
-      return Security.generatePasswordWithWords(
-        _locale,
-        _numberWords,
-        _hasUppercase,
-        _hasNumbers,
-        _hasSpecialCharacters,
-      );
-    }
-
-    // Generating a random password
-    return _generateRandomPassword();
-  }
-
-  String _generateRandomPassword() {
-    var newPassword = "";
-    List<String> dictionary = [];
-
-    dictionary.addAll(letters);
-    dictionary.addAll(letters);
-
-    if (_hasUppercase) {
-      dictionary.addAll(uppercase);
-    }
-
-    if (_hasNumbers) {
-      dictionary.addAll(numbers);
-    }
-
-    if (_hasSpecialCharacters) {
-      dictionary.addAll(specialCharacters);
-    }
-
-    do {
-      newPassword = "";
-
-      for (var wordIndex = 0; wordIndex < _numberWords; wordIndex++) {
-        var rng = new Random();
-        newPassword += dictionary[rng.nextInt(dictionary.length - 1)];
-      }
-    } while (!_isPasswordGeneratedCorrect(newPassword));
-
-    return newPassword;
-  }
-
-  bool _isPasswordGeneratedCorrect(String password) {
-    var isPasswordCorrect = true;
-
-    if (_hasUppercase && !password.contains(RegExp(r'[A-Z]'))) {
-      isPasswordCorrect = false;
-    }
-
-    if (_hasNumbers && !password.contains(RegExp(r'[0-9]'))) {
-      isPasswordCorrect = false;
-    }
-
-    if (_hasSpecialCharacters &&
-        !specialCharacters
-            .any((specialCharacter) => password.contains(specialCharacter))) {
-      isPasswordCorrect = false;
-    }
-
-    return isPasswordCorrect;
   }
 
   @override
   void dispose() {
-    _passwordController.dispose();
-    _languageController.dispose();
+    _viewModel.passwordController.dispose();
+    _viewModel.languageController.dispose();
 
     _passwordFocusNode.dispose();
     _languageFocusNode.dispose();
