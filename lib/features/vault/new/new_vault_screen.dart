@@ -1,15 +1,15 @@
 import 'dart:io';
 
+import 'package:chic_secret/component/common/chic_elevated_button.dart';
+import 'package:chic_secret/component/common/chic_text_button.dart';
+import 'package:chic_secret/component/common/chic_text_field.dart';
+import 'package:chic_secret/component/common/desktop_modal.dart';
+import 'package:chic_secret/component/tag_chip.dart';
 import 'package:chic_secret/features/vault/new/new_vault_screen_view_model.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
-import 'package:chic_secret/ui/component/common/chic_text_button.dart';
-import 'package:chic_secret/ui/component/common/chic_text_field.dart';
-import 'package:chic_secret/ui/component/common/desktop_modal.dart';
-import 'package:chic_secret/ui/component/tag_chip.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

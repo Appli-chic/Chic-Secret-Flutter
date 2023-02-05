@@ -1,5 +1,9 @@
 import 'dart:io';
 
+import 'package:chic_secret/component/common/chic_elevated_button.dart';
+import 'package:chic_secret/component/common/chic_navigator.dart';
+import 'package:chic_secret/component/common/desktop_modal.dart';
+import 'package:chic_secret/component/setting_item.dart';
 import 'package:chic_secret/features/settings/settings_screen_view_model.dart';
 import 'package:chic_secret/features/user/user_screen.dart';
 import 'package:chic_secret/localization/app_translations.dart';
@@ -12,10 +16,6 @@ import 'package:chic_secret/service/entry_tag_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
 import 'package:chic_secret/service/vault_service.dart';
 import 'package:chic_secret/service/vault_user_service.dart';
-import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
-import 'package:chic_secret/ui/component/common/chic_navigator.dart';
-import 'package:chic_secret/ui/component/common/desktop_modal.dart';
-import 'package:chic_secret/ui/component/setting_item.dart';
 import 'package:chic_secret/features/settings/biometry/biometry_screen.dart';
 import 'package:chic_secret/features/settings/import/import_export_choice_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';

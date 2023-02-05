@@ -1,9 +1,9 @@
 import 'dart:io';
 
+import 'package:chic_secret/component/clipper/half_circle_clipper.dart';
+import 'package:chic_secret/component/common/chic_navigator.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/ui/component/clipper/half_circle_clipper.dart';
-import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/features/category/categories_screen.dart';
 import 'package:chic_secret/ui/screen/entry_screen.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';

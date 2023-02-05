@@ -1,8 +1,7 @@
-import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
+import 'package:chic_secret/component/common/chic_icon_button.dart';
+import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../provider/theme_provider.dart';
 
 class DesktopExpandableMenu extends StatefulWidget {
   final Widget child;

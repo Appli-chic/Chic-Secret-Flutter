@@ -1,12 +1,12 @@
 import 'dart:io';
 
+import 'package:chic_secret/component/common/chic_elevated_button.dart';
+import 'package:chic_secret/component/common/chic_navigator.dart';
+import 'package:chic_secret/component/vault_item.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
-import 'package:chic_secret/ui/component/common/chic_navigator.dart';
-import 'package:chic_secret/ui/component/vault_item.dart';
 import 'package:chic_secret/features/user/login/login_screen.dart';
 import 'package:chic_secret/features/main_mobile_screen.dart';
 import 'package:chic_secret/features/vault/new/new_vault_screen.dart';

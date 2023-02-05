@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:chic_secret/component/common/chic_navigator.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/features/vault/unlock/unlock_vault_screen.dart';
 import 'package:chic_secret/utils/security.dart';
 import 'package:chic_secret/utils/shared_data.dart';

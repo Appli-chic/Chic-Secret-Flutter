@@ -1,18 +1,18 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:chic_secret/component/common/chic_elevated_button.dart';
+import 'package:chic_secret/component/common/chic_navigator.dart';
+import 'package:chic_secret/component/common/chic_text_button.dart';
+import 'package:chic_secret/component/common/chic_text_field.dart';
+import 'package:chic_secret/component/common/chic_text_icon_button.dart';
+import 'package:chic_secret/component/entry_item.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/entry_service.dart';
-import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
-import 'package:chic_secret/ui/component/common/chic_navigator.dart';
-import 'package:chic_secret/ui/component/common/chic_text_button.dart';
-import 'package:chic_secret/ui/component/common/chic_text_field.dart';
-import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
-import 'package:chic_secret/ui/component/entry_item.dart';
 import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
 import 'package:chic_secret/features/category/select_category/select_category_screen.dart';

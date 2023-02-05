@@ -1,7 +1,7 @@
+import 'package:chic_secret/component/common/chic_navigator.dart';
 import 'package:chic_secret/model/database/user.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/service/user_service.dart';
-import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/features/user/login/login_screen.dart';
 import 'package:chic_secret/features/vault/new/new_vault_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';

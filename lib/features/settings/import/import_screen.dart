@@ -1,17 +1,17 @@
 import 'dart:io';
 
+import 'package:chic_secret/component/common/chic_elevated_button.dart';
+import 'package:chic_secret/component/common/chic_navigator.dart';
+import 'package:chic_secret/component/common/chic_text_button.dart';
+import 'package:chic_secret/component/common/chic_text_field.dart';
+import 'package:chic_secret/component/common/chic_text_icon_button.dart';
+import 'package:chic_secret/component/common/desktop_modal.dart';
 import 'package:chic_secret/features/category/new/new_category_screen.dart';
 import 'package:chic_secret/features/category/select_category/select_category_screen.dart';
 import 'package:chic_secret/features/settings/import/import_screen_view_model.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/ui/component/common/chic_elevated_button.dart';
-import 'package:chic_secret/ui/component/common/chic_navigator.dart';
-import 'package:chic_secret/ui/component/common/chic_text_button.dart';
-import 'package:chic_secret/ui/component/common/chic_text_field.dart';
-import 'package:chic_secret/ui/component/common/chic_text_icon_button.dart';
-import 'package:chic_secret/ui/component/common/desktop_modal.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/import_export.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,8 +1,8 @@
+import 'package:chic_secret/component/color_selector.dart';
+import 'package:chic_secret/component/icon_selector.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/synchronization_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
-import 'package:chic_secret/ui/component/color_selector.dart';
-import 'package:chic_secret/ui/component/icon_selector.dart';
 import 'package:chic_secret/utils/color.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/icon_converter.dart';

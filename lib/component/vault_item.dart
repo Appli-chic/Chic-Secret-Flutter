@@ -1,10 +1,10 @@
 import 'dart:io';
 
+import 'package:chic_secret/component/common/chic_navigator.dart';
+import 'package:chic_secret/component/common/chic_popup_menu_item.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/vault.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/ui/component/common/chic_navigator.dart';
-import 'package:chic_secret/ui/component/common/chic_popup_menu_item.dart';
 import 'package:chic_secret/features/vault/new/new_vault_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/shared_data.dart';

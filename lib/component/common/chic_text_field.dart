@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:chic_secret/component/common/chic_icon_button.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/ui/component/common/chic_icon_button.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

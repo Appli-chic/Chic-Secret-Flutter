@@ -1,11 +1,11 @@
 import 'dart:io';
 
+import 'package:chic_secret/component/category_item.dart';
+import 'package:chic_secret/component/common/chic_navigator.dart';
 import 'package:chic_secret/features/category/categories_screen_view_model.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/ui/component/category_item.dart';
-import 'package:chic_secret/ui/component/common/chic_navigator.dart';
 import 'package:chic_secret/ui/screen/entry_category_screen.dart';
 import 'package:chic_secret/features/category/new/new_category_screen.dart';
 import 'package:flutter/cupertino.dart';
