@@ -24,11 +24,11 @@ class GeneratePasswordScreenViewModel with ChangeNotifier {
   var maxWords = 10.0;
   var divisionWords = 9;
 
-  GeneratePasswordScreenViewModel(
-    BuildContext context,
-    TabController tabController,
-  ) {
+  GeneratePasswordScreenViewModel(TabController tabController) {
     this.tabController = tabController;
+  }
+
+  initLocale(BuildContext context) {
     locale = Localizations.localeOf(context);
     passwordController.text = generatePassword();
     languageController.text =

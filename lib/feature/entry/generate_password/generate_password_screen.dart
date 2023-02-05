@@ -7,9 +7,9 @@ import 'package:chic_secret/component/common/chic_text_button.dart';
 import 'package:chic_secret/component/common/chic_text_field.dart';
 import 'package:chic_secret/component/common/desktop_modal.dart';
 import 'package:chic_secret/feature/entry/generate_password/generate_password_screen_view_model.dart';
+import 'package:chic_secret/feature/entry/generate_password/language/select_language_screen.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/ui/screen/select_language_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,8 +38,14 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
   @override
   void initState() {
     final tabController = TabController(length: 2, vsync: this);
-    _viewModel = GeneratePasswordScreenViewModel(context, tabController);
+    _viewModel = GeneratePasswordScreenViewModel(tabController);
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _viewModel.initLocale(context);
+    super.didChangeDependencies();
   }
 
   @override

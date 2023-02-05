@@ -1,6 +1,7 @@
 import 'package:chic_secret/component/common/chic_navigator.dart';
 import 'package:chic_secret/feature/category/new/new_category_screen.dart';
 import 'package:chic_secret/feature/category/select_category/select_category_screen.dart';
+import 'package:chic_secret/feature/entry/generate_password/generate_password_screen.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/category.dart';
 import 'package:chic_secret/model/database/custom_field.dart';
@@ -13,7 +14,6 @@ import 'package:chic_secret/service/custom_field_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
 import 'package:chic_secret/service/entry_tag_service.dart';
 import 'package:chic_secret/service/tag_service.dart';
-import 'package:chic_secret/feature/entry/generate_password/generate_password_screen.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/rich_text_editing_controller.dart';
@@ -53,17 +53,22 @@ class NewEntryScreenViewModel with ChangeNotifier {
     Entry? entry,
     Function()? onReloadCategories,
     Function(Entry?)? onFinish,
-    BuildContext context,
   ) {
     _previousEntry = entry;
     _onReloadCategories = onReloadCategories;
     _onFinish = onFinish;
-    _locale = Localizations.localeOf(context);
 
     if (entry != null) {
       _initEditEntry();
     } else {
       _initNewEntry();
+    }
+  }
+
+  initLocale(BuildContext context) {
+    _locale = Localizations.localeOf(context);
+    if (_previousEntry == null) {
+      _prefillPassword();
     }
   }
 
@@ -82,7 +87,6 @@ class NewEntryScreenViewModel with ChangeNotifier {
   }
 
   _initNewEntry() {
-    _prefillPassword();
     _prefillUsername();
 
     if (ChicPlatform.isDesktop()) {

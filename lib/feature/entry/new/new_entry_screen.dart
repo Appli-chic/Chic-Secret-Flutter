@@ -58,10 +58,15 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       widget.entry,
       widget.onReloadCategories,
       widget.onFinish,
-      context,
     );
 
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _viewModel.initLocale(context);
+    super.didChangeDependencies();
   }
 
   @override
