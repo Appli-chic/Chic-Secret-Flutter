@@ -3,7 +3,7 @@ import 'package:chic_secret/feature/desktop/side_bar.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
-import 'package:chic_secret/ui/screen/entry_screen.dart';
+import 'package:chic_secret/feature/entry/entries_screen.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +31,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
   Entry? _selectedEntry;
   bool _isCreatingOrModifyingEntry = false;
   SideBarController _sideBarController = SideBarController();
-  EntryScreenController _entryScreenController = EntryScreenController();
+  EntriesScreenController _entryScreenController = EntriesScreenController();
 
   @override
   void initState() {
@@ -182,7 +182,7 @@ class _MainDesktopScreenState extends State<MainDesktopScreen> {
         view2: SplitView(
           gripColor: themeProvider.divider,
           positionLimit: 300,
-          view1: EntryScreen(
+          view1: EntriesScreen(
             passwordScreenController: _entryScreenController,
             reloadCategories: _reloadCategories,
             reloadTags: _reloadTags,

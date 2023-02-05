@@ -5,7 +5,7 @@ import 'package:chic_secret/component/common/chic_navigator.dart';
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/feature/category/categories_screen.dart';
-import 'package:chic_secret/ui/screen/entry_screen.dart';
+import 'package:chic_secret/feature/entry/entries_screen.dart';
 import 'package:chic_secret/ui/screen/new_entry_screen.dart';
 import 'package:chic_secret/feature/security/security_screen.dart';
 import 'package:chic_secret/feature/settings/settings_screen.dart';
@@ -19,7 +19,7 @@ class MainMobileScreen extends StatefulWidget {
 }
 
 class _MainMobileScreenState extends State<MainMobileScreen> {
-  EntryScreenController _passwordScreenController = EntryScreenController();
+  EntriesScreenController _passwordScreenController = EntriesScreenController();
   CategoriesScreenController _categoryScreenController =
       CategoriesScreenController();
   PageController _pageController = PageController();
@@ -40,7 +40,7 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
         ),
         tabBuilder: (BuildContext context, int index) {
           if (index == 0) {
-            return EntryScreen(
+            return EntriesScreen(
               passwordScreenController: _passwordScreenController,
             );
           } else if (index == 1) {
@@ -96,7 +96,7 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
       controller: _pageController,
       physics: NeverScrollableScrollPhysics(),
       children: [
-        EntryScreen(
+        EntriesScreen(
           passwordScreenController: _passwordScreenController,
         ),
         CategoriesScreen(
