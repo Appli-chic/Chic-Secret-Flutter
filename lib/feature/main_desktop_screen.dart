@@ -2,7 +2,7 @@ import 'package:chic_secret/component/common/split_view.dart';
 import 'package:chic_secret/feature/desktop/side_bar.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
+import 'package:chic_secret/feature/entry/detail/entry_detail_screen.dart';
 import 'package:chic_secret/feature/entry/entries_screen.dart';
 import 'package:chic_secret/feature/entry/new/new_entry_screen.dart';
 import 'package:flutter/material.dart';

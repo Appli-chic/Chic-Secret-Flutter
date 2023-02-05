@@ -8,7 +8,7 @@ import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/service/category_service.dart';
 import 'package:chic_secret/service/entry_service.dart';
-import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
+import 'package:chic_secret/feature/entry/detail/entry_detail_screen.dart';
 import 'package:chic_secret/feature/category/new/new_category_screen.dart';
 import 'package:chic_secret/utils/shared_data.dart';
 import 'package:flutter/cupertino.dart';

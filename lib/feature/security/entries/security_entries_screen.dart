@@ -6,7 +6,7 @@ import 'package:chic_secret/feature/security/entries/security_entries_screen_vie
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/model/database/entry.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/ui/screen/entry_detail_screen.dart';
+import 'package:chic_secret/feature/entry/detail/entry_detail_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

@@ -5,15 +5,11 @@ import 'package:chic_secret/component/common/chic_text_icon_button.dart';
 import 'package:chic_secret/component/entry_detail_input.dart';
 import 'package:chic_secret/component/entry_item.dart';
 import 'package:chic_secret/component/tag_chip.dart';
-import 'package:chic_secret/localization/app_translations.dart';
-import 'package:chic_secret/model/database/custom_field.dart';
-import 'package:chic_secret/model/database/entry.dart';
-import 'package:chic_secret/model/database/tag.dart';
-import 'package:chic_secret/provider/theme_provider.dart';
-import 'package:chic_secret/service/custom_field_service.dart';
-import 'package:chic_secret/service/entry_service.dart';
-import 'package:chic_secret/service/tag_service.dart';
+import 'package:chic_secret/feature/entry/detail/entry_detail_screen_view_model.dart';
 import 'package:chic_secret/feature/entry/new/new_entry_screen.dart';
+import 'package:chic_secret/localization/app_translations.dart';
+import 'package:chic_secret/model/database/entry.dart';
+import 'package:chic_secret/provider/theme_provider.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:chic_secret/utils/date_render.dart';
 import 'package:chic_secret/utils/security.dart';
@@ -42,42 +38,16 @@ class EntryDetailScreen extends StatefulWidget {
 }
 
 class _EntryDetailScreenState extends State<EntryDetailScreen> {
-  List<Entry> _duplicatedEntries = [];
-
-  late Entry _oldEntry;
-  List<Tag> _tags = [];
-  List<CustomField> _customFields = [];
-  EntryDetailInputController _passwordEntryDetailController =
-      EntryDetailInputController();
+  late EntryDetailScreenViewModel _viewModel;
 
   @override
   void initState() {
-    _oldEntry = widget.entry;
+    _viewModel = EntryDetailScreenViewModel(
+      widget.entry,
+      widget.onEntryDeleted,
+    );
 
-    _checkPasswordSecurity();
-    _loadTags();
-    _loadCustomFields();
     super.initState();
-  }
-
-  _checkPasswordSecurity() async {
-    var entries = await EntryService.findDuplicatedPasswords(
-        selectedVault!.id, widget.entry.hash);
-
-    _duplicatedEntries =
-        entries.where((entry) => entry.id != widget.entry.id).toList();
-
-    setState(() {});
-  }
-
-  _loadTags() async {
-    _tags = await TagService.getAllByEntry(widget.entry.id);
-    setState(() {});
-  }
-
-  _loadCustomFields() async {
-    _customFields = await CustomFieldService.getAllByEntry(widget.entry.id);
-    setState(() {});
   }
 
   @override
@@ -85,15 +55,12 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
     // Reload tags and custom fields if the entry changed (mainly for desktop usage)
-    if (widget.entry.id != _oldEntry.id) {
-      if (_passwordEntryDetailController.hidePassword != null) {
-        _passwordEntryDetailController.hidePassword!();
+    if (widget.entry.id != _viewModel.currentEntry.id) {
+      if (_viewModel.passwordEntryDetailController.hidePassword != null) {
+        _viewModel.passwordEntryDetailController.hidePassword!();
       }
 
-      _oldEntry = widget.entry;
-      _checkPasswordSecurity();
-      _loadTags();
-      _loadCustomFields();
+      _viewModel.reload(widget.entry);
     }
 
     if (Platform.isIOS) {
@@ -234,7 +201,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                         SizedBox(height: 24),
                         EntryDetailInput(
                           entryDetailInputController:
-                              _passwordEntryDetailController,
+                              _viewModel.passwordEntryDetailController,
                           label: AppTranslations.of(context)
                               .text("password_not_mandatory"),
                           text: password,
@@ -339,13 +306,13 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
   }
 
   Widget _displaysCustomFields() {
-    if (_customFields.isEmpty) {
+    if (_viewModel.customFields.isEmpty) {
       return SizedBox.shrink();
     }
 
     List<Widget> customFields = [];
 
-    for (var customField in _customFields) {
+    for (var customField in _viewModel.customFields) {
       customFields.add(
         EntryDetailInput(
           label: customField.name,
@@ -353,7 +320,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
         ),
       );
 
-      if (customField != _customFields.last) {
+      if (customField != _viewModel.customFields.last) {
         customFields.add(SizedBox(height: 24));
       }
     }
@@ -373,7 +340,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
   }
 
   Widget _displaysTags(ThemeProvider themeProvider) {
-    if (_tags.isEmpty) {
+    if (_viewModel.tags.isEmpty) {
       return SizedBox.shrink();
     }
 
@@ -396,10 +363,10 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
   List<Widget> _createChipsList(ThemeProvider themeProvider) {
     List<Widget> chips = [];
 
-    for (var tagIndex = 0; tagIndex < _tags.length; tagIndex++) {
+    for (var tagIndex = 0; tagIndex < _viewModel.tags.length; tagIndex++) {
       chips.add(
         TagChip(
-          name: _tags[tagIndex].name,
+          name: _viewModel.tags[tagIndex].name,
           index: tagIndex,
         ),
       );
@@ -409,7 +376,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
   }
 
   Widget _displayDuplicatedEntries(ThemeProvider themeProvider) {
-    if (_duplicatedEntries.isEmpty) {
+    if (_viewModel.duplicatedEntries.isEmpty) {
       return SizedBox.shrink();
     } else {
       return Container(
@@ -428,10 +395,10 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
             ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemCount: _duplicatedEntries.length,
+              itemCount: _viewModel.duplicatedEntries.length,
               itemBuilder: (context, index) {
                 return EntryItem(
-                  entry: _duplicatedEntries[index],
+                  entry: _viewModel.duplicatedEntries[index],
                   isSelected: false,
                   onTap: _onEntrySelected,
                 );
@@ -458,7 +425,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
       );
     }
 
-    _checkPasswordSecurity();
+    _viewModel.checkPasswordSecurity();
   }
 
   _onEditButtonClicked() async {
@@ -525,21 +492,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     );
 
     if (result != null && result) {
-      if (!isAlreadyInTrash) {
-        // We move the entry to the trash bin
-        await EntryService.moveToTrash(widget.entry);
-      } else {
-        // We delete it definitely
-        await EntryService.deleteDefinitively(widget.entry);
-      }
-
-      if (ChicPlatform.isDesktop()) {
-        if (widget.onEntryDeleted != null) {
-          widget.onEntryDeleted!();
-        }
-      } else {
-        Navigator.pop(context);
-      }
+      _viewModel.onDeleteEntry(context, isAlreadyInTrash);
     }
   }
 }
