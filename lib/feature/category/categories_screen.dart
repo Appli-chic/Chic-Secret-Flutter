@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CategoriesScreenController {
-  void Function()? reloadCategories;
+  Function()? reloadCategories;
 
   CategoriesScreenController({
     this.reloadCategories,
@@ -41,7 +41,7 @@ class _CategoriesScreenState extends State<CategoriesScreen>
   void initState() {
     if (widget.categoryScreenController != null) {
       widget.categoryScreenController!.reloadCategories =
-          _viewModel.loadCategories();
+          _viewModel.loadCategories;
     }
 
     super.initState();
