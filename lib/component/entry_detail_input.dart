@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:chic_secret/localization/app_translations.dart';
 import 'package:chic_secret/provider/theme_provider.dart';
+import 'package:chic_secret/utils/clipboard.dart';
 import 'package:chic_secret/utils/rich_text_editing_controller.dart';
-import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -143,7 +143,7 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
         if (Platform.isWindows) {
           FlutterClipboard.copy(" ");
         } else {
-          Clipboard.setData(ClipboardData());
+          Clipboard.setData(ClipboardData(text: ''));
         }
       });
     } catch (e) {
