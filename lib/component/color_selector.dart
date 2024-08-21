@@ -226,20 +226,20 @@ class ColorPickerDialog {
       wheelDiameter: 155,
       heading: Text(
         AppTranslations.of(context).text("select_color"),
-        style: Theme.of(context).textTheme.subtitle1,
+        style: Theme.of(context).textTheme.labelLarge,
       ),
       subheading: Text(
         AppTranslations.of(context).text("select_color_shade"),
-        style: Theme.of(context).textTheme.subtitle1,
+        style: Theme.of(context).textTheme.labelLarge,
       ),
       wheelSubheading: Text(
         AppTranslations.of(context).text("select_color_and_shade"),
-        style: Theme.of(context).textTheme.subtitle1,
+        style: Theme.of(context).textTheme.labelLarge,
       ),
       showColorCode: true,
-      materialNameTextStyle: Theme.of(context).textTheme.caption,
-      colorNameTextStyle: Theme.of(context).textTheme.caption,
-      colorCodeTextStyle: Theme.of(context).textTheme.caption,
+      materialNameTextStyle: Theme.of(context).textTheme.labelSmall,
+      colorNameTextStyle: Theme.of(context).textTheme.labelSmall,
+      colorCodeTextStyle: Theme.of(context).textTheme.labelSmall,
       pickersEnabled: const <ColorPickerType, bool>{
         ColorPickerType.both: false,
         ColorPickerType.primary: true,
