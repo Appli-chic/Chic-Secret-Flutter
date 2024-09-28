@@ -10,8 +10,8 @@ import 'package:chic_secret/utils/security.dart';
 import 'package:chic_secret/utils/shared_data.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:file_saver/file_saver.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
@@ -101,26 +101,64 @@ Future<void> exportVaultData() async {
 
   String csv = const ListToCsvConverter().convert(rows);
 
-  var path = await FileSaver.instance.saveFile(
-    name: "chic_secret_export",
-    bytes: Uint8List.fromList(utf8.encode(csv)),
-    ext: "csv",
-    mimeType: MimeType.csv,
+  String? filePath = await saveFileToDocuments(
+    'chic_secret_export.csv',
+    Uint8List.fromList(utf8.encode(csv)),
   );
 
-  await openSafeFile(path);
+  if (filePath != null) {
+    await openSafeFile(filePath);
+  } else {
+    print('Failed to save the file.');
+  }
 }
 
-Future<void> openSafeFile(String path) async {
-  final Uri uri = Uri.file(path);
+Future<String?> saveFileToDocuments(String fileName, Uint8List fileBytes) async {
+  try {
+    Directory? directory;
+    if (Platform.isAndroid) {
+      directory = Directory('/storage/emulated/0/Documents');
+    } else if (Platform.isIOS) {
+      directory = await getApplicationDocumentsDirectory();
+    }
 
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(
-      uri,
-      mode: LaunchMode.externalApplication,
-    );
-  } else {
-    throw 'Could not open file at path: $path';
+    if (directory != null) {
+      String path = '${directory.path}/$fileName';
+
+      File file = File(path);
+      await file.writeAsBytes(fileBytes);
+
+      print('File saved at: $path');
+      return path;
+    } else {
+      throw Exception('Unable to get the documents directory.');
+    }
+  } catch (e) {
+    print('Error saving file: $e');
+    return null;
+  }
+}
+
+Future<void> openSafeFile(String filePath) async {
+  try {
+    final File file = File(filePath);
+
+    if (Platform.isAndroid) {
+      await Permission.storage.request();
+    }
+
+    final Uri contentUri = Uri.parse('content://${Uri.encodeComponent(file.path)}');
+
+    if (await canLaunchUrl(contentUri)) {
+      await launchUrl(
+        contentUri,
+        mode: LaunchMode.externalApplication,
+      );
+    } else {
+      throw 'Could not open file at path: $filePath';
+    }
+  } catch (e) {
+    print('Error opening file: $e');
   }
 }
 
