@@ -12,8 +12,8 @@ import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:file_selector/file_selector.dart';
-import 'package:open_file_safe/open_file_safe.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 import '../model/database/category.dart';
@@ -102,13 +102,26 @@ Future<void> exportVaultData() async {
   String csv = const ListToCsvConverter().convert(rows);
 
   var path = await FileSaver.instance.saveFile(
-    "chic_secret_export",
-    Uint8List.fromList(utf8.encode(csv)),
-    "csv",
-    mimeType: MimeType.CSV,
+    name: "chic_secret_export",
+    bytes: Uint8List.fromList(utf8.encode(csv)),
+    ext: "csv",
+    mimeType: MimeType.csv,
   );
 
-  OpenFile.open(path);
+  await openSafeFile(path);
+}
+
+Future<void> openSafeFile(String path) async {
+  final Uri uri = Uri.file(path);
+
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+  } else {
+    throw 'Could not open file at path: $path';
+  }
 }
 
 Future<ImportData?> importFromFile(ImportType importType) async {

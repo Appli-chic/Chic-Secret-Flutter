@@ -377,8 +377,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                   return [];
                 }
 
-                return await TagService.searchingTagInVault(
-                    selectedVault!.id, pattern);
+                return await TagService.searchingTagInVault(selectedVault!.id, pattern);
               },
               itemBuilder: (context, tag) {
                 return ListTile(

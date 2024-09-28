@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 class ChicAheadTextField extends StatelessWidget {
   final TextEditingController controller;
-  final Future<Iterable<dynamic>> Function(String) suggestionsCallback;
+  final Future<List<dynamic>> Function(String) suggestionsCallback;
   final Widget Function(BuildContext, dynamic) itemBuilder;
   final Function(dynamic) onSuggestionSelected;
   final String hint;
@@ -24,9 +24,9 @@ class ChicAheadTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    return TypeAheadField(
+    return TypeAheadField<dynamic>(
       autoFlipDirection: true,
-      textFieldConfiguration: TextFieldConfiguration(
+      builder: (context, controller, focusNode) => TextField(
         controller: controller,
         decoration: InputDecoration(
           border: _getInputBorder(themeProvider.placeholder),
@@ -46,11 +46,11 @@ class ChicAheadTextField extends StatelessWidget {
       ),
       suggestionsCallback: suggestionsCallback,
       itemBuilder: itemBuilder,
-      onSuggestionSelected: onSuggestionSelected,
+      onSelected: onSuggestionSelected,
       loadingBuilder: (context) {
         return SizedBox.shrink();
       },
-      noItemsFoundBuilder: (context) {
+      emptyBuilder: (context) {
         return SizedBox.shrink();
       },
     );
