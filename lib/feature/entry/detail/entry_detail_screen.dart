@@ -63,19 +63,26 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
       _viewModel.reload(widget.entry);
     }
 
-    if (Platform.isIOS) {
-      return CupertinoPageScaffold(
-        backgroundColor: themeProvider.backgroundColor,
-        navigationBar: _displaysIosAppbar(themeProvider),
-        child: _displaysBody(themeProvider),
-      );
-    } else {
-      return Scaffold(
-        backgroundColor: themeProvider.backgroundColor,
-        appBar: _displaysAppbar(themeProvider),
-        body: _displaysBody(themeProvider),
-      );
-    }
+    return ChangeNotifierProvider<EntryDetailScreenViewModel>(
+      create: (BuildContext context) => _viewModel,
+      child: Consumer<EntryDetailScreenViewModel>(
+        builder: (context, value, _) {
+          if (Platform.isIOS) {
+            return CupertinoPageScaffold(
+              backgroundColor: themeProvider.backgroundColor,
+              navigationBar: _displaysIosAppbar(themeProvider),
+              child: _displaysBody(themeProvider),
+            );
+          } else {
+            return Scaffold(
+              backgroundColor: themeProvider.backgroundColor,
+              appBar: _displaysAppbar(themeProvider),
+              body: _displaysBody(themeProvider),
+            );
+          }
+        },
+      ),
+    );
   }
 
   ObstructingPreferredSizeWidget _displaysIosAppbar(
