@@ -141,6 +141,7 @@ class _VaultsScreenState extends State<VaultsScreen> {
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     return AppBar(
       backgroundColor: themeProvider.secondBackgroundColor,
+      scrolledUnderElevation: 0,
       title: Text(AppTranslations.of(context).text("vaults")),
       leading: _displaysAppBarLeadingIcon(themeProvider),
       actions: [_displaysActionIcon(themeProvider)],

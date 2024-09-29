@@ -120,6 +120,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     return AppBar(
       backgroundColor: themeProvider.secondBackgroundColor,
+      scrolledUnderElevation: 0,
       title: Text(AppTranslations.of(context).text("select_category")),
       actions: [
         ChicTextButton(

@@ -141,6 +141,7 @@ class _GeneratePasswordScreenState extends State<GeneratePasswordScreen>
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     return AppBar(
       backgroundColor: themeProvider.secondBackgroundColor,
+      scrolledUnderElevation: 0,
       title: Text(AppTranslations.of(context).text("generate_password")),
       actions: [
         ChicTextButton(

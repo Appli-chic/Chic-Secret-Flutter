@@ -116,6 +116,7 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
 
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     return AppBar(
+      scrolledUnderElevation: 0,
       backgroundColor: themeProvider.secondBackgroundColor,
       title: Text(AppTranslations.of(context).text("language")),
       actions: [

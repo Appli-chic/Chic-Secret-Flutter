@@ -118,6 +118,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     if (!ChicPlatform.isDesktop()) {
       return AppBar(
         backgroundColor: themeProvider.secondBackgroundColor,
+        scrolledUnderElevation: 0,
         title: Text(widget.entry.name),
         actions: [
           IconButton(

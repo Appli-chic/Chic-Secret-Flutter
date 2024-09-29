@@ -96,6 +96,7 @@ class _UserScreenState extends State<UserScreen> {
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     return AppBar(
       backgroundColor: themeProvider.secondBackgroundColor,
+      scrolledUnderElevation: 0,
       title: Text(AppTranslations.of(context).text("user")),
     );
   }

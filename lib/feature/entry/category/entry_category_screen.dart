@@ -95,6 +95,7 @@ class _EntryCategoryScreenState extends State<EntryCategoryScreen> {
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     return AppBar(
       backgroundColor: themeProvider.secondBackgroundColor,
+      scrolledUnderElevation: 0,
       title: Text(widget.category.name),
       actions: [
         _viewModel.category.isTrash

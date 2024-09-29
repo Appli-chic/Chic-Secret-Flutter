@@ -75,6 +75,7 @@ class _SecurityEntriesScreenState extends State<SecurityEntriesScreen> {
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     return AppBar(
       backgroundColor: themeProvider.secondBackgroundColor,
+      scrolledUnderElevation: 0,
       title: Text(widget.title),
     );
   }

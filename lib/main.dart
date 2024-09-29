@@ -32,8 +32,10 @@ Future main() async {
   timeago.setLocaleMessages('fr', timeago.FrMessages());
   await initDatabase();
 
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
+    systemNavigationBarColor: Colors.transparent,
   ));
 
   runApp(App());

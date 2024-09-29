@@ -162,6 +162,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     return AppBar(
       backgroundColor: themeProvider.secondBackgroundColor,
+      scrolledUnderElevation: 0,
       title: Text(
         widget.category != null
             ? widget.category!.name

@@ -220,6 +220,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
   PreferredSizeWidget? _displaysAppbar(ThemeProvider themeProvider) {
     return AppBar(
       backgroundColor: themeProvider.secondBackgroundColor,
+      scrolledUnderElevation: 0,
       title: widget.entry != null
           ? Text(widget.entry!.name)
           : Text(AppTranslations.of(context).text("new_password")),
