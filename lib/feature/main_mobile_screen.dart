@@ -141,24 +141,30 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
     }
   }
 
-  BottomNavigationBar _displayBottomBar(ThemeProvider themeProvider) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: themeProvider.secondBackgroundColor,
-      elevation: 0,
-      currentIndex: _index,
-      onTap: _onTabClicked,
-      selectedItemColor: themeProvider.primaryColor,
-      selectedLabelStyle: TextStyle(
-        color: themeProvider.primaryColor,
-        fontSize: 10,
-      ),
-      unselectedItemColor: themeProvider.placeholder,
-      unselectedLabelStyle: TextStyle(
-        color: themeProvider.placeholder,
-        fontSize: 10,
-      ),
-      items: _displayBottomNavigationBarItems(),
+  NavigationBar _displayBottomBar(ThemeProvider themeProvider) {
+    return NavigationBar(
+      onDestinationSelected: _onTabClicked,
+      indicatorColor: themeProvider.primaryColor,
+      selectedIndex: _index,
+      destinations: [
+        NavigationDestination(
+          icon: Icon(Icons.list_sharp),
+          label: AppTranslations.of(context).text("passwords_bottom_bar"),
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.folder),
+          label: AppTranslations.of(context).text("categories"),
+        ),
+        NavigationDestination(icon: const SizedBox(), label: ""),
+        NavigationDestination(
+          icon: Icon(Icons.security),
+          label: AppTranslations.of(context).text("security"),
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.settings),
+          label: AppTranslations.of(context).text("settings"),
+        ),
+      ],
     );
   }
 

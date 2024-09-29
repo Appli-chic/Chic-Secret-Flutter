@@ -71,8 +71,10 @@ class _AppState extends State<App> {
   Widget _createApp() {
     if (Platform.isIOS) {
       return _createIosApp();
-    } else {
+    } else if(Platform.isAndroid) {
       return _createAndroidApp();
+    } else {
+      return _createDesktopApp();
     }
   }
 
@@ -118,12 +120,54 @@ class _AppState extends State<App> {
     );
   }
 
+  Widget _createDesktopApp() {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Chic Secret',
+      theme: ThemeData(
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.dark,
+      localizationsDelegates: [
+        _newLocaleDelegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en', ''), // English
+        const Locale('fr', ''), // French
+        const Locale('es', ''), // Spanish
+      ],
+      localeListResolutionCallback:
+          (List<Locale>? locales, Iterable<Locale> supportedLocales) {
+        if (locales != null) {
+          for (final locale in locales) {
+            var localeFiltered = supportedLocales
+                .where((l) => l.languageCode == locale.languageCode);
+
+            if (localeFiltered.isNotEmpty) {
+              _newLocaleDelegate = AppTranslationsDelegate(newLocale: locale);
+              return locale;
+            }
+          }
+        }
+
+        return Locale('en', '');
+      },
+      home: LandingScreen(),
+      builder: EasyLoading.init(),
+    );
+  }
+
   Widget _createAndroidApp() {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Chic Secret',
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
       ),
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.dark,

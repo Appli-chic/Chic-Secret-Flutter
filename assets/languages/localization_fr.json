@@ -8,6 +8,7 @@
   "password": "Mot de passe *",
   "password_not_mandatory": "Mot de passe",
   "passwords": "Mots de passe",
+  "passwords_bottom_bar": "Identifiants",
   "verify_password": "Vérification du mot de passe *",
   "explanation_master_password": "Ce mot de passe est très important, il sera utilisé pour encrypter les données de ce coffre. S'il vous plaît, gardez ce mot de passe à l'esprit. Si vous le perdez, il sera impossible pour nous de vous donner accès à vos mots de passe contenu dans ce coffre.",
   "error_name_empty": "Le nom ne doit pas être vide",
