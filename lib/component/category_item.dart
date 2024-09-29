@@ -82,7 +82,7 @@ class _CategoryItemState extends State<CategoryItem> {
         onTap: () {
           widget.onTap(widget.category!);
         },
-        horizontalTitleGap: 0,
+        horizontalTitleGap: 8,
         leading: Container(
           padding: EdgeInsets.all(8),
           decoration: BoxDecoration(

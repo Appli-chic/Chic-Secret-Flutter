@@ -55,7 +55,7 @@ class _VaultItemState extends State<VaultItem> {
         onTap: () {
           widget.onTap(widget.vault);
         },
-        horizontalTitleGap: 0,
+        horizontalTitleGap: 8,
         leading: Icon(
           Platform.isIOS ? CupertinoIcons.lock_fill : Icons.lock,
           color: themeProvider.textColor,

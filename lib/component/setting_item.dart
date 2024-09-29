@@ -28,7 +28,7 @@ class SettingItem extends StatelessWidget {
 
     if (ChicPlatform.isDesktop()) {
       return ListTile(
-        horizontalTitleGap: 0,
+        horizontalTitleGap: 8,
         leading: _displayLeading(themeProvider),
         title: _displayTitle(themeProvider),
         subtitle: _displaySubtitle(themeProvider),
@@ -44,7 +44,7 @@ class SettingItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(6.0),
         ),
         child: ListTile(
-          horizontalTitleGap: 0,
+          horizontalTitleGap: 8,
           leading: _displayLeading(themeProvider),
           title: _displayTitle(themeProvider),
           subtitle: _displaySubtitle(themeProvider),

@@ -381,7 +381,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
               },
               itemBuilder: (context, tag) {
                 return ListTile(
-                  horizontalTitleGap: 0,
+                  horizontalTitleGap: 8,
                   leading: Icon(
                       Platform.isIOS ? CupertinoIcons.tag_solid : Icons.tag),
                   title: Text(tag.name),
