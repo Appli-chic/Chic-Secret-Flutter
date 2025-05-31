@@ -24,8 +24,8 @@ android {
         applicationId "com.applichic.chic_secret"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion 36
-        versionCode 27
-        versionName '1.0.12'
+        versionCode 28
+        versionName '1.0.13'
     }
 
     buildTypes {
