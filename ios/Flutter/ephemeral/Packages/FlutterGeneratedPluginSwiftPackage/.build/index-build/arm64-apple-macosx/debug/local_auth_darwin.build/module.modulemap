@@ -1,4 +1,0 @@
-module local_auth_darwin {
-    umbrella "/Users/guillaumebelouin/.pub-cache/hosted/pub.dev/local_auth_darwin-1.4.3/darwin/local_auth_darwin/Sources/local_auth_darwin/include"
-    export *
-}
