@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion 35
+    compileSdkVersion 36
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -23,7 +23,7 @@ android {
     defaultConfig {
         applicationId "com.applichic.chic_secret"
         minSdkVersion flutter.minSdkVersion
-        targetSdkVersion 35
+        targetSdkVersion 36
         versionCode 27
         versionName '1.0.12'
     }

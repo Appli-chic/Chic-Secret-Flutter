@@ -1,0 +1,97 @@
+{
+  "object" : {
+    "artifacts" : [
+
+    ],
+    "dependencies" : [
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "file_selector_ios",
+          "kind" : "fileSystem",
+          "location" : "/Users/guillaumebelouin/.pub-cache/hosted/pub.dev/file_selector_ios-0.5.3/ios/file_selector_ios",
+          "name" : "file_selector_ios"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/guillaumebelouin/.pub-cache/hosted/pub.dev/file_selector_ios-0.5.3/ios/file_selector_ios"
+        },
+        "subpath" : "file_selector_ios"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "local_auth_darwin",
+          "kind" : "fileSystem",
+          "location" : "/Users/guillaumebelouin/.pub-cache/hosted/pub.dev/local_auth_darwin-1.4.3/darwin/local_auth_darwin",
+          "name" : "local_auth_darwin"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/guillaumebelouin/.pub-cache/hosted/pub.dev/local_auth_darwin-1.4.3/darwin/local_auth_darwin"
+        },
+        "subpath" : "local_auth_darwin"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "path_provider_foundation",
+          "kind" : "fileSystem",
+          "location" : "/Users/guillaumebelouin/.pub-cache/hosted/pub.dev/path_provider_foundation-2.4.0/darwin/path_provider_foundation",
+          "name" : "path_provider_foundation"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/guillaumebelouin/.pub-cache/hosted/pub.dev/path_provider_foundation-2.4.0/darwin/path_provider_foundation"
+        },
+        "subpath" : "path_provider_foundation"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "pointer_interceptor_ios",
+          "kind" : "fileSystem",
+          "location" : "/Users/guillaumebelouin/.pub-cache/hosted/pub.dev/pointer_interceptor_ios-0.10.1/ios/pointer_interceptor_ios",
+          "name" : "pointer_interceptor_ios"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/guillaumebelouin/.pub-cache/hosted/pub.dev/pointer_interceptor_ios-0.10.1/ios/pointer_interceptor_ios"
+        },
+        "subpath" : "pointer_interceptor_ios"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "shared_preferences_foundation",
+          "kind" : "fileSystem",
+          "location" : "/Users/guillaumebelouin/.pub-cache/hosted/pub.dev/shared_preferences_foundation-2.5.2/darwin/shared_preferences_foundation",
+          "name" : "shared_preferences_foundation"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/guillaumebelouin/.pub-cache/hosted/pub.dev/shared_preferences_foundation-2.5.2/darwin/shared_preferences_foundation"
+        },
+        "subpath" : "shared_preferences_foundation"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "url_launcher_ios",
+          "kind" : "fileSystem",
+          "location" : "/Users/guillaumebelouin/.pub-cache/hosted/pub.dev/url_launcher_ios-6.3.1/ios/url_launcher_ios",
+          "name" : "url_launcher_ios"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/guillaumebelouin/.pub-cache/hosted/pub.dev/url_launcher_ios-6.3.1/ios/url_launcher_ios"
+        },
+        "subpath" : "url_launcher_ios"
+      }
+    ],
+    "prebuilts" : [
+
+    ]
+  },
+  "version" : 7
+}

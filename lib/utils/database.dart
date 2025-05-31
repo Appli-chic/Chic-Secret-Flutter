@@ -7,7 +7,6 @@ import 'package:chic_secret/utils/constant.dart';
 import 'package:chic_secret/utils/database_structure.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart' as path;
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqlite3/open.dart';
 
@@ -64,7 +63,8 @@ DynamicLibrary _openOnLinux() {
 
 DynamicLibrary _openOnWindows() {
   final scriptDir = File(Platform.script.toFilePath()).parent;
-  final libraryNextToScript = File('${scriptDir.path}/data/flutter_assets/assets/sqlite3.dll');
+  final libraryNextToScript =
+      File('${scriptDir.path}/data/flutter_assets/assets/sqlite3.dll');
   return DynamicLibrary.open(libraryNextToScript.path);
 }
 

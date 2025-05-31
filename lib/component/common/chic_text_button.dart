@@ -15,7 +15,7 @@ class ChicTextButton extends StatelessWidget {
     return TextButton(
       style: ButtonStyle(
         overlayColor: ChicPlatform.isDesktop()
-            ? MaterialStateColor.resolveWith((states) => Colors.transparent)
+            ? WidgetStateColor.resolveWith((states) => Colors.transparent)
             : null,
       ),
       child: child,

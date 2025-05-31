@@ -1,0 +1,4 @@
+module FlutterGeneratedPluginSwiftPackage {
+    header "/Users/guillaumebelouin/Programmation/personal/flutter/Chic-Secret-Flutter/ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/.build/index-build/arm64-apple-macosx/debug/FlutterGeneratedPluginSwiftPackage.build/FlutterGeneratedPluginSwiftPackage-Swift.h"
+    requires objc
+}

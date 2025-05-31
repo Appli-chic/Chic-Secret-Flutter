@@ -21,7 +21,7 @@ class ChicTextIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if(Platform.isIOS) {
+    if (Platform.isIOS) {
       return CupertinoButton(
         child: Row(
           children: [
@@ -37,13 +37,13 @@ class ChicTextIconButton extends StatelessWidget {
     return TextButton.icon(
       style: ButtonStyle(
         overlayColor: ChicPlatform.isDesktop()
-            ? MaterialStateColor.resolveWith((states) => Colors.transparent)
+            ? WidgetStateColor.resolveWith((states) => Colors.transparent)
             : null,
         backgroundColor: backgroundColor != null
-            ? MaterialStateColor.resolveWith((states) => backgroundColor!)
+            ? WidgetStateColor.resolveWith((states) => backgroundColor!)
             : null,
         padding: padding != null
-            ? MaterialStateProperty.resolveWith((states) => padding)
+            ? WidgetStateProperty.resolveWith((states) => padding)
             : null,
       ),
       label: label,

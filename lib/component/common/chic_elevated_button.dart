@@ -17,20 +17,20 @@ class ChicElevatedButton extends StatelessWidget {
     return ElevatedButton(
       style: ButtonStyle(
         overlayColor: ChicPlatform.isDesktop()
-            ? MaterialStateColor.resolveWith((states) => Colors.transparent)
+            ? WidgetStateColor.resolveWith((states) => Colors.transparent)
             : null,
         backgroundColor: backgroundColor != null
-            ? MaterialStateColor.resolveWith((states) => backgroundColor!)
+            ? WidgetStateColor.resolveWith((states) => backgroundColor!)
             : null,
         shape: !ChicPlatform.isDesktop()
-            ? MaterialStateProperty.resolveWith(
+            ? WidgetStateProperty.resolveWith(
                 (states) => RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0),
                 ),
               )
             : null,
         padding: !ChicPlatform.isDesktop()
-            ? MaterialStateProperty.resolveWith(
+            ? WidgetStateProperty.resolveWith(
                 (states) => EdgeInsets.only(left: 24, right: 24))
             : null,
       ),

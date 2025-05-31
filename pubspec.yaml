@@ -37,7 +37,7 @@ dependencies:
   uuid: ^4.4.2
   encrypt: ^5.0.3
   flex_color_picker: ^3.5.1
-  fluttertoast: ^8.2.8
+  fluttertoast: ^8.2.12
   flutter_typeahead: ^5.2.0
   file_selector: ^1.0.3
   timeago: ^3.7.0
