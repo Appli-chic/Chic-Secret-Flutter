@@ -27,33 +27,33 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  http: ^1.2.2
+  http: ^1.4.0
   flutter_easyloading: ^3.0.5
-  provider: ^6.1.2
-  shared_preferences: ^2.3.2
-  sqflite: ^2.3.3+1
-  sqlite3: ^2.4.6
-  sqlite3_flutter_libs: ^0.5.24
-  uuid: ^4.4.2
+  provider: ^6.1.5
+  shared_preferences: ^2.5.3
+  sqflite: ^2.4.2
+  sqlite3: ^2.7.6
+  sqlite3_flutter_libs: ^0.5.33
+  uuid: ^4.5.1
   encrypt: ^5.0.3
-  flex_color_picker: ^3.5.1
+  flex_color_picker: ^3.7.1
   fluttertoast: ^8.2.12
   flutter_typeahead: ^5.2.0
   file_selector: ^1.0.3
-  timeago: ^3.7.0
+  timeago: ^3.7.1
   tuple: ^2.0.2
   local_auth: ^2.3.0
-  file_picker: ^8.1.2
-  file_selector_macos: ^0.9.0+4
-  file_selector_windows: ^0.9.1+4
-  file_selector_linux: ^0.9.1
-  url_launcher: ^6.3.0
-  path_provider: ^2.0.12
-  flutter_svg: ^2.0.10+1
+  file_picker: ^10.1.9
+  file_selector_macos: ^0.9.4+3
+  file_selector_windows: ^0.9.3+4
+  file_selector_linux: ^0.9.3+2
+  url_launcher: ^6.3.1
+  path_provider: ^2.1.5
+  flutter_svg: ^2.1.0
   file_saver: ^0.2.14
-  permission_handler: ^11.3.1
+  permission_handler: ^12.0.0+1
   csv: ^6.0.0
-  window_manager: ^0.4.2
+  window_manager: ^0.5.0
 
 dev_dependencies:
   flutter_test:
