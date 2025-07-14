@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const int DEFAULT_THEME_DARK = 0;
+const int DEFAULT_THEME_LIGHT = 1;
 
 ChicTheme defaultDarkTheme = ChicTheme(
   id: DEFAULT_THEME_DARK,
@@ -27,37 +28,39 @@ ChicTheme defaultDarkTheme = ChicTheme(
   isLight: false,
 );
 
+ChicTheme defaultLightTheme = ChicTheme(
+  id: DEFAULT_THEME_LIGHT,
+  backgroundColor: Color(0xFFFFFFFF),
+  backgroundDesktopColor: Color(0xFFF5F5F7),
+  secondBackgroundColor: Color(0xFFF2F2F7),
+  secondBackgroundDesktopColor: Color(0xFFE5E5EA),
+  sidebarBackgroundColor: Color(0xFFE5E5EA),
+  modalBackgroundColor: Color(0xFFF2F2F7),
+  selectionBackground: Color(0xFFD1E7DD),
+  inputBackgroundColor: Color(0xFFF2F2F7),
+  primaryColor: Color(0xFF4CAF50),
+  secondaryColor: Color(0xFF4CAF50),
+  textColor: Color(0xFF000000),
+  secondTextColor: Color(0x99000000),
+  thirdTextColor: Color(0x4D000000),
+  placeholder: Color(0x4D000000),
+  labelColor: Color(0xFF646265),
+  divider: Color(0x99545458),
+  isLight: true,
+);
+
 class ThemeProvider with ChangeNotifier {
-  List<ChicTheme> _themeList = [];
   ChicTheme _theme = defaultDarkTheme;
 
   ThemeProvider() {
-    _generateThemeList();
-    _theme = _themeList[0];
-    _loadTheme();
-  }
+    var brightness =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness;
 
-  _generateThemeList() {
-    _themeList.add(defaultDarkTheme);
-  }
-
-  _loadTheme() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? _themeString = prefs.getInt(keyTheme);
-
-    if (_themeString != null) {
-      _theme =
-          _themeList.where((theme) => theme.id == _themeString).toList()[0];
+    if (brightness == Brightness.light) {
+      _theme = defaultLightTheme;
+    } else {
+      _theme = defaultDarkTheme;
     }
-
-    notifyListeners();
-  }
-
-  setTheme(int id) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _theme = _themeList.where((theme) => theme.id == id).toList()[0];
-
-    await prefs.setInt(keyTheme, id);
 
     notifyListeners();
   }

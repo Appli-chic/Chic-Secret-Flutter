@@ -117,7 +117,6 @@ class _ChicTextFieldState extends State<ChicTextField> {
         textCapitalization: widget.textCapitalization,
         textInputAction: widget.textInputAction,
         keyboardType: widget.keyboardType,
-        keyboardAppearance: Brightness.dark,
         maxLines: widget.maxLines,
         validator: _validate,
         onFieldSubmitted: widget.onSubmitted,

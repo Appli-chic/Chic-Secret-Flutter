@@ -24,7 +24,6 @@ Future main() async {
     await windowManager.ensureInitialized();
 
     await windowManager.waitUntilReadyToShow().then((_) async {
-      await windowManager.setBrightness(Brightness.dark);
       await windowManager.show();
     });
   }
@@ -84,11 +83,10 @@ class _AppState extends State<App> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.system,
       home: CupertinoApp(
         debugShowCheckedModeBanner: false,
         title: 'Chic Secret',
-        theme: CupertinoThemeData(brightness: Brightness.dark),
         localizationsDelegates: [
           _newLocaleDelegate,
           GlobalMaterialLocalizations.delegate,
@@ -130,7 +128,7 @@ class _AppState extends State<App> {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.system,
       localizationsDelegates: [
         _newLocaleDelegate,
         GlobalMaterialLocalizations.delegate,
@@ -172,7 +170,7 @@ class _AppState extends State<App> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
       darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.system,
       localizationsDelegates: [
         _newLocaleDelegate,
         GlobalMaterialLocalizations.delegate,
