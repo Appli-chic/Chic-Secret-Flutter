@@ -1,8 +1,6 @@
 import 'package:chic_secret/model/theme.dart';
 import 'package:chic_secret/utils/chic_platform.dart';
-import 'package:chic_secret/utils/constant.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 const int DEFAULT_THEME_DARK = 0;
 const int DEFAULT_THEME_LIGHT = 1;
