@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
 class TagService {
-  /// Delete a [tag] from the local database
   static Future<void> delete(Tag tag) async {
     tag.deletedAt = DateTime.now();
     tag.updatedAt = DateTime.now();
@@ -19,7 +18,6 @@ class TagService {
     );
   }
 
-  /// Save a [tag] into the local database
   static Future<void> save(Tag tag) async {
     await db.insert(
       tagTable,
@@ -28,7 +26,6 @@ class TagService {
     );
   }
 
-  /// Update a [tag] in the local database
   static Future<void> update(Tag tag) async {
     await db.update(
       tagTable,
@@ -38,7 +35,6 @@ class TagService {
     );
   }
 
-  /// Checks if the tag already exists
   static Future<bool> exists(Tag tag) async {
     var data = await db.query(
       tagTable,
@@ -48,7 +44,6 @@ class TagService {
     return data.isNotEmpty;
   }
 
-  /// Retrieve a tag that has this exact name in the specified vault
   static Future<Tag?> getTagByVaultByName(String vaultId, String name) async {
     List<Map<String, dynamic>> maps = await db.query(
       tagTable,
@@ -63,7 +58,6 @@ class TagService {
     return null;
   }
 
-  /// Delete all the tags from the vault
   static Future<void> deleteAllFromVault(String vaultId) async {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     String date = dateFormatter.format(DateTime.now());
@@ -77,7 +71,6 @@ class TagService {
       """);
   }
 
-  /// Retrieve all the tags linked to a vault
   static Future<List<Tag>> getAllByVault(String vaultId) async {
     List<Tag> tags = [];
     List<Map<String, dynamic>> maps = await db.query(
@@ -94,7 +87,6 @@ class TagService {
     return tags;
   }
 
-  /// Search the tags linked in the vault
   static Future<List<Tag>> searchingTagInVault(
       String vaultId, String text) async {
     List<Tag> tags = [];
@@ -113,7 +105,6 @@ class TagService {
     return tags;
   }
 
-  /// Retrieve all the tags linked to an entry
   static Future<List<Tag>> getAllByEntry(String entryId) async {
     List<Tag> tags = [];
 
@@ -136,7 +127,6 @@ class TagService {
     return tags;
   }
 
-  /// Get all the tags to synchronize from the locale database to the server
   static Future<List<Tag>> getTagsToSynchronize(DateTime? lastSync) async {
     String? whereQuery;
 

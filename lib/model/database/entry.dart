@@ -46,7 +46,6 @@ class Entry {
     this.category,
   });
 
-  /// Transform a json to an entry
   factory Entry.fromJson(Map<String, dynamic> json) {
     var createdAtString = DateTime.parse(json['CreatedAt']);
     var updatedAtString = DateTime.parse(json['UpdatedAt']);
@@ -72,7 +71,6 @@ class Entry {
     );
   }
 
-  /// Transform an entry to a json
   Map<String, dynamic> toJson() {
     var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String createdAtString = dateFormatter.format(createdAt);
@@ -99,7 +97,6 @@ class Entry {
     return data;
   }
 
-  /// Transform a map of [data] into an entry
   factory Entry.fromMap(Map<String, dynamic> data, {String? categoryPrefix}) {
     var createdAtString = DateTime.parse(data[columnCreatedAt]);
     var updatedAtString = DateTime.parse(data[columnUpdatedAt]);
@@ -133,7 +130,6 @@ class Entry {
     );
   }
 
-  /// Transform an entry into a map of data
   Map<String, dynamic> toMap() {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     String createdAtString = dateFormatter.format(createdAt);

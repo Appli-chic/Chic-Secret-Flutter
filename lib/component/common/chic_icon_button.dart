@@ -3,19 +3,15 @@ import 'package:chic_secret/utils/chic_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-/// The type defines the global the design of the button
 class ChicIconButtonType {
   const ChicIconButtonType._(this.index);
 
   final int index;
 
-  /// Represents a button without any background
   static const ChicIconButtonType noBackground = ChicIconButtonType._(0);
 
-  /// Represents a button with a filled background shaped into a rectangle
   static const ChicIconButtonType filledRectangle = ChicIconButtonType._(1);
 
-  /// Represents a button with a filled background shaped into a circle
   static const ChicIconButtonType filledCircle = ChicIconButtonType._(2);
 }
 

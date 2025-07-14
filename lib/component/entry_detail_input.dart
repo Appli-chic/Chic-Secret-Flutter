@@ -88,7 +88,6 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
     );
   }
 
-  /// Displays an icon to show or hide the password
   Widget _displaysHidingIcon(ThemeProvider themeProvider) {
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(6)),
@@ -110,7 +109,6 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
     );
   }
 
-  /// Displays an icon to copy the text
   Widget _displaysCopyIcon(ThemeProvider themeProvider) {
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(6)),
@@ -132,7 +130,6 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
     );
   }
 
-  /// Clear the clipboard 1min after the password had been copied
   void _clearClipboard() {
     try {
       if (clipboardTimer != null) {
@@ -151,7 +148,6 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
     }
   }
 
-  /// Show a toast to attest the text had been copied in the clipboard
   void _displaysTextCopiedToast(ThemeProvider themeProvider) {
     Widget toast = Container(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
@@ -177,7 +173,6 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
     );
   }
 
-  /// Displays the text and hide it if it's a password
   Widget _displaysText(ThemeProvider themeProvider) {
     if (!widget.isPassword) {
       return Expanded(
@@ -191,7 +186,6 @@ class _EntryDetailInputState extends State<EntryDetailInput> {
       );
     }
 
-    // If it's a password we display it hidden or not with colors
     if (_isPasswordHidden) {
       return Expanded(
         child: Container(

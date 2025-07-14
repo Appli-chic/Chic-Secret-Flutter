@@ -13,7 +13,6 @@ import 'package:intl/intl.dart';
 const String custom_fields_route = "api/custom-fields";
 
 class CustomFieldApi {
-  /// Send the custom fields to synchronize to the server
   static Future<void> sendCustomFields(List<CustomField> customFields) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
@@ -40,7 +39,6 @@ class CustomFieldApi {
     }
   }
 
-  /// Retrieve all the custom fields that changed
   static Future<void> retrieveCustomFields(DateTime? lastSync) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();

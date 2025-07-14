@@ -125,21 +125,18 @@ class EntryService {
         "WHERE e.$columnEntryVaultId = '$vaultId' "
             "AND e.$columnDeletedAt IS NULL ";
 
-    // Filter on category if selected
     if (categoryId != null) {
       query += """
       AND $columnEntryCategoryId = '$categoryId'
       """;
     }
 
-    // Filter on tag if selected
     if (tagId != null) {
       query += """
       AND t.$columnId = '$tagId' 
       """;
     }
 
-    // Order the rows
     query +=
         "order by c.$columnCategoryIsTrash ASC, LOWER(e.$columnEntryName) ASC";
 
@@ -159,21 +156,18 @@ class EntryService {
 
     var query = entryGeneralSelect + "WHERE e.$columnEntryVaultId = '$vaultId'";
 
-    // Filter on category if selected
     if (categoryId != null) {
       query += """
       AND $columnEntryCategoryId = '$categoryId'
       """;
     }
 
-    // Filter on tag if selected
     if (tagId != null) {
       query += """
       AND t.$columnId = '$tagId'
       """;
     }
 
-    // Add search
     query += """
     AND (e.$columnEntryName LIKE '%$text%' OR e.$columnEntryUsername LIKE '%$text%' 
     OR c.$columnCategoryName LIKE '%$text%' OR t.$columnTagName LIKE '%$text%' 
@@ -182,7 +176,6 @@ class EntryService {
     AND e.$columnDeletedAt IS NULL 
     """;
 
-    // Order the rows
     query +=
         "order by c.$columnCategoryIsTrash ASC, LOWER(e.$columnEntryName) ASC";
 
@@ -197,7 +190,8 @@ class EntryService {
     return entries;
   }
 
-  static Future<List<Entry>> findDuplicatedPasswords(String vaultId, String password) async {
+  static Future<List<Entry>> findDuplicatedPasswords(
+      String vaultId, String password) async {
     List<Entry> entries = [];
 
     var query = entryGeneralSelect + "WHERE e.$columnEntryVaultId = '$vaultId'";
@@ -208,7 +202,7 @@ class EntryService {
     """;
 
     query +=
-    "order by c.$columnCategoryIsTrash ASC, LOWER(e.$columnEntryName) ASC";
+        "order by c.$columnCategoryIsTrash ASC, LOWER(e.$columnEntryName) ASC";
 
     var maps = await db.rawQuery(query);
 

@@ -13,7 +13,6 @@ import 'package:intl/intl.dart';
 const String tags_route = "api/tags";
 
 class TagApi {
-  /// Send the tags to synchronize to the server
   static Future<void> sendTags(List<Tag> tags) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
@@ -40,7 +39,6 @@ class TagApi {
     }
   }
 
-  /// Retrieve all the tags that changed
   static Future<void> retrieveTags(DateTime? lastSync) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();

@@ -69,7 +69,6 @@ class _ColorSelectorState extends State<ColorSelector> {
     );
   }
 
-  /// Generates a list of selectable color circles
   List<Widget> _generateColorsCircles(ThemeProvider themeProvider) {
     List<Widget> circles = [];
 
@@ -93,7 +92,6 @@ class _ColorSelectorState extends State<ColorSelector> {
           ),
         );
       } else {
-        // Show get more colors button
         circles.add(
           MouseRegion(
             cursor: SystemMouseCursors.click,
@@ -128,7 +126,6 @@ class _ColorSelectorState extends State<ColorSelector> {
     return circles;
   }
 
-  /// Displays A single color circle
   Widget _generateColorWidget(ThemeProvider themeProvider, Color color) {
     var shortestSide = MediaQuery.of(context).size.shortestSide;
     double size = 36;
@@ -138,7 +135,6 @@ class _ColorSelectorState extends State<ColorSelector> {
     }
 
     if (_selectedColor == color) {
-      // If the color is selected
       return Container(
         width: size,
         height: size,
@@ -159,7 +155,6 @@ class _ColorSelectorState extends State<ColorSelector> {
       );
     }
 
-    // If it's not selected
     return GestureDetector(
       onTap: () {
         _onColorSelected(color);
@@ -179,7 +174,6 @@ class _ColorSelectorState extends State<ColorSelector> {
   }
 
   _onColorSelected(Color color) {
-    // Check if the color exist in the list
     var indexColor = _colors.indexOf(color);
     if (indexColor == -1 || indexColor > _colorListSize()) {
       _colors[0] = color;

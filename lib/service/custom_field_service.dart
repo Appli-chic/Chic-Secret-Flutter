@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
 class CustomFieldService {
-  /// Update a [customField] into the local database
   static Future<void> update(CustomField customField) async {
     await db.update(
       customFieldTable,
@@ -15,7 +14,6 @@ class CustomFieldService {
     );
   }
 
-  /// Save a [customField] into the local database
   static Future<void> save(CustomField customField) async {
     await db.insert(
       customFieldTable,
@@ -24,7 +22,6 @@ class CustomFieldService {
     );
   }
 
-  /// Checks if the customField already exists
   static Future<bool> exists(CustomField customField) async {
     var data = await db.query(
       customFieldTable,
@@ -34,7 +31,6 @@ class CustomFieldService {
     return data.isNotEmpty;
   }
 
-  /// Delete a [customField] from the local database
   static Future<void> delete(CustomField customField) async {
     customField.deletedAt = DateTime.now();
     customField.updatedAt = DateTime.now();
@@ -46,7 +42,6 @@ class CustomFieldService {
     );
   }
 
-  /// Retrieve all the custom fields linked to an entry
   static Future<List<CustomField>> getAllByEntry(String entryId) async {
     List<CustomField> customFields = [];
     List<Map<String, dynamic>> maps = await db.query(customFieldTable,
@@ -62,7 +57,6 @@ class CustomFieldService {
     return customFields;
   }
 
-  /// Delete all the custom fields of an entry
   static Future<void> deleteAllFromEntry(String entryId) async {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     String date = dateFormatter.format(DateTime.now());
@@ -74,7 +68,6 @@ class CustomFieldService {
       """);
   }
 
-  /// Delete all the custom fields of a vault
   static Future<void> deleteAllFromVault(String vaultId) async {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     String date = dateFormatter.format(DateTime.now());
@@ -86,7 +79,6 @@ class CustomFieldService {
       """);
   }
 
-  /// Get all the custom fields to synchronize from the locale database to the server
   static Future<List<CustomField>> getCustomFieldsToSynchronize(
       DateTime? lastSync) async {
     String? whereQuery;

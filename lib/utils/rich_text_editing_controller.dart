@@ -23,20 +23,15 @@ class RichTextEditingController extends TextEditingController {
     return textToSpan(text.characters);
   }
 
-  /// Transform a text to a span to display the number and uppercase
-  /// in a different color.
   static TextSpan textToSpan(Characters characters) {
     List<TextSpan> textSpanList = [];
 
     characters.forEach((character) {
       if (numbers.contains(character.toString())) {
-        // Display number
         textSpanList.add(TextSpan(style: numberStyle, text: '$character'));
       } else if (uppercase.contains(character.toString())) {
-        // Display uppercase
         textSpanList.add(TextSpan(style: uppercaseStyle, text: '$character'));
       } else {
-        // Display the rest normally
         textSpanList.add(TextSpan(text: '$character'));
       }
     });

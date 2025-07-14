@@ -13,7 +13,6 @@ import 'package:http/http.dart' as http;
 const String vaults_route = "api/vaults";
 
 class VaultApi {
-  /// Send the vaults to synchronize to the server
   static Future<void> sendVaults(List<Vault> vaults) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
@@ -40,7 +39,6 @@ class VaultApi {
     }
   }
 
-  /// Retrieve all the vaults that changed
   static Future<void> retrieveVaults(DateTime? lastSync) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();

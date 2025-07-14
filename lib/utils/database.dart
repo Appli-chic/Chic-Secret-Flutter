@@ -13,7 +13,6 @@ import 'package:sqlite3/open.dart';
 const int version = 5;
 late Database db;
 
-/// Init the local database for all the platforms
 Future<void> initDatabase() async {
   if (Platform.isWindows) {
     databaseFactory = databaseFactoryFfi;
@@ -68,7 +67,6 @@ DynamicLibrary _openOnWindows() {
   return DynamicLibrary.open(libraryNextToScript.path);
 }
 
-/// Get the database path
 Future<String> _getDatabasePath() async {
   if (Platform.isWindows) {
     var ref = await path.getApplicationSupportDirectory();
@@ -79,7 +77,6 @@ Future<String> _getDatabasePath() async {
   }
 }
 
-/// Execute scripts to upgrade the database
 _onUpgrade(Database db, int oldVersion, int newVersion) async {
   var batch = db.batch();
 
@@ -104,7 +101,6 @@ _onUpgrade(Database db, int oldVersion, int newVersion) async {
   await batch.commit();
 }
 
-/// Execute the scripts to create the database structure
 _onCreate(Database db, int version) async {
   var batch = db.batch();
   batch.execute(createUserTable);

@@ -20,7 +20,6 @@ class VaultUser {
     this.deletedAt,
   });
 
-  /// Transform a json to a vault user
   factory VaultUser.fromJson(Map<String, dynamic> json) {
     var createdAtString = DateTime.parse(json['CreatedAt']);
     var updatedAtString = DateTime.parse(json['UpdatedAt']);
@@ -39,7 +38,6 @@ class VaultUser {
     );
   }
 
-  /// Transform a vault user to a json
   Map<String, dynamic> toJson() {
     var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String createdAtString = dateFormatter.format(createdAt);
@@ -59,7 +57,6 @@ class VaultUser {
     return data;
   }
 
-  /// Transform a map of [data] into a vault user
   factory VaultUser.fromMap(Map<String, dynamic> data, {String? prefix}) {
     var createdAtString = DateTime.parse(prefix != null
         ? data[prefix + columnCreatedAt]
@@ -91,7 +88,6 @@ class VaultUser {
     );
   }
 
-  /// Transform a vault user into a map of data
   Map<String, dynamic> toMap() {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     String createdAtString = dateFormatter.format(createdAt);

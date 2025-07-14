@@ -13,7 +13,6 @@ import 'package:intl/intl.dart';
 const String categories_route = "api/categories";
 
 class CategoryApi {
-  /// Send the categories to synchronize to the server
   static Future<void> sendCategories(List<Category> categories) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
@@ -40,7 +39,6 @@ class CategoryApi {
     }
   }
 
-  /// Retrieve all the categories that changed
   static Future<void> retrieveCategories(DateTime? lastSync) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();

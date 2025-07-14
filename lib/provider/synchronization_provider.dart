@@ -29,7 +29,6 @@ class SynchronizationProvider with ChangeNotifier {
     _getLastSyncDate();
   }
 
-  /// Synchronize all the elements of the user in the local database and to the server
   Future<void> synchronize({bool isFullSynchronization = false}) async {
     if (!_isSynchronizing) {
       if (await Security.isConnected()) {
@@ -55,11 +54,9 @@ class SynchronizationProvider with ChangeNotifier {
     }
   }
 
-  /// Push the data to the server
   Future<void> _push() async {
     var user = await Security.getCurrentUser();
 
-    // Retrieve data to synchronize from the local database
     var vaults = await VaultService.getVaultsToSynchronize(_lastSyncDate);
     var categories =
         await CategoryService.getCategoriesToSynchronize(_lastSyncDate);
@@ -88,7 +85,6 @@ class SynchronizationProvider with ChangeNotifier {
       }
     }
 
-    // Send the data to the server
     if (vaults.isNotEmpty) {
       await VaultApi.sendVaults(vaults);
     }
@@ -118,7 +114,6 @@ class SynchronizationProvider with ChangeNotifier {
     }
   }
 
-  /// Get all the data that changed from the server
   Future<void> _pull() async {
     // Pull user
     var user = await Security.getCurrentUser();
@@ -136,7 +131,6 @@ class SynchronizationProvider with ChangeNotifier {
       }
     }
 
-    // Pull data
     await UserApi.retrieveUsers(_lastSyncDate);
     await VaultApi.retrieveVaults(_lastSyncDate);
     await CategoryApi.retrieveCategories(_lastSyncDate);
@@ -147,7 +141,6 @@ class SynchronizationProvider with ChangeNotifier {
     await VaultUserApi.retrieveVaultUsers(_lastSyncDate);
   }
 
-  /// Get the last date of synchronization
   Future<void> _getLastSyncDate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var dateString = prefs.getString(lastDateSyncKey);
@@ -158,7 +151,6 @@ class SynchronizationProvider with ChangeNotifier {
     }
   }
 
-  /// Set the last date of synchronization
   Future<void> setLastSyncDate({DateTime? dateToSet}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var date = DateTime.now();
@@ -174,9 +166,7 @@ class SynchronizationProvider with ChangeNotifier {
     _getLastSyncDate();
   }
 
-  /// Get the last sync date
   DateTime? get lastSyncDate => _lastSyncDate;
 
-  /// Is it synchronizing
   bool get isSynchronizing => _isSynchronizing;
 }

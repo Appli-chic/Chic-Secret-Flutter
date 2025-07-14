@@ -67,7 +67,9 @@ class _IconSelectorState extends State<IconSelector> {
     if (ChicPlatform.isDesktop() && _iconsListSize != 9) {
       _iconsListSize = 9;
       _onIconChange(widget.icon);
-    } else if (!ChicPlatform.isDesktop() && shortestSide > 600 && _iconsListSize != 12) {
+    } else if (!ChicPlatform.isDesktop() &&
+        shortestSide > 600 &&
+        _iconsListSize != 12) {
       _iconsListSize = 12;
       _onIconChange(widget.icon);
     }
@@ -274,7 +276,6 @@ Widget _displayIcon(
   }
 
   if (icon == icons[index]) {
-    // Display selected icon
     child = Container(
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -288,7 +289,6 @@ Widget _displayIcon(
       ),
     );
   } else {
-    // Display icon not selected
     child = Container(
       margin: EdgeInsets.all(8),
       child: Icon(

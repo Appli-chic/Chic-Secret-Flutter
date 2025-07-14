@@ -55,7 +55,6 @@ class Category {
     );
   }
 
-  /// Transform a category to a json
   Map<String, dynamic> toJson() {
     var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String createdAtString = dateFormatter.format(createdAt);
@@ -79,7 +78,6 @@ class Category {
     return data;
   }
 
-  /// Transform a map of [data] into a category
   factory Category.fromMap(Map<String, dynamic> data, {String? prefix}) {
     var createdAtString = DateTime.parse(prefix != null
         ? data[prefix + columnCreatedAt]
@@ -121,7 +119,6 @@ class Category {
     );
   }
 
-  /// Transform a category into a map of data
   Map<String, dynamic> toMap() {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     String createdAtString = dateFormatter.format(createdAt);

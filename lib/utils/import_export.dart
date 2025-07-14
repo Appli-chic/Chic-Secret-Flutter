@@ -58,7 +58,6 @@ Future<void> exportVaultData() async {
   referenceRow.add("entry_comment");
   rows.add(referenceRow);
 
-  // Add categories
   var categories = await CategoryService.getAllByVault(selectedVault!.id);
   var trashCategoryId = "";
 
@@ -80,7 +79,6 @@ Future<void> exportVaultData() async {
     }
   }
 
-  // Add entries
   var entries = await EntryService.getAllByVault(selectedVault!.id);
 
   for (var entry in entries) {
@@ -113,7 +111,8 @@ Future<void> exportVaultData() async {
   }
 }
 
-Future<String?> saveFileToDocuments(String fileName, Uint8List fileBytes) async {
+Future<String?> saveFileToDocuments(
+    String fileName, Uint8List fileBytes) async {
   try {
     Directory? directory;
     if (Platform.isAndroid) {
@@ -147,7 +146,8 @@ Future<void> openSafeFile(String filePath) async {
       await Permission.storage.request();
     }
 
-    final Uri contentUri = Uri.parse('content://${Uri.encodeComponent(file.path)}');
+    final Uri contentUri =
+        Uri.parse('content://${Uri.encodeComponent(file.path)}');
 
     if (await canLaunchUrl(contentUri)) {
       await launchUrl(
@@ -164,7 +164,6 @@ Future<void> openSafeFile(String filePath) async {
 
 Future<ImportData?> importFromFile(ImportType importType) async {
   if (ChicPlatform.isDesktop()) {
-    // Import on desktop
     final typeGroup = XTypeGroup(label: 'CSV', extensions: ['csv']);
     final file = await openFile(acceptedTypeGroups: [typeGroup]);
 
@@ -184,12 +183,9 @@ Future<ImportData?> importFromFile(ImportType importType) async {
               .transform(LineSplitter())
               .toList();
           return _importFromChicSecret(lines);
-        default:
-          break;
       }
     }
   } else {
-    // Import on mobile
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null && result.files.single.path != null) {
@@ -210,8 +206,6 @@ Future<ImportData?> importFromFile(ImportType importType) async {
               .transform(LineSplitter())
               .toList();
           return _importFromChicSecret(lines);
-        default:
-          break;
       }
     }
   }
@@ -233,7 +227,6 @@ Future<ImportData> _importFromChicSecret(List<String> lines) async {
 
     if (index == 0) {
     } else if (cells[0].isNotEmpty) {
-      // Add categories
       var category = Category(
         id: cells[0],
         name: cells[1],
@@ -247,7 +240,6 @@ Future<ImportData> _importFromChicSecret(List<String> lines) async {
 
       categories.add(category);
     } else {
-      // Add entries
       var entry = Entry(
         id: Uuid().v4(),
         name: cells[3],
@@ -289,16 +281,13 @@ Future<ImportData> _importFromButtercup(List<String> lines) async {
     }).toList();
 
     if (index == 0) {
-      // Retrieve the custom fields
       for (var cell in cells.sublist(8, cells.length)) {
         customFieldKeys.add(cell);
       }
     } else {
       if (cells[0] == "group") {
-        // Retrieve categories
         categoriesMap[cells[1]] = cells[2];
       } else {
-        // Retrieve the passwords
         var hash = cells[6];
         if (hash.contains(",")) {
           hash = hash.substring(1, hash.length - 1);
@@ -318,7 +307,6 @@ Future<ImportData> _importFromButtercup(List<String> lines) async {
 
         entries.add(entry);
 
-        // Add custom fields
         var customFieldsCells = cells.sublist(8, cells.length);
         for (var cell in customFieldsCells) {
           if (cell.isNotEmpty) {

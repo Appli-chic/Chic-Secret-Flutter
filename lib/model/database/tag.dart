@@ -22,7 +22,6 @@ class Tag {
     this.deletedAt,
   });
 
-  /// Transform a json to a tag
   factory Tag.fromJson(Map<String, dynamic> json) {
     var createdAtString = DateTime.parse(json['CreatedAt']);
     var updatedAtString = DateTime.parse(json['UpdatedAt']);
@@ -42,7 +41,6 @@ class Tag {
     );
   }
 
-  /// Transform a tag to a json
   Map<String, dynamic> toJson() {
     var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String createdAtString = dateFormatter.format(createdAt);
@@ -63,7 +61,6 @@ class Tag {
     return data;
   }
 
-  /// Transform a map of [data] into a tag
   factory Tag.fromMap(Map<String, dynamic> data) {
     var createdAtString = DateTime.parse(data[columnCreatedAt]);
     var updatedAtString = DateTime.parse(data[columnUpdatedAt]);

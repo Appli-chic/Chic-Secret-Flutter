@@ -9,7 +9,6 @@ class DateRender {
     var today = DateTime.now();
 
     if (today.difference(date).inDays < 1) {
-      // Display time difference
       return timeago.format(date, locale: locale.languageCode);
     }
 

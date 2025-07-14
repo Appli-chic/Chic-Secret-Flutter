@@ -268,7 +268,6 @@ class _CategoryItemState extends State<CategoryItem> {
     );
   }
 
-  /// Ask if the category should be deleted and delete it with it's entries
   void _onDeletingCategory() async {
     var result = await showDialog(
       context: context,
@@ -303,7 +302,6 @@ class _CategoryItemState extends State<CategoryItem> {
     );
 
     if (result != null && result) {
-      // Delete the category and put the linked entries into the trash category
       await EntryService.moveToTrashAllEntriesFromCategory(widget.category!);
       await CategoryService.delete(widget.category!);
 

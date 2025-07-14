@@ -119,7 +119,6 @@ class _EntryItemState extends State<EntryItem> {
     );
   }
 
-  /// Displays if the password is old, weak or duplicated
   Widget _onDisplaySecurityInfo() {
     bool hasSecurityInfo = false;
     Widget weakPassword = SizedBox.shrink();

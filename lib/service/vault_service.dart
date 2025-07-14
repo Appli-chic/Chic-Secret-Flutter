@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
 class VaultService {
-  /// Update a [vault] into the local database
   static Future<void> update(Vault vault) async {
     await db.update(
       vaultTable,
@@ -16,7 +15,6 @@ class VaultService {
     );
   }
 
-  /// Save a [vault] into the local database
   static Future<void> save(Vault vault) async {
     await db.insert(
       vaultTable,
@@ -25,7 +23,6 @@ class VaultService {
     );
   }
 
-  /// Checks if the vault already exists
   static Future<bool> exists(Vault vault) async {
     var data = await db.query(
       vaultTable,
@@ -35,7 +32,6 @@ class VaultService {
     return data.isNotEmpty;
   }
 
-  /// Delete a [vault] from the local database
   static Future<void> delete(Vault vault) async {
     vault.deletedAt = DateTime.now();
     vault.updatedAt = DateTime.now();
@@ -47,7 +43,6 @@ class VaultService {
     );
   }
 
-  /// Retrieve all the vaults the user has access to
   static Future<List<Vault>> getAll() async {
     List<Vault> allVaults = [];
     List<Vault> vaults = [];
@@ -69,7 +64,6 @@ class VaultService {
     ORDER BY v.$columnId, v.$columnCreatedAt
     """;
 
-    // Get the list of vaults
     var maps = await db.rawQuery(query);
     if (maps.isNotEmpty) {
       for (var map in maps) {
@@ -88,7 +82,6 @@ class VaultService {
       }
     }
 
-    // Check our access to the vaults
     var user = await Security.getCurrentUser();
     if (user != null) {
       for (var vault in allVaults) {
@@ -106,7 +99,6 @@ class VaultService {
     return vaults;
   }
 
-  /// Get all the vaults to synchronize from the locale database to the server
   static Future<List<Vault>> getVaultsToSynchronize(DateTime? lastSync) async {
     String? whereQuery;
 

@@ -5,7 +5,6 @@ import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart';
 
 class VaultUserService {
-  /// Update the vault user already exists
   static Future<void> update(VaultUser vaultUser) async {
     await db.update(
       vaultUserTable,
@@ -15,7 +14,6 @@ class VaultUserService {
     );
   }
 
-  /// Save a [vaultUser] into the local database
   static Future<void> save(VaultUser vaultUser) async {
     await db.insert(
       vaultUserTable,
@@ -24,7 +22,6 @@ class VaultUserService {
     );
   }
 
-  /// Checks if the vault user already exists
   static Future<bool> exists(VaultUser vaultUser) async {
     var data = await db.query(
       vaultUserTable,
@@ -35,7 +32,6 @@ class VaultUserService {
     return data.isNotEmpty;
   }
 
-  /// Get all the vault users to synchronize from the locale database to the server
   static Future<List<VaultUser>> getVaultUsersToSynchronize(
       DateTime? lastSync) async {
     String? whereQuery;
@@ -56,7 +52,6 @@ class VaultUserService {
     });
   }
 
-  /// Delete a vault user from the local database
   static Future<void> delete(String vaultId, String userId) async {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     String date = dateFormatter.format(DateTime.now());
@@ -68,7 +63,6 @@ class VaultUserService {
     """);
   }
 
-  /// Delete a vault user from a vault
   static Future<void> deleteFromVault(String vaultId) async {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     String date = dateFormatter.format(DateTime.now());

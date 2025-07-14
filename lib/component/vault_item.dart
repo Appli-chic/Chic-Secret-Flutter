@@ -43,7 +43,6 @@ class _VaultItemState extends State<VaultItem> {
     }
   }
 
-  /// Displays the vault item for the mobile version
   Widget _buildMobileItem(ThemeProvider themeProvider) {
     return Card(
       margin: EdgeInsets.only(left: 16, right: 16, top: 8),
@@ -78,7 +77,6 @@ class _VaultItemState extends State<VaultItem> {
     );
   }
 
-  /// Displays the vault item for the desktop version
   Widget _buildDesktopItem(ThemeProvider themeProvider) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -148,7 +146,6 @@ class _VaultItemState extends State<VaultItem> {
     );
   }
 
-  /// Show a menu when the user do a right click on a vault
   _onSecondaryClick(BuildContext context, ThemeProvider themeProvider) async {
     List<PopupMenuEntry> popupEntries = [
       ChicPopupMenuItem(
@@ -166,7 +163,6 @@ class _VaultItemState extends State<VaultItem> {
     );
   }
 
-  /// Call the [NewVaultScreen] to edit the selected vault
   void _onEditVault() async {
     await ChicNavigator.push(
       context,
@@ -179,7 +175,6 @@ class _VaultItemState extends State<VaultItem> {
     }
   }
 
-  /// Update the mouse location for the secondary click
   void _updateMouseLocation(PointerEvent details) {
     setState(() {
       _mousePosition = details.position;

@@ -48,12 +48,12 @@ class _TagChipState extends State<TagChip> {
               ),
             ),
           ),
-        ), deleteButtonTooltipMessage: '',
+        ),
+        deleteButtonTooltipMessage: '',
       ),
     );
   }
 
-  /// Send back the information the tag got deleted
   _onTagDeleted() {
     widget.onDelete!(widget.index);
   }

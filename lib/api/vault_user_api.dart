@@ -13,7 +13,6 @@ import 'package:intl/intl.dart';
 const String vault_users_route = "api/vault-users";
 
 class VaultUserApi {
-  /// Send the vault users to synchronize to the server
   static Future<void> sendVaultUsers(List<VaultUser> vaultUsers) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
@@ -40,7 +39,6 @@ class VaultUserApi {
     }
   }
 
-  /// Retrieve all the vault users that changed
   static Future<void> retrieveVaultUsers(DateTime? lastSync) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();

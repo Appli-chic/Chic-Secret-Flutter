@@ -20,7 +20,7 @@ import 'localization/app_translations_delegate.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  if(ChicPlatform.isDesktop()) {
+  if (ChicPlatform.isDesktop()) {
     await windowManager.ensureInitialized();
 
     await windowManager.waitUntilReadyToShow().then((_) async {
@@ -73,7 +73,7 @@ class _AppState extends State<App> {
   Widget _createApp() {
     if (Platform.isIOS) {
       return _createIosApp();
-    } else if(Platform.isAndroid) {
+    } else if (Platform.isAndroid) {
       return _createAndroidApp();
     } else {
       return _createDesktopApp();
@@ -138,9 +138,9 @@ class _AppState extends State<App> {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: [
-        const Locale('en', ''), // English
-        const Locale('fr', ''), // French
-        const Locale('es', ''), // Spanish
+        const Locale('en', ''),
+        const Locale('fr', ''),
+        const Locale('es', ''),
       ],
       localeListResolutionCallback:
           (List<Locale>? locales, Iterable<Locale> supportedLocales) {
@@ -169,7 +169,7 @@ class _AppState extends State<App> {
       title: 'Chic Secret',
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.dark,

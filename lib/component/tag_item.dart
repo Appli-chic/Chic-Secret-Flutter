@@ -98,7 +98,6 @@ class _TagItemState extends State<TagItem> {
     );
   }
 
-  /// Show a menu when the user do a right click on a tag
   _onSecondaryClick(BuildContext context, ThemeProvider themeProvider) async {
     List<PopupMenuEntry> popupEntries = [
       ChicPopupMenuItem(
@@ -122,7 +121,6 @@ class _TagItemState extends State<TagItem> {
     );
   }
 
-  /// Rename a tag
   void _renameTag(ThemeProvider themeProvider) async {
     var controller = TextEditingController(text: widget.tag!.name);
 
@@ -167,7 +165,6 @@ class _TagItemState extends State<TagItem> {
       },
     );
 
-    // Rename the tag
     if (result != null && result) {
       var tag = widget.tag!;
       tag.name = controller.text;
@@ -182,7 +179,6 @@ class _TagItemState extends State<TagItem> {
     }
   }
 
-  /// Ask if the tag should be deleted
   void _onDeletingTag() async {
     var result = await showDialog(
       context: context,
@@ -217,7 +213,6 @@ class _TagItemState extends State<TagItem> {
     );
 
     if (result != null && result) {
-      // Delete the tag
       await TagService.delete(widget.tag!);
       await EntryTagService.deleteAllFromTag(widget.tag!.id);
 
@@ -229,7 +224,6 @@ class _TagItemState extends State<TagItem> {
     }
   }
 
-  /// Update the mouse location for the secondary click
   void _updateMouseLocation(PointerEvent details) {
     setState(() {
       _mousePosition = details.position;

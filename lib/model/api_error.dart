@@ -7,7 +7,6 @@ class ApiError {
     required this.message,
   });
 
-  /// Transform a JSON error into an [ApiError]
   factory ApiError.fromJson(Map<String, dynamic> jsonMap) {
     return new ApiError(
       code: jsonMap["code"],

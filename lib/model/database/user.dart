@@ -32,7 +32,6 @@ class User {
     this.subscriptionEndDate,
   });
 
-  /// Transform a json to a user
   factory User.fromJson(Map<String, dynamic> json) {
     var createdAtString = DateTime.parse(json['CreatedAt']);
     var updatedAtString = DateTime.parse(json['UpdatedAt']);
@@ -66,7 +65,6 @@ class User {
     );
   }
 
-  /// Transform a user to a json
   Map<String, dynamic> toJson() {
     var dateFormatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String createdAtString = dateFormatter.format(createdAt);
@@ -102,7 +100,6 @@ class User {
     return data;
   }
 
-  /// Transform a map of [data] into an user
   factory User.fromMap(Map<String, dynamic> data) {
     var createdAtString = DateTime.parse(data[columnCreatedAt]);
     var updatedAtString = DateTime.parse(data[columnUpdatedAt]);

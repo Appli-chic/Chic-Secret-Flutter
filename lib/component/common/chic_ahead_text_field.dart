@@ -56,7 +56,6 @@ class ChicAheadTextField extends StatelessWidget {
     );
   }
 
-  /// Defines the border [color] of the input
   InputBorder? _getInputBorder(Color color) {
     return OutlineInputBorder(
       borderSide: BorderSide(color: color),

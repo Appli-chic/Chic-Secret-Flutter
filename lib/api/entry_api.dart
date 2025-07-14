@@ -13,7 +13,6 @@ import 'package:intl/intl.dart';
 const String entries_route = "api/entries";
 
 class EntryApi {
-  /// Send the entries to synchronize to the server
   static Future<void> sendEntries(List<Entry> entries) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();
@@ -40,7 +39,6 @@ class EntryApi {
     }
   }
 
-  /// Retrieve all the entries that changed
   static Future<void> retrieveEntries(DateTime? lastSync) async {
     var client = http.Client();
     var accessToken = await Security.getAccessToken();

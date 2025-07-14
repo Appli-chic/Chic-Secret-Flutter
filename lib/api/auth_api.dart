@@ -10,7 +10,6 @@ const String authLogin = "api/auth/login";
 const String authRefresh = "api/auth/refresh";
 
 class AuthApi {
-  /// Ask the server to send a code to the email
   static Future<void> askCodeToLogin(String email) async {
     var client = http.Client();
 
@@ -28,7 +27,6 @@ class AuthApi {
     }
   }
 
-  /// Login with the [email] and corresponding [code]
   static Future<void> login(String email, String code) async {
     var client = http.Client();
 
@@ -51,7 +49,6 @@ class AuthApi {
     }
   }
 
-  /// Send an access token from our refresh token
   static Future<void> refreshAccessToken() async {
     var client = http.Client();
     var refreshToken = await Security.getRefreshToken();
