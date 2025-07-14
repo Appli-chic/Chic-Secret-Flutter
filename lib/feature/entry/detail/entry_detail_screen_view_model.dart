@@ -54,10 +54,8 @@ class EntryDetailScreenViewModel with ChangeNotifier {
 
   onDeleteEntry(BuildContext context, bool isAlreadyInTrash) async {
     if (!isAlreadyInTrash) {
-      // We move the entry to the trash bin
       await EntryService.moveToTrash(currentEntry);
     } else {
-      // We delete it definitely
       await EntryService.deleteDefinitively(currentEntry);
     }
 

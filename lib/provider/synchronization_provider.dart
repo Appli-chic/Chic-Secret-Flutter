@@ -69,7 +69,6 @@ class SynchronizationProvider with ChangeNotifier {
     var vaultUsers =
         await VaultUserService.getVaultUsersToSynchronize(_lastSyncDate);
 
-    // Check if vaults have a user ID before to synchronize
     for (var vault in vaults) {
       if (vault.userId == null || vault.userId!.isEmpty) {
         vault.userId = user!.id;
@@ -115,7 +114,6 @@ class SynchronizationProvider with ChangeNotifier {
   }
 
   Future<void> _pull() async {
-    // Pull user
     var user = await Security.getCurrentUser();
     if (user != null) {
       user = await UserService.getUserById(user.id);

@@ -32,7 +32,6 @@ class Category {
     this.deletedAt,
   });
 
-  /// Transform a json to a category
   factory Category.fromJson(Map<String, dynamic> json) {
     var createdAtString = DateTime.parse(json['CreatedAt']);
     var updatedAtString = DateTime.parse(json['UpdatedAt']);

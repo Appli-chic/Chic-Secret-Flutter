@@ -98,7 +98,6 @@ class GeneratePasswordScreenViewModel with ChangeNotifier {
 
   String generatePassword() {
     if (isGeneratingWords) {
-      // Generating a password composed of words
       return Security.generatePasswordWithWords(
         locale,
         numberWords,
@@ -108,7 +107,6 @@ class GeneratePasswordScreenViewModel with ChangeNotifier {
       );
     }
 
-    // Generating a random password
     return _generateRandomPassword();
   }
 

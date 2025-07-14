@@ -21,7 +21,6 @@ class Application {
     "es",
   ];
 
-  /// Get the language name from it's code
   static String getSupportedLanguageFromCode(String? code) {
     if (supportedLanguagesCodes.contains(code)) {
       var index = supportedLanguagesCodes.indexOf(code!);
@@ -31,7 +30,6 @@ class Application {
     }
   }
 
-  /// Returns the list of supported Locales
   Iterable<Locale> supportedLocales() =>
       supportedLanguagesCodes.map<Locale>((language) => Locale(language, ""));
 }

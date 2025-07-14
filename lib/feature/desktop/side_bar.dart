@@ -60,8 +60,7 @@ class _SideBarState extends State<SideBar> {
 
     if (widget.sideBarController != null) {
       widget.sideBarController!.reloadVaults = _viewModel.onSynchronized;
-      widget.sideBarController!.reloadCategories =
-          _viewModel.loadCategories;
+      widget.sideBarController!.reloadCategories = _viewModel.loadCategories;
       widget.sideBarController!.reloadTags = _viewModel.loadTags;
     }
 
@@ -112,41 +111,41 @@ class _SideBarState extends State<SideBar> {
           ),
           !_viewModel.isUserLoggedIn && selectedVault == null
               ? Container(
-            margin: EdgeInsets.only(left: 16, bottom: 8, top: 6),
-            child: ChicTextIconButton(
-              onPressed: _onLogin,
-              icon: Icon(
-                Icons.login,
-                color: themeProvider.textColor,
-                size: 18,
-              ),
-              label: Text(
-                AppTranslations.of(context).text("login"),
-                style: TextStyle(
-                  color: themeProvider.textColor,
-                  fontSize: 13,
-                ),
-              ),
-            ),
-          )
+                  margin: EdgeInsets.only(left: 16, bottom: 8, top: 6),
+                  child: ChicTextIconButton(
+                    onPressed: _onLogin,
+                    icon: Icon(
+                      Icons.login,
+                      color: themeProvider.textColor,
+                      size: 18,
+                    ),
+                    label: Text(
+                      AppTranslations.of(context).text("login"),
+                      style: TextStyle(
+                        color: themeProvider.textColor,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                )
               : Container(
-            margin: EdgeInsets.only(left: 16, bottom: 8, top: 6),
-            child: ChicTextIconButton(
-              onPressed: _onOptionsClicked,
-              icon: Icon(
-                Icons.settings,
-                color: themeProvider.textColor,
-                size: 18,
-              ),
-              label: Text(
-                AppTranslations.of(context).text("settings"),
-                style: TextStyle(
-                  color: themeProvider.textColor,
-                  fontSize: 13,
+                  margin: EdgeInsets.only(left: 16, bottom: 8, top: 6),
+                  child: ChicTextIconButton(
+                    onPressed: _onOptionsClicked,
+                    icon: Icon(
+                      Icons.settings,
+                      color: themeProvider.textColor,
+                      size: 18,
+                    ),
+                    label: Text(
+                      AppTranslations.of(context).text("settings"),
+                      style: TextStyle(
+                        color: themeProvider.textColor,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -190,7 +189,6 @@ class _SideBarState extends State<SideBar> {
         itemCount: _viewModel.categories.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
-            // Add a "Fake" category to display all the passwords
             return CategoryItem(
               isSelected: selectedCategory == null,
               nbWeakPasswords: _viewModel.weakPasswordEntries.length,
@@ -205,24 +203,24 @@ class _SideBarState extends State<SideBar> {
                   selectedCategory!.id == _viewModel.categories[index - 1].id,
               nbWeakPasswords: !_viewModel.categories[index - 1].isTrash
                   ? _viewModel.weakPasswordEntries
-                  .where((e) =>
-              e.category?.id == _viewModel.categories[index - 1].id)
-                  .toList()
-                  .length
+                      .where((e) =>
+                          e.category?.id == _viewModel.categories[index - 1].id)
+                      .toList()
+                      .length
                   : 0,
               nbOldPasswords: !_viewModel.categories[index - 1].isTrash
                   ? _viewModel.oldEntries
-                  .where((e) =>
-              e.category?.id == _viewModel.categories[index - 1].id)
-                  .toList()
-                  .length
+                      .where((e) =>
+                          e.category?.id == _viewModel.categories[index - 1].id)
+                      .toList()
+                      .length
                   : 0,
               nbDuplicatedPasswords: !_viewModel.categories[index - 1].isTrash
                   ? _viewModel.duplicatedEntries
-                  .where((e) =>
-              e.category?.id == _viewModel.categories[index - 1].id)
-                  .toList()
-                  .length
+                      .where((e) =>
+                          e.category?.id == _viewModel.categories[index - 1].id)
+                      .toList()
+                      .length
                   : 0,
               onTap: _onDesktopCategoryClicked,
               onCategoryChanged: _onCategoryChanged,
@@ -241,13 +239,11 @@ class _SideBarState extends State<SideBar> {
         itemCount: _viewModel.tags.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
-            // Displays a "no tag" to stop the filter on tags
             return TagItem(
               isSelected: selectedTag == null,
               onTap: _onNoTagClicked,
             );
           } else {
-            // Display a tag
             return TagItem(
               tag: _viewModel.tags[index - 1],
               isSelected: selectedTag != null &&
@@ -271,7 +267,6 @@ class _SideBarState extends State<SideBar> {
     if (data != null) {
       _viewModel.loadVaults();
 
-      // Select the vault and start working on it
       widget.onVaultChange();
 
       _viewModel.loadCategories();

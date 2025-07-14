@@ -74,7 +74,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     _synchronizationProvider =
         Provider.of<SynchronizationProvider>(context, listen: true);
 
-    // Starts and stop the synchronization animation
     if (_synchronizationProvider.isSynchronizing) {
       _startsAnimatingSynchronisation();
     } else {
@@ -160,7 +159,6 @@ class _SettingsScreenState extends State<SettingsScreen>
   Widget _displaysBody(ThemeProvider themeProvider) {
     String? lastSyncDate;
 
-    // Get last date synchronization
     if (_synchronizationProvider.lastSyncDate != null) {
       var locale = AppTranslations.of(context).locale;
       var time = DateFormat.Hm(locale.languageCode)
@@ -258,10 +256,8 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   _delete() async {
     if (selectedVault != null && selectedVault!.userId == _viewModel.user!.id) {
-      // Check if the user is willing to delete the vault
       var toDelete = await _displaysDialogSureToDelete();
       if (toDelete) {
-        // Delete all the data
         EasyLoading.show();
 
         try {

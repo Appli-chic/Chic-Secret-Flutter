@@ -310,7 +310,6 @@ class _ChicTextFieldState extends State<ChicTextField> {
         return null;
     }
 
-    // Focus the next input on desktop
     if (isKeyDown &&
         keyCode == LogicalKeyboardKey.tab &&
         widget.nextFocus != null) {

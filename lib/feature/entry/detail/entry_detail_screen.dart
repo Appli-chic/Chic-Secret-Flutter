@@ -54,7 +54,6 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    // Reload tags and custom fields if the entry changed (mainly for desktop usage)
     if (widget.entry.id != _viewModel.currentEntry.id) {
       if (_viewModel.passwordEntryDetailController.hidePassword != null) {
         _viewModel.passwordEntryDetailController.hidePassword!();

@@ -96,9 +96,9 @@ class _AppState extends State<App> {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: [
-          const Locale('en', ''), // English
-          const Locale('fr', ''), // French
-          const Locale('es', ''), // Spanish
+          const Locale('en', ''),
+          const Locale('fr', ''),
+          const Locale('es', ''),
         ],
         localeListResolutionCallback:
             (List<Locale>? locales, Iterable<Locale> supportedLocales) {
@@ -180,9 +180,9 @@ class _AppState extends State<App> {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: [
-        const Locale('en', ''), // English
-        const Locale('fr', ''), // French
-        const Locale('es', ''), // Spanish
+        const Locale('en', ''),
+        const Locale('fr', ''),
+        const Locale('es', ''),
       ],
       localeListResolutionCallback:
           (List<Locale>? locales, Iterable<Locale> supportedLocales) {

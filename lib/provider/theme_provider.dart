@@ -46,7 +46,6 @@ class ThemeProvider with ChangeNotifier {
     int? _themeString = prefs.getInt(keyTheme);
 
     if (_themeString != null) {
-      // Load the theme if it exists
       _theme =
           _themeList.where((theme) => theme.id == _themeString).toList()[0];
     }

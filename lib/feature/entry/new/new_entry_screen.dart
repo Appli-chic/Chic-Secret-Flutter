@@ -378,7 +378,8 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                   return [];
                 }
 
-                return await TagService.searchingTagInVault(selectedVault!.id, pattern);
+                return await TagService.searchingTagInVault(
+                    selectedVault!.id, pattern);
               },
               itemBuilder: (context, tag) {
                 return ListTile(
@@ -602,7 +603,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
 
   @override
   void dispose() {
-    // Dispose controllers
     _viewModel.nameController.dispose();
     _viewModel.usernameController.dispose();
     _viewModel.passwordController.dispose();
@@ -620,7 +620,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       customFieldsValueController.dispose();
     }
 
-    // Dispose node focus
     _nameFocusNode.dispose();
     _usernameFocusNode.dispose();
     _passwordFocusNode.dispose();
@@ -638,7 +637,6 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       customFieldsValueFocusNode.dispose();
     }
 
-    // Dispose node focus for desktop
     _desktopNameFocusNode.dispose();
     _desktopUsernameFocusNode.dispose();
     _desktopPasswordFocusNode.dispose();

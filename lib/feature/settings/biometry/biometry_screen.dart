@@ -95,7 +95,6 @@ class _BiometryScreenState extends State<BiometryScreen> {
                     value: _isBiometryActivated,
                     onChanged: (bool value) async {
                       if (value) {
-                        // We activate the biometry
                         var unlockingPassword = await ChicNavigator.push(
                           context,
                           UnlockVaultScreen(vault: selectedVault!),
@@ -108,7 +107,6 @@ class _BiometryScreenState extends State<BiometryScreen> {
                           _isBiometryActivated = true;
                         }
                       } else {
-                        // We deactivate the biometry
                         await Security.removePasswordFromBiometry(
                             selectedVault!);
                         _isBiometryActivated = false;

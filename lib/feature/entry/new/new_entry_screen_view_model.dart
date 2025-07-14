@@ -275,7 +275,6 @@ class NewEntryScreenViewModel with ChangeNotifier {
 
       synchronizationProvider.synchronize();
 
-      // Return to the previous screen
       entry.category = category;
       if (_onFinish != null && ChicPlatform.isDesktop()) {
         _onFinish!(entry);
@@ -323,7 +322,6 @@ class NewEntryScreenViewModel with ChangeNotifier {
 
   _saveTags(Entry entry) async {
     for (var tagLabel in tagLabelList) {
-      // Check if the tag already exist in the database
       var tag =
           await TagService.getTagByVaultByName(selectedVault!.id, tagLabel);
 
@@ -339,7 +337,6 @@ class NewEntryScreenViewModel with ChangeNotifier {
         await TagService.save(tag);
       }
 
-      // Save the Entry Tag if the tag isn't already linked to it
       if (tags.where((t) => t.name == tag!.name).isEmpty) {
         var entryTag = EntryTag(
           entryId: entry.id,
@@ -388,11 +385,9 @@ class NewEntryScreenViewModel with ChangeNotifier {
       );
 
       if (!exist) {
-        // Create a new one
         customField.id = Uuid().v4();
         await CustomFieldService.save(customField);
       } else {
-        // Update the custom field
         customField.id = customFieldsIds[customFieldIndex];
         await CustomFieldService.update(customField);
       }

@@ -14,12 +14,11 @@ class AppTranslations {
   static AppTranslations of(BuildContext context) {
     try {
       return Localizations.of<AppTranslations>(context, AppTranslations)!;
-    } catch(e) {
+    } catch (e) {
       return AppTranslations(Locale('en', ''));
     }
   }
 
-  /// Load the [locale] language to display text
   static Future<AppTranslations> load(Locale locale) async {
     AppTranslations appTranslations = AppTranslations(locale);
 
@@ -38,10 +37,8 @@ class AppTranslations {
     return appTranslations;
   }
 
-  /// Get the current [locale] language we are display text with
   get currentLanguage => locale.languageCode;
 
-  /// Get the text corresponding to the current locale stored in the [key]
   String text(String key) {
     if (_localisedValues != null) {
       return _localisedValues![key];
@@ -50,7 +47,6 @@ class AppTranslations {
     }
   }
 
-  /// Get the list of text corresponding to the current locale stored in the [key]
   List<String> list(String key) {
     var result = <String>[];
 
@@ -65,8 +61,6 @@ class AppTranslations {
     return result;
   }
 
-  /// Get the text corresponding to the current locale stored in the [key]
-  /// replacing {} with the [arg]
   String textWithArgument(String key, String arg) {
     if (_localisedValues != null) {
       return _localisedValues![key].toString().replaceFirst('{}', arg);
@@ -75,8 +69,6 @@ class AppTranslations {
     }
   }
 
-  /// Get the text corresponding to the current locale stored in the [key]
-  /// replacing the {} with the [args]
   String textWithArguments(String key, List<String> args) {
     if (_localisedValues != null) {
       return _localisedValues![key];

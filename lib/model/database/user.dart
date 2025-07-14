@@ -136,7 +136,6 @@ class User {
     );
   }
 
-  // Transform an user into a map of data
   Map<String, dynamic> toMap() {
     var dateFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     String createdAtString = dateFormatter.format(createdAt);

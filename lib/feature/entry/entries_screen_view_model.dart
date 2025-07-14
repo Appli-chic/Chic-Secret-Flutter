@@ -43,14 +43,12 @@ class EntriesScreenViewModel with ChangeNotifier {
       String? categoryId;
       String? tagId;
 
-      // Check if a category is selected
       if (selectedCategory != null &&
           selectedCategory!.id.isNotEmpty &&
           ChicPlatform.isDesktop()) {
         categoryId = selectedCategory!.id;
       }
 
-      // Check if a tag is selected
       if (selectedTag != null &&
           selectedTag!.id.isNotEmpty &&
           ChicPlatform.isDesktop()) {
@@ -89,14 +87,12 @@ class EntriesScreenViewModel with ChangeNotifier {
       String? categoryId;
       String? tagId;
 
-      // Check if a category is selected
       if (selectedCategory != null &&
           selectedCategory!.id.isNotEmpty &&
           ChicPlatform.isDesktop()) {
         categoryId = selectedCategory!.id;
       }
 
-      // Check if a tag is selected
       if (selectedTag != null &&
           selectedTag!.id.isNotEmpty &&
           ChicPlatform.isDesktop()) {
@@ -116,10 +112,8 @@ class EntriesScreenViewModel with ChangeNotifier {
 
   bool isDesktopEntrySelected(int index) {
     if (selectedEntries.isNotEmpty) {
-      // Multi select
       return selectedEntries.contains(entries[index]);
     } else {
-      // Single select
       return selectedEntry != null && selectedEntry!.id == entries[index].id;
     }
   }
@@ -134,7 +128,6 @@ class EntriesScreenViewModel with ChangeNotifier {
 
   _onMultiEntrySelected(Entry entry) {
     if (!selectedEntries.contains(entry)) {
-      // Select one more item
       if (selectedEntry != null) {
         selectedEntries.add(selectedEntry!);
         selectedEntry = null;
@@ -142,7 +135,6 @@ class EntriesScreenViewModel with ChangeNotifier {
 
       selectedEntries.add(entry);
     } else {
-      // Deselect an item
       selectedEntries.remove(entry);
     }
 
@@ -173,7 +165,6 @@ class EntriesScreenViewModel with ChangeNotifier {
   }
 
   onKeyChanged(RawKeyEvent event, bool isSearchFocused) {
-    // Retrieve the code changing
     LogicalKeyboardKey keyCode;
     switch (event.data.runtimeType) {
       case RawKeyEventData:
@@ -229,7 +220,6 @@ class EntriesScreenViewModel with ChangeNotifier {
         } else if (controlKeyIsConcerned) {
           isControlKeyDown = true;
         } else if (aKeyIsConcerned && isCommandKeyDown && !isSearchFocused) {
-          // Select all entries
           selectedEntries.clear();
           selectedEntries.addAll(entries);
         }
@@ -268,7 +258,6 @@ class EntriesScreenViewModel with ChangeNotifier {
 
   _deleteManyEntries(Entry entry, bool isAlreadyInTrash) async {
     if (!isAlreadyInTrash) {
-      // We move the entries to the trash bin
       List<Future<void>> futureList = [];
 
       for (var selectedEntry in selectedEntries) {
@@ -277,7 +266,6 @@ class EntriesScreenViewModel with ChangeNotifier {
 
       await Future.wait(futureList);
     } else {
-      // We delete them definitely
       List<Future<void>> futureList = [];
 
       for (var currentSelectedEntry in selectedEntries) {
@@ -298,10 +286,8 @@ class EntriesScreenViewModel with ChangeNotifier {
 
   _deleteOneEntry(Entry entry, bool isAlreadyInTrash) async {
     if (!isAlreadyInTrash) {
-      // We move the entry to the trash bin
       await EntryService.moveToTrash(entry);
     } else {
-      // We delete it definitely
       await EntryService.deleteDefinitively(entry);
 
       if (entry == selectedEntry) {
@@ -322,7 +308,6 @@ class EntriesScreenViewModel with ChangeNotifier {
     var isMultiSelected = selectedEntries.isNotEmpty;
 
     if (isMultiSelected) {
-      // Move multiple entries
       List<Future<void>> futureList = [];
 
       for (var selectedEntry in selectedEntries) {
@@ -332,7 +317,6 @@ class EntriesScreenViewModel with ChangeNotifier {
 
       await Future.wait(futureList);
     } else {
-      // Move one entry
       await EntryService.moveToAnotherCategory(entry, category.id);
     }
 

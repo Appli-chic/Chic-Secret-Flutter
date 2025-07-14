@@ -161,7 +161,6 @@ class NewVaultScreenViewModel with ChangeNotifier {
     await VaultService.save(vault);
     await _createMandatoryCategories(context, vault);
 
-    // Select the vault and keep the password in memory
     selectedVault = vault;
     currentPassword = passwordController.text;
 
@@ -169,7 +168,6 @@ class NewVaultScreenViewModel with ChangeNotifier {
   }
 
   _createMandatoryCategories(BuildContext context, Vault vault) async {
-    // Create the trash category
     var trashCategory = Category(
       id: Uuid().v4(),
       name: AppTranslations.of(context).text("trash"),
@@ -181,7 +179,6 @@ class NewVaultScreenViewModel with ChangeNotifier {
       updatedAt: DateTime.now(),
     );
 
-    // Create general category
     var generalCategory = Category(
       id: Uuid().v4(),
       name: AppTranslations.of(context).text("general"),

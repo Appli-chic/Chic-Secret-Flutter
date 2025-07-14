@@ -169,7 +169,7 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
   }
 
   List<BottomNavigationBarItem> _displayBottomNavigationBarItems() {
-    if(Platform.isIOS) {
+    if (Platform.isIOS) {
       return [
         BottomNavigationBarItem(
           icon: Icon(CupertinoIcons.list_dash),
@@ -261,7 +261,6 @@ class _MainMobileScreenState extends State<MainMobileScreen> {
     );
   }
 
-  /// Call the [NewEntryScreen] screen to create a new entry.
   _onAddEntryClicked() async {
     var data = await ChicNavigator.push(
       context,

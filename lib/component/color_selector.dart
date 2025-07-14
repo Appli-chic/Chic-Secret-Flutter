@@ -81,7 +81,6 @@ class _ColorSelectorState extends State<ColorSelector> {
 
     for (var colorIndex = 0; colorIndex < _colorListSize(); colorIndex++) {
       if (colorIndex != _colorListSize() - 1) {
-        // Show Color
         circles.add(
           MouseRegion(
             cursor: SystemMouseCursors.click,

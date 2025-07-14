@@ -387,7 +387,6 @@ class _EntriesScreenState extends State<EntriesScreen>
     var data;
 
     if (ChicPlatform.isDesktop()) {
-      // Display the NewEntryScreen in the entry detail
       _searchFocusNode.unfocus();
       FocusScope.of(context).unfocus();
       _shortcutsFocusNode.requestFocus();
@@ -395,7 +394,6 @@ class _EntriesScreenState extends State<EntriesScreen>
         widget.onCreateNewEntry!();
       }
     } else {
-      // Push a new screen if it's on mobile
       data = await ChicNavigator.push(
         context,
         NewEntryScreen(
@@ -416,7 +414,6 @@ class _EntriesScreenState extends State<EntriesScreen>
         .textWithArgument("warning_message_delete_entry", entry.name);
 
     if (isMultiSelected) {
-      // Move multiple entries to trash
       if (isAlreadyInTrash) {
         errorMessage = AppTranslations.of(context)
             .text("warning_message_delete_multiple_entry_definitely");
@@ -425,7 +422,6 @@ class _EntriesScreenState extends State<EntriesScreen>
             .text("warning_message_delete_multiple_entry");
       }
     } else {
-      // Single entry to move to trash
       if (isAlreadyInTrash) {
         errorMessage = AppTranslations.of(context).textWithArgument(
             "warning_message_delete_entry_definitely", entry.name);
