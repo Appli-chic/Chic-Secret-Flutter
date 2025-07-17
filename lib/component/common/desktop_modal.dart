@@ -22,6 +22,13 @@ class DesktopModal extends StatefulWidget {
 }
 
 class _DesktopModalState extends State<DesktopModal> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
@@ -41,8 +48,12 @@ class _DesktopModalState extends State<DesktopModal> {
         width: desktopHeight,
         height: widget.height,
         child: Scrollbar(
+          controller: _scrollController,
           thumbVisibility: true,
-          child: SingleChildScrollView(child: widget.body),
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child: widget.body,
+          ),
         ),
       ),
       actions: widget.actions,

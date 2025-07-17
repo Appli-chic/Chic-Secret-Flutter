@@ -48,6 +48,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
 
   var _desktopNameFocusNode = FocusNode();
   var _desktopUsernameFocusNode = FocusNode();
+  final ScrollController _scrollController = ScrollController();
   var _desktopPasswordFocusNode = FocusNode();
   var _desktopCategoryFocusNode = FocusNode();
   var _desktopCommentFocusNode = FocusNode();
@@ -86,7 +87,9 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
                 children: [
                   Expanded(
                     child: Scrollbar(
+                      controller: _scrollController,
                       child: SingleChildScrollView(
+                        controller: _scrollController,
                         child: GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
@@ -653,6 +656,7 @@ class _NewEntryScreenState extends State<NewEntryScreen> {
       customFieldsValueDesktopFocusNode.dispose();
     }
 
+    _scrollController.dispose();
     super.dispose();
   }
 }

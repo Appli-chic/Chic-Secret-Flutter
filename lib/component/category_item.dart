@@ -93,7 +93,7 @@ class _CategoryItemState extends State<CategoryItem> {
             IconConverter.convertMaterialIconToCupertino(
               IconData(widget.category!.icon, fontFamily: 'MaterialIcons'),
             ),
-            color: Colors.white,
+            color: themeProvider.onBackgroundColor,
           ),
         ),
         title: Container(
@@ -145,7 +145,7 @@ class _CategoryItemState extends State<CategoryItem> {
                             fontFamily: 'MaterialIcons')
                         : Icons.apps,
                     color: widget.isSelected!
-                        ? themeProvider.textColor
+                        ? themeProvider.onBackgroundColor
                         : themeProvider.secondTextColor,
                     size: 13,
                   ),
@@ -160,7 +160,7 @@ class _CategoryItemState extends State<CategoryItem> {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: widget.isSelected!
-                              ? themeProvider.textColor
+                              ? themeProvider.onBackgroundColor
                               : themeProvider.secondTextColor,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,

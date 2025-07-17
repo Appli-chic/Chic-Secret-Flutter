@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class ChicTheme {
   final int id;
   final Color backgroundColor;
+  final Color onBackgroundColor;
   final Color backgroundDesktopColor;
   final Color secondBackgroundColor;
   final Color secondBackgroundDesktopColor;
@@ -23,6 +24,7 @@ class ChicTheme {
   ChicTheme({
     required this.id,
     required this.backgroundColor,
+    required this.onBackgroundColor,
     required this.backgroundDesktopColor,
     required this.secondBackgroundColor,
     required this.secondBackgroundDesktopColor,

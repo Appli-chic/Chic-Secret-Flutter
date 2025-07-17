@@ -39,6 +39,7 @@ class EntryDetailScreen extends StatefulWidget {
 
 class _EntryDetailScreenState extends State<EntryDetailScreen> {
   late EntryDetailScreenViewModel _viewModel;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -48,6 +49,12 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     );
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -154,7 +161,9 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
       children: [
         Expanded(
           child: Scrollbar(
+            controller: _scrollController,
             child: SingleChildScrollView(
+              controller: _scrollController,
               child: Column(
                 children: [
                   Container(

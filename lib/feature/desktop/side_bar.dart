@@ -53,6 +53,7 @@ class SideBar extends StatefulWidget {
 class _SideBarState extends State<SideBar> {
   late SideBarViewModel _viewModel;
   late SynchronizationProvider _synchronizationProvider;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -65,6 +66,12 @@ class _SideBarState extends State<SideBar> {
     }
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -93,7 +100,9 @@ class _SideBarState extends State<SideBar> {
         children: [
           Expanded(
             child: Scrollbar(
+              controller: _scrollController,
               child: SingleChildScrollView(
+                controller: _scrollController,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [

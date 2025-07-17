@@ -8,6 +8,7 @@ const int DEFAULT_THEME_LIGHT = 1;
 ChicTheme defaultDarkTheme = ChicTheme(
   id: DEFAULT_THEME_DARK,
   backgroundColor: Color(0xFF000000),
+  onBackgroundColor: Color(0xFFFFFFFF),
   backgroundDesktopColor: Color(0xFF222026),
   secondBackgroundColor: Color(0xFF1C1C1E),
   secondBackgroundDesktopColor: Color(0xFF292829),
@@ -29,6 +30,7 @@ ChicTheme defaultDarkTheme = ChicTheme(
 ChicTheme defaultLightTheme = ChicTheme(
   id: DEFAULT_THEME_LIGHT,
   backgroundColor: Color(0xFFFFFFFF),
+  onBackgroundColor: Color(0xFFFFFFFF),
   backgroundDesktopColor: Color(0xFFF5F5F7),
   secondBackgroundColor: Color(0xFFF2F2F7),
   secondBackgroundDesktopColor: Color(0xFFE5E5EA),
@@ -78,10 +80,11 @@ class ThemeProvider with ChangeNotifier, WidgetsBindingObserver {
   @override
   void didChangePlatformBrightness() {
     super.didChangePlatformBrightness();
-    
+
     if (ChicPlatform.isDesktop()) {
-      var brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
-      
+      var brightness =
+          WidgetsBinding.instance.platformDispatcher.platformBrightness;
+
       if (brightness == Brightness.light && !_theme.isLight) {
         _theme = defaultLightTheme;
         notifyListeners();
@@ -105,6 +108,8 @@ class ThemeProvider with ChangeNotifier, WidgetsBindingObserver {
   Color get backgroundColor => ChicPlatform.isDesktop()
       ? _theme.backgroundDesktopColor
       : _theme.backgroundColor;
+
+  Color get onBackgroundColor => _theme.onBackgroundColor;
 
   Color get sidebarBackgroundColor => _theme.sidebarBackgroundColor;
 
