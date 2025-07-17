@@ -47,7 +47,7 @@ ChicTheme defaultLightTheme = ChicTheme(
   isLight: true,
 );
 
-class ThemeProvider with ChangeNotifier {
+class ThemeProvider with ChangeNotifier, WidgetsBindingObserver {
   ChicTheme _theme = defaultDarkTheme;
 
   ThemeProvider() {
@@ -60,7 +60,36 @@ class ThemeProvider with ChangeNotifier {
       _theme = defaultDarkTheme;
     }
 
+    if (ChicPlatform.isDesktop()) {
+      WidgetsBinding.instance.addObserver(this);
+    }
+
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    if (ChicPlatform.isDesktop()) {
+      WidgetsBinding.instance.removeObserver(this);
+    }
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    super.didChangePlatformBrightness();
+    
+    if (ChicPlatform.isDesktop()) {
+      var brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
+      
+      if (brightness == Brightness.light && !_theme.isLight) {
+        _theme = defaultLightTheme;
+        notifyListeners();
+      } else if (brightness == Brightness.dark && _theme.isLight) {
+        _theme = defaultDarkTheme;
+        notifyListeners();
+      }
+    }
   }
 
   Brightness getBrightness() {
