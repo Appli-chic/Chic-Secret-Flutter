@@ -40,9 +40,9 @@ class _EntryItemState extends State<EntryItem> {
 
   @override
   Widget build(BuildContext context) {
-    var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: true);
 
-    var backgroundColor = !ChicPlatform.isDesktop()
+    final backgroundColor = !ChicPlatform.isDesktop()
         ? themeProvider.secondBackgroundColor
         : Colors.transparent;
 

@@ -29,6 +29,7 @@ class _DesktopModalState extends State<DesktopModal> {
     _scrollController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context, listen: true);
