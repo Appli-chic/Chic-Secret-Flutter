@@ -95,7 +95,9 @@ class _EntryItemState extends State<EntryItem> {
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: ChicPlatform.isDesktop() ? 16 : 18,
-                  color: themeProvider.textColor,
+                  color: widget.isSelected
+                      ? themeProvider.onBackgroundColor
+                      : themeProvider.textColor,
                 ),
               ),
             ),
@@ -107,8 +109,8 @@ class _EntryItemState extends State<EntryItem> {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: widget.isSelected
-                      ? themeProvider.textColor
-                      : themeProvider.secondTextColor,
+                      ? themeProvider.onBackgroundColor
+                      : themeProvider.textColor,
                 ),
               ),
             ),

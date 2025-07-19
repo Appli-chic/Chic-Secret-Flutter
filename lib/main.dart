@@ -82,6 +82,10 @@ class _AppState extends State<App> {
   Widget _createIosApp() {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+      ),
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system,
       home: CupertinoApp(
@@ -126,6 +130,7 @@ class _AppState extends State<App> {
       title: 'Chic Secret',
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system,
