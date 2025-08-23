@@ -1,12 +1,11 @@
 {
-  "originHash" : "f06198590e24eef65d2e2805d81c56b9e6c8175df0639bb1c93274967db1c1d8",
   "pins" : [
     {
       "identity" : "csqlite",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/simolus3/CSQLite.git",
       "state" : {
-        "revision" : "835349f65fe2c7ba6558616f1a5e0aa7c0c9c897"
+        "revision" : "7381ec26064b49105594dc13508d8de303607c2f"
       }
     },
     {
@@ -41,8 +40,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImage",
       "state" : {
-        "revision" : "cac9a55a3ae92478a2c95042dcc8d9695d2129ca",
-        "version" : "5.21.0"
+        "revision" : "b62cb63bf4ed1f04c961a56c9c6c9d5ab8524ec6",
+        "version" : "5.21.1"
       }
     },
     {
@@ -64,5 +63,5 @@
       }
     }
   ],
-  "version" : 3
+  "version" : 2
 }
